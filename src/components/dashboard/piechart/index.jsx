@@ -22,11 +22,11 @@ const state = {
   }
 
 
-const PieChart =()=> {
+const PieChart =(props)=> {
       return (
         <div>
           <Pie
-            data={state}
+            data={props.data||state}
             options={{
               title:{
                 display:true,
@@ -38,6 +38,19 @@ const PieChart =()=> {
               }
             }}
           />
+          {/* <Pie
+            data={state}
+            options={{
+              title:{
+                display:true,
+                fontSize:20
+              },
+              legend:{
+                display:true,
+                position:'top'
+              }
+            }}
+          /> */}
           </div>
           );
         }

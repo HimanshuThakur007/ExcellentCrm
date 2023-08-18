@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from "react-helmet";
 import { Table } from 'antd';
 import 'antd/dist/antd.css';
+import {Link} from 'react-router-dom'
 import {itemRender,onShowSizeChange} from "../paginationfunction"
  import "../antdstyle.css";
  import ReactLoader from '../CommonFile/ReactLoader';
@@ -14,15 +15,7 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
           <title>{HelmetTitle}</title>
           <meta name="description" content="Data Tables"/>					
     </Helmet>
-    {loading ?
-         <> 
-          <div className="loader-box" style={{height:'100vh'}}>
-        <div className="position-absolute" style={{marginLeft:'0%',marginTop:'0%', zIndex:'1000'}}>
-          <ReactLoader loading={loading}  />
-        </div>
-        </div>
-        </>
-        : null}
+    {loading ?<ReactLoader loaderClass="position-absolute" loading={loading}  />: null}
     <div className="content container-fluid">
       {/* Page Header */}
       <div className="crms-title row bg-white mb-4">
@@ -34,7 +27,7 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
            </div>
            <div className="col p-0 text-end">
            <ul className="breadcrumb bg-white float-end m-0 pl-0 pr-0">
-               <li className="breadcrumb-item"><a href="/">Dashboard</a></li>
+               <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
                <li className="breadcrumb-item active">{disableHeader}</li>
            </ul>
            </div>
@@ -52,9 +45,11 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
             <div className="card-body">
               <div className="table-responsive">
               <Table
+               
                     pagination= { {total : data.length,
                         showTotal : (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                         showSizeChanger : true,onShowSizeChange: onShowSizeChange ,itemRender : itemRender } }
+                        className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
                     style = {{overflowX : 'auto'}}
                     columns={columns}                 
                     bordered

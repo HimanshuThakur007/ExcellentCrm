@@ -9,6 +9,10 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Header =(props)=> {
   const history = useHistory();
+  const userData = sessionStorage.getItem('userData')
+  if(userData !== null){
+  var username = JSON.parse(userData).Admin;
+  }
 
     const exclusionArray = ["login", "register", "forgot-password", "error-404", "error-500"];
     if (
@@ -45,7 +49,7 @@ const Header =(props)=> {
           </span>
         </a>
         {/* Header Title */}
-        <div className="page-title-box">
+        {/* <div className="page-title-box">
           <div className="top-nav-search">
             <a className="responsive-search">
               <i className="fa fa-search" />
@@ -55,7 +59,7 @@ const Header =(props)=> {
               <button className="btn" type="submit"><FiSearch /></button>
             </form>
           </div>
-        </div>
+        </div> */}
         {/* /Header Title */}
         <a id="mobile_btn" className="mobile_btn" href="#sidebar"><i className="fa fa-bars" /></a>
         {/* Header Menu */}
@@ -280,7 +284,7 @@ const Header =(props)=> {
             <a className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
               <span className="user-img"><img src={avatar21} alt="" />
                 <span className="status online" /></span>
-              <span>Admin</span>
+              <span>{username}</span>
             </a>
             <div className="dropdown-menu">
               <Link className="dropdown-item" to="/profile">My Profile</Link>
@@ -303,7 +307,7 @@ const Header =(props)=> {
           <div className="dropdown-menu dropdown-menu-right">
             <Link className="dropdown-item" to="/profile">My Profile</Link>
             <Link className="dropdown-item" to="/settings">Settings</Link>
-            <Link className="dropdown-item" to="/">Logout</Link>
+            <button className="btn dropdown-item" onClick={logoutHandler}>Logout</button>
           </div>
         </div>
         {/* /Mobile Menu */}

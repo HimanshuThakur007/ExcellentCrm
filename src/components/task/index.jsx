@@ -383,7 +383,8 @@ const Task =()=> {
                             selected={selectedDate1}
                             onChange={handleDateChange1}
                             dateFormat="dd/MM/yyyy"
-                            showDayMonthYearPicker />
+                            showDayMonthYearPicker 
+                            />
                         </div>
                       </div>
                     </div>

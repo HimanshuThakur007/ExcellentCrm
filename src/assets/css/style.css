@@ -184,18 +184,33 @@ a:focus {
 	text-decoration: none;
 	outline: none;
 }
-.loader-box{
+/* ------password Show/hide--------- */
+i.eye-icon.eye-on-pswd.pe-4 {
+	position: absolute;
+	margin-top: -50px;
+}
+/* ------------loader by me------------- */
+
+.loader-box {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: absolute;
-	height: 150vh;
+	position: fixed;
+	height: 100%;
 	width: 100%;
-	background: rgba(228,228,228,0.5);
-	overflow: -moz-hidden-unscrollable;
-	/* background: (239, 239, 240); */
-	
-  }
+	background: rgba(228, 228, 228, 0.5);
+	/* overflow: -moz-hidden-unscrollable; */
+	overflow: show;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	z-index: 100;
+
+
+}
+  /* ------------------------------------------------ */
 
 .form-control {
 	border-color: #e3e3e3;

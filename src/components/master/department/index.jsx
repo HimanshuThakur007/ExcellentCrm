@@ -1,13 +1,8 @@
-/**
- * Form Elemets
- */
 import React, { useState, useEffect } from "react";
-import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
-import Select from "react-select";
 import DepartmentPage from "./DepartmentPage";
 import useFetch from "../../Hooks/useFetch";
 import { useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import ReactToast, { showToastError, showToastMessage } from "../../CustomComp/ReactToast";
 
 
 
@@ -55,7 +50,7 @@ const Department = () => {
       let { res, got } = await api(urlSaveDep, "POST", body);
       if (res.status == 200) {
         console.log("maindata", body);
-        alert(got.msg);
+        showToastMessage(got.msg);
         setLoading(false)
         setInputValue({
           name:'',
@@ -65,20 +60,20 @@ const Department = () => {
           mobile:'',
           segment:''
         })
-        if(code != 0){
-          history.push('/modify/3')
+        if(code !== 0 && code != undefined){
+          history.push('/list/3')
         }
       } else {
         setLoading(false)
-        alert(got.msg);
+        showToastError(got.msg);
       }
     } catch (error) {
       setLoading(false)
-      alert(error);
+      showToastError(error);
     }
   }
 
-  // --------------------modify
+  // --------------------modify--------------------
 
   const getModifyHandler = async () => {
     var code = state.code;
@@ -102,11 +97,11 @@ const Department = () => {
         setLoading(false)
       } else {
         setLoading(false)
-        alert("Something Went Wrong in List loading");
+        showToastError("Something Went Wrong in List loading");
       }
     } catch (err) {
       setLoading(false)
-      alert(err);
+      showToastError(err);
     }
   };
 
@@ -120,7 +115,12 @@ const Department = () => {
 
   return (
    <>
-   <DepartmentPage handleInputField={handleInputField} saveHandler={saveHandler} inputValue={inputValue} loading={loading}/>
+   <ReactToast/>
+   <DepartmentPage 
+   handleInputField={handleInputField} 
+   saveHandler={saveHandler} 
+   inputValue={inputValue} 
+   loading={loading}/>
    </>
   );
 };

@@ -1,15 +1,16 @@
 /**
  * Form Elemets
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 
 import {
   useHistory,
   useLocation,
 } from "react-router-dom/cjs/react-router-dom.min";
 import UserCreation from "./UserCreation";
-import { hrtime } from "process";
 import useFetch from "../../Hooks/useFetch";
+import ReactToast, { showToastMessage,showToastError } from "../../CustomComp/ReactToast";
+
 
 const user_type_list = [
   { label: "HOD", value: 1 },
@@ -26,13 +27,18 @@ const block_list = [
 const UserCeation = () => {
   const { state } = useLocation();
   const history = useHistory();
-
   const api = useFetch();
+  const [visibility, setVisibility]= useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [multiSelectValue, setMultiSelectValue] = useState([]);
   const [blockOption, setBlockOption] = useState(null);
   const [typeVal, setTypeVal] = useState(null);
   const [blockVal, setBlockVal] = useState(null);
+  const [modifySelect, setModifySelect] = useState();
+  const [departmentList, setDepartmentList] = useState([]);
+  const [department, setDepartment] = useState(null);
+  const [departmentCode, setDepartmentCode] = useState(null);
+  const [loading, setLoading] = useState(false)
   const [inputValue, setInputValue] = useState({
     username: "",
     password: "",
@@ -40,10 +46,7 @@ const UserCeation = () => {
     confirmpassword: "",
   });
 
-  const [modifySelect, setModifySelect] = useState();
-  const [departmentList, setDepartmentList] = useState([]);
-  const [department, setDepartment] = useState(null);
-  const [departmentCode, setDepartmentCode] = useState(null);
+  // const toastmsg = showToastMessage()
 
   const selectHandler = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -57,7 +60,7 @@ const UserCeation = () => {
     setMultiSelectValue(selectOptions);
   };
 
-  console.log("multisellllllll", multiSelectValue);
+  // console.log("multisellllllll", multiSelectValue);
 
   const blockHandler = (blockOption) => {
     setBlockOption(blockOption);
@@ -84,11 +87,12 @@ const UserCeation = () => {
     if (state) {
       if (state && state.code) {
         var code = state.code;
+        // var path = state.path
       }
     }
-    // setLoader(true);
     let modifyUrl = `/api/LoadUserMasterDetails?Code=${code}`;
     try {
+      setLoading(true)
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
         console.log("data", got.data);
@@ -128,13 +132,14 @@ const UserCeation = () => {
           label: userCreateMaster[0].activeName,
         });
         setBlockVal(userCreateMaster[0].active);
+        setLoading(false)
       } else {
-        // setLoader(false);
-        alert("Something Went Wrong in List loading");
+        setLoading(false);
+        showToastError("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoader(false);
-      alert(err);
+      setLoading(false);
+      showToastError(err);
     }
   };
 
@@ -152,13 +157,14 @@ const UserCeation = () => {
     if (state) {
       if (state && state.code) {
         var code = state.code;
+        var path = state.path
       }
     }
     let mainArr = [];
     multiSelectValue.map((item) => {
       mainArr.push({ department: item.value, code: code || 0 });
     });
-    console.log("main Arr", mainArr);
+    // console.log("main Arr", mainArr);
     const urlCreateUser = "/api/SaveUserMaster";
     // console.log('codeUsers', code)
     var body = {
@@ -179,10 +185,12 @@ const UserCeation = () => {
     };
     // console.log("body", JSON.stringify(body));
     try {
+      setLoading(true)
       let { res, got } = await api(urlCreateUser, "POST", body);
       if (res.status == 200) {
         // console.log("maindata", body);
-        alert(got.msg);
+        // alert(got.msg);        
+        showToastMessage(got.msg)
         setInputValue({
           username: "",
           mobile: "",
@@ -192,14 +200,20 @@ const UserCeation = () => {
         setSelectedOption("");
         setBlockOption("");
         setDepartment("");
-        // if(code != 0){
-        //   history.push('/modify/1')
-        // }
+        setMultiSelectValue([])
+        if(code !== 0 && code != undefined){
+          history.push('/list/1')
+          // console.log('hello from user')
+        }
+        setLoading(false)
       } else {
-        alert(got.msg);
+        setLoading(false)
+        showToastError(got.msg);
+       
       }
     } catch (error) {
-      alert(error);
+      setLoading(false)
+      showToastError(error);
     }
   };
 
@@ -209,7 +223,7 @@ const UserCeation = () => {
     var correctData = [];
     let Url = `/api/LoadDepMasterList`;
     try {
-      // setLoading(true);
+      setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         console.log("data", got.data);
@@ -219,23 +233,30 @@ const UserCeation = () => {
         });
         console.log("modifyData", correctData);
         setDepartmentList(correctData);
-        // setLoading(false);
+        setLoading(false);
       } else {
-        // setLoading(false);
-        alert("Something Went Wrong in List loading");
+        setLoading(false);
+        showToastError("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoading(false);
-      alert(err);
+      setLoading(false);
+      showToastError(err);
     }
   };
-
+  // ------------show/hide-------
+  const togglePasswordVisibility = () => {
+    setVisibility(prevShowPassword => !prevShowPassword);
+  };
   useEffect(() => {
     getDepartementList();
+    // togglePasswordVisibility()
+    
   }, []);
+
 
   return (
     <>
+      <ReactToast/>
       <UserCreation
         typelist={user_type_list}
         selectHandler={selectHandler}
@@ -254,6 +275,9 @@ const UserCeation = () => {
         typeVal={typeVal}
         handleMultiSelectChange={handleMultiSelectChange}
         multiSelectValue={multiSelectValue}
+        loading={loading}
+        togglePasswordVisibility={togglePasswordVisibility}
+        visibility={visibility}
       />
     </>
   );

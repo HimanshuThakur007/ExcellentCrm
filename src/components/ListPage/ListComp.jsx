@@ -3,10 +3,12 @@ import ListPage from './ListPage'
 import useFetch from '../Hooks/useFetch'
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import { Button } from 'antd'
+import { FiEdit, FiPlusCircle, FiTrash2, FiXCircle } from 'react-icons/fi';
 
 const ListComp = () => {
   var api = useFetch()
   const routeParams = useParams()
+  console.log(routeParams,':--------')
   var history = useHistory();
   const [listData,setListData]=useState([])
   const [rowData, setRowData] = useState([]);
@@ -84,6 +86,101 @@ const ListComp = () => {
     }
   };
 
+  // ---------------------purpose---------------------------------------
+  const getPurposeList = async () => {
+
+    let Url = `/api/LoadMasterData?MasterType=6`;
+    try {
+     setLoading(true);
+     let { res, got } = await api(Url, "GET", "");
+     if (res.status == 200) {
+       console.log('depdata',got.data)
+       let list = got.data;
+      
+       setListData(list);
+       setRowData(Purpose)
+       setLoading(false);
+     } else {
+       setLoading(false);
+       alert("Something Went Wrong in List loading");
+     }
+   } catch (err) {
+     setLoading(false);
+     alert(err);
+   }
+ };
+  // ---------------------business nature---------------------------------------
+  const getBusinessNatureList = async () => {
+
+    let Url = `/api/LoadMasterData?MasterType=60`;
+    try {
+     setLoading(true);
+     let { res, got } = await api(Url, "GET", "");
+     if (res.status == 200) {
+       console.log('depdata',got.data)
+       let list = got.data;
+      
+       setListData(list);
+       setRowData(BusinessNature)
+       setLoading(false);
+     } else {
+       setLoading(false);
+       alert("Something Went Wrong in List loading");
+     }
+   } catch (err) {
+     setLoading(false);
+     alert(err);
+   }
+ };
+  // ---------------------Contractor---------------------------------------
+
+  const getContractorList = async () => {
+ let DataFormat =[]
+    let Url = `/api/ArchMasterList`;
+    try {
+     setLoading(true);
+     let { res, got } = await api(Url, "GET", "");
+     if (res.status == 200) {
+       console.log('depdata',got.data)
+       let list = got.data;
+      
+       list.forEach((item)=>{
+        
+        DataFormat.push(
+          {
+            code:item.code,
+            name:item.name,
+            type:`${item.type == 1 ? "Premium" :item.type==2 ? "Normal" : item.type ==3 ? "Special": item.type == 4 ? "Vip": item.type == 5 ? "Vvip" : null}`,
+            orgName:item.orgName,
+            perMobNo:item.perMobNo,
+            ofcMobNo:item.ofcMobNo,
+            email:item.email,
+            resAdd:item.resAdd,
+            ofcAdd:item.ofcAdd,
+            location:item.location,
+            pinCode:item.pinCode,
+            dob:item.dob,
+            doa:item.doa,
+            bnName:item.bnName,
+            bn:item.bn,
+            userName:item.userName
+          }
+            )
+       })
+       setListData(DataFormat);
+      //  console.log('tttt', DataFormat)
+       setRowData(contractor)
+       setLoading(false);
+     } else {
+       setLoading(false);
+       alert("Something Went Wrong in List loading");
+     }
+   } catch (err) {
+     setLoading(false);
+     alert(err);
+   }
+ };
+
   // const handleDelete = (code) => {
   //   console.log('delete--', code)
   //   const updatedData = listData.filter((item) =>item.code !== code);
@@ -101,6 +198,15 @@ const ListComp = () => {
         break;
       case '2':
         history.push({ pathname: "/customer", state: {code : record.code }})
+        break;
+      case '4':
+        history.push({ pathname: "/purpose", state: {code : record.code }})
+        break;
+      case '5':
+        history.push({ pathname: "/architect", state: {code : record.code }})
+        break;
+      case '6':
+        history.push({ pathname: "/businessnature", state: {code : record.code }})
         break;
         default:
 
@@ -157,6 +263,20 @@ const ListComp = () => {
                dataIndex: 'location',
                sorter: (a, b) => a.location.length - b.location.length,
              },
+             {
+              title:'Action',
+              dataIndex:'action',
+              fixed: 'right',
+              width: 100,
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
             
            ]
           //  -------------------create userList rowdata-------------------------------
@@ -199,6 +319,18 @@ const ListComp = () => {
               dataIndex: 'activeName',
               sorter: (a, b) => a.activeName.length - b.activeName.length,
             },
+            {
+              title:'Action',
+              dataIndex:'action',
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
             // {
             //   title: "Actions",
             //   dataIndex: "status",
@@ -266,8 +398,143 @@ const ListComp = () => {
               dataIndex: 'address',
               sorter: (a, b) => a.address.length - b.address.length,
             },
+            {
+              title:'Action',
+              dataIndex:'action',
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
 
           
+          ]
+          // --------------purposeList-------------------------
+          const Purpose =[
+            {
+              title: 'Name',
+              dataIndex: 'name',
+                sorter: (a, b) => a.name.length - b.name.length,
+            },
+             {
+              title:'Action',
+              dataIndex:'action',
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
+          ]
+
+          // -----------------BusinessNature---------------------------
+          const BusinessNature =[
+            {
+              title: 'Name',
+              dataIndex: 'name',
+                sorter: (a, b) => a.name.length - b.name.length,
+            },
+             {
+              title:'Action',
+              dataIndex:'action',
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
+          ]
+          // -----------------Contractor---------------------------
+          const contractor =[
+            {
+              title: 'Name',
+              dataIndex: 'name',
+                sorter: (a, b) => a.name.length - b.name.length,
+            },
+            {
+              title: 'Mobile No',
+              dataIndex: "perMobNo",
+                sorter: (a, b) => a.perMobNo.length - b.perMobNo.length,
+            },
+            {
+              title: 'Alternate No',
+              dataIndex: "ofcMobNo",
+                sorter: (a, b) => a.ofcMobNo.length - b.ofcMobNo.length,
+            },
+            {
+              title: 'Email',
+              dataIndex: "email",
+                sorter: (a, b) => a.email.length - b.email.length,
+            },
+            {
+              title: 'Type',
+              dataIndex: "type",
+                sorter: (a, b) => a.type.length - b.type.length,
+            },
+            {
+              title: 'Business Nature',
+              dataIndex: "bnName",
+                sorter: (a, b) => a.bnName.length - b.bnName.length,
+            },
+            {
+              title: 'DOB',
+              dataIndex: "dob",
+                sorter: (a, b) => a.dob.length - b.dob.length,
+            },
+            {
+              title: 'Organisation',
+              dataIndex: "orgName",
+                sorter: (a, b) => a.orgName.length - b.orgName.length,
+            },
+            {
+              title: 'Res. Address',
+              dataIndex: "resAdd",
+                sorter: (a, b) => a.resAdd.length - b.resAdd.length,
+            },
+            {
+              title: 'Office Address',
+              dataIndex: "ofcAdd",
+                sorter: (a, b) => a.ofcAdd.length - b.ofcAdd.length,
+            },
+            {
+              title: 'Pincode',
+              dataIndex: "pinCode",
+                sorter: (a, b) => a.pinCode.length - b.pinCode.length,
+            },
+            {
+              title: 'Location',
+              dataIndex: "location",
+                sorter: (a, b) => a.location.length - b.location.length,
+            },
+            {
+              title: 'DOA',
+              dataIndex: "doa",
+                sorter: (a, b) => a.doa.length - b.doa.length,
+            },
+             {
+              title:'Action',
+              dataIndex:'action',
+              fixed: 'right',
+              width: 100,
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
           ]
 
           useEffect(()=>{
@@ -281,6 +548,15 @@ const ListComp = () => {
                   break;
                 case "3":
                   getDepartmentList()
+                  break;
+                case "4":
+                  getPurposeList()
+                  break;
+                case "5":
+                  getContractorList()
+                  break;
+                case "6":
+                  getBusinessNatureList()
                   break;
                   default:
         
@@ -297,9 +573,9 @@ const ListComp = () => {
         disableHeader='List' 
         defaultHead='List DataTable' 
         rowKey="code"
-        onRow={(record) => ({
-        onClick: () => onRowClick(record),
-      })}
+      //   onRow={(record) => ({
+      //   onClick: () => onRowClick(record),
+      // })}
       />
     </div>
   )

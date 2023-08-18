@@ -13,31 +13,32 @@ $(document).ready(function() {
 
     // Sidebar
 
-    var Sidemenu = function() {
-        this.$menuItem = $('#sidebar-menu a');
-    };
+    // var Sidemenu = function() {
+    //     this.$menuItem = $('#sidebar-menu a');
+    // };
 
-    function init() {
-        var $this = Sidemenu;
-        $('#sidebar-menu a').on('click', function(e) {
-            if ($(this).parent().hasClass('submenu')) {
-                e.preventDefault();
-            }
-            if (!$(this).hasClass('subdrop')) {
-                $('.sub-menus', $(this).parents('.sub-menus:first')).slideUp(350);
-                $('a', $(this).parents('.sub-menus:first')).removeClass('subdrop');
-                $(this).next('.sub-menus').slideDown(350);
-                $(this).addClass('subdrop');
-            } else if ($(this).hasClass('subdrop')) {
-                $(this).removeClass('subdrop');
-                $(this).next('.sub-menus').slideUp(350);
-            }
-        });
-        $('#sidebar-menu ul li.submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
-    }
+    // function init() {
+    //     var $this = Sidemenu;
+    //     $('#sidebar-menu a').on('click', function(e) {
+    //         if ($(this).parent().hasClass('submenu')) {
+    //             e.preventDefault();
+    //         }
+    //         if (!$(this).hasClass('subdrop')) {
+    //             $('.sub-menus', $(this).parents('.sub-menus:first')).slideUp(350);
+    //             $('a', $(this).parents('.sub-menus:first')).removeClass('subdrop');
+    //             $(this).next('.sub-menus').slideDown(350);
+    //             $(this).addClass('subdrop');
+    //         } else if ($(this).hasClass('subdrop')) {
+    //             $(this).removeClass('subdrop');
+    //             $(this).next('.sub-menus').slideUp(350);
+    //         }
+    //     });
+    //     $('#sidebar-menu ul li.submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
+    // }
 
-    // Sidebar Initiate
-    init();
+    // // Sidebar Initiate
+    // init();
+
 
     // Mobile menu sidebar overlay
 

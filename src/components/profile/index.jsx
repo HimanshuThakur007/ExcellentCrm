@@ -2,12 +2,21 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import {avatar02,avatar16} from "../imagepath"
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Profile =()=> {
+  const userData = sessionStorage.getItem('userData')
+  if(userData !== null){
+  var username = JSON.parse(userData).Admin;
+  }
+
+  const [phone, setPhone] = React.useState()
+
     return (
       <div className="page-wrapper">
         <Helmet>
-            <title>Profile - S&S</title>
+            <title>Profile - S&S Enterprises</title>
             <meta name="description" content="Reactify Blank Page" />
         </Helmet>
         {/* Page Content */}
@@ -42,7 +51,7 @@ const Profile =()=> {
                         <div className="row">
                           <div className="col-md-5">
                             <div className="profile-info-left">
-                              <h3 className="user-name m-t-0 mb-0">Manoj Sharma</h3>
+                              <h3 className="user-name m-t-0 mb-0">{username}</h3>
                               {/* <h6 className="text-muted">UI/UX Design Team</h6> */}
                               <small className="text-muted">CEO</small>
                               {/* <div className="staff-id">Employee ID : FT-0001</div>
@@ -72,7 +81,7 @@ const Profile =()=> {
                                 <div className="title">Gender:</div>
                                 <div className="text">Male</div>
                               </li>
-                              <li>
+                              {/* <li>
                                 <div className="title">Reports to:</div>
                                 <div className="text">
                                   <div className="avatar-box">
@@ -84,7 +93,7 @@ const Profile =()=> {
                                     Jeffery Lalor
                                   </Link>
                                 </div>
-                              </li>
+                              </li> */}
                             </ul>
                           </div>
                         </div>
@@ -95,6 +104,155 @@ const Profile =()=> {
                 </div>
               </div>
             </div>
+                {/*modal section starts here*/}
+                <div className="modal right fade" id="profile_info" tabIndex={-1} role="dialog" aria-modal="true">
+        <div className="modal-dialog" role="document">
+          <button type="button" className="close md-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h4 className="modal-title text-center">Profile</h4>
+              <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-md-12">
+                  <form>
+                    <h4>Profile Details</h4>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                        <label className="col-form-label">Phone <span className="text-danger">*</span></label>
+                        <input className="form-control" type="text" name="phone" id="task-name" placeholder="Phone" />
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Email<span className="text-danger">*</span></label>
+                        <input className="form-control" type="email" name="email" id="task-name" placeholder="Email" />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                     
+                      <div className="col-sm-6">
+                        <label className="col-form-label">BirthDay <span className="text-danger">*</span></label>
+                        <div className="cal-icon" style={{ width: "100%" }}>
+                          {/* <input className="form-control" type="text" placeholder="MM/DD/YY" /> */}
+                          <DatePicker
+                            className="form-control"
+                            // selected={[()]}
+                            onChange={()=>{}}
+                            dateFormat="dd/MM/yyyy"
+                            showDayMonthYearPicker />
+                        </div>
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Address<span className="text-danger">*</span></label>
+                        <input className="form-control" type="text" name="add" id="task-name" placeholder="Address" />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                     
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Gender<span className="text-danger">*</span></label>
+                        <input className="form-control" type="text" name="gender" id="task-name" placeholder="Gender" />
+                      </div>
+                    </div>
+                    <h4>Personal Information</h4>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Passport No.<span className="text-danger">*</span></label>
+                        <input className="form-control" type="text" name="passport" id="task-name" placeholder="Passport No." />
+                      </div>
+                      <div className="col-sm-6">
+                        <label className="col-form-label">Passport Exp Date.<span className="text-danger">*</span></label>
+                        <div className="cal-icon"> 
+                        <DatePicker
+                            className="form-control"
+                            // selected={selectedDate3}
+                            // onChange={handleDateChange3}
+                            dateFormat="dd/MM/yyyy"
+                            showDayMonthYearPicker />
+                            </div>
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                        <label className="col-form-label">Tel</label>
+                        <input className="form-control" type="number" name="tel" placeholder="Tel" />
+                      </div>
+                      <div className="col-sm-6">
+                        <label className="col-form-label">Nationality</label>
+                        <input className="form-control" type="text" name="nationality" placeholder="Nationality" />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Religion</label>
+                        <input className="form-control" type="text" name="religion" placeholder="Religion" />
+                       
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Marital status</label>
+                        <input className="form-control" type="text" name="maritalstatus" placeholder="Marital status" />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Employment of spouse</label>
+                        <input className="form-control" type="text" name="employment" placeholder="Employment of spouse" />
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">No. of children</label>
+                        <input className="form-control" type="text" name="children" placeholder="No. of children" />
+                      </div>
+                    </div>
+                    <h4>Emergency Contact</h4>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Primary</label>
+                        <input className="form-control" type="number" name="primary" placeholder="Primary" />
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Name</label>
+                        <input className="form-control" type="text" name="name" placeholder="Name" />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Relationship</label>
+                        <input className="form-control" type="text" name="relation" placeholder="Relationship" />
+                      </div>
+                      <div className="col-sm-6">
+                      <label className="col-form-label">Phone</label>
+                        <input className="form-control" type="number" name="phone" placeholder="Phone" />
+                      </div>
+                    </div>
+                    {/* <h4>Description Information</h4>
+                    <div className="form-group row">
+                      <div className="col-sm-12">
+                        <label className="col-form-label">Description </label>
+                        <textarea className="form-control" rows={3} id="description" placeholder="Description" defaultValue={""} />
+                      </div>
+                    </div>
+                    <h4>Permissions</h4>
+                    <div className="form-group row">
+                      <div className="col-sm-6">
+                        <label className="col-form-label">Permission</label>
+                        <select className="form-control">
+                          <option>Task Visibility</option>
+                          <option>Private Task</option>
+                        </select>
+                      </div>
+                    </div> */}
+                    <div className="text-center py-3">
+                      <button type="button" className="border-0 btn btn-primary btn-gradient-primary btn-rounded">Save</button>&nbsp;&nbsp;
+                      <button type="button" className="btn btn-secondary btn-rounded">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>{/* modal-content */}
+        </div>{/* modal-dialog */}
+      </div>
+        {/* Modal-end */}
             <div className="tab-content p-0">
               {/* Profile Info Tab */}
               <div id="emp_profile" className="pro-overview tab-pane fade show active">

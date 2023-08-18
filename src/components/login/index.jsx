@@ -17,8 +17,6 @@ const Login =()=> {
  })
  const [loading, setLoading] = useState(false)
 
-
-
 const handleInputField = (e) => {
   const { name, value } = e.target;
   setInputValue((prevState) => ({
@@ -56,34 +54,36 @@ const handleSubmit = (e)=>{
         console.log('loginDataaaaa',resultData)
         const loginData = resultData
         if(loginData.result == 1){
-          sessionStorage.setItem('userName',username,)
+          // sessionStorage.setItem('userName',username,)
      
-          let StoreData=[];
+          // let StoreData=[];
          
           let UserId= loginData.code;
           let TokenId= loginData.token
           let UserType=loginData.ut;
           let Admin= loginData.name;
-          let Type = loginData.utName
-          let Email = loginData.email
-   
-          StoreData.push({UserId,UserType,Admin,TokenId})
-          sessionStorage.setItem("userData", JSON.stringify({UserId,UserType,Admin,TokenId,Type,Email}));
+          let Type = loginData.utName;
+          let Email = loginData.email;
+          let department = loginData.department
+          let depName = loginData.departmentName
+          // StoreData.push({UserId,UserType,Admin,TokenId,department,depName})
+          sessionStorage.setItem("userData", JSON.stringify({UserId,UserType,Admin,TokenId,Type,Email,department,depName}));
           setLoading(false);
       
     history.push('/')
-   window.location.reload()
+  //  window.location.reload()
 
-        }else if(loginData.result !=1){
-          alert('Invalid UserName or Password')
-          setLoading(false)
         }else{
-          alert('Invalid UserName or Password')
+          alert('invalid username and password')
           setLoading(false)
         }
         // setSerieslist(json.data)
     });
-  } catch (err) { alert(err) }
+  } catch (err) {
+    setLoading(false)
+     alert(err) 
+    //  setLoading(false)
+    }
 
 
 }
@@ -93,18 +93,10 @@ const handleSubmit = (e)=>{
 <>
   {/* Main Wrapper */}
     <Helmet>
-        <title>Login - CRMS admin template</title>
+        <title>Login - S&S Enterprises</title>
         <meta name="description" content="Reactify Blank Page" />
     </Helmet>
-    {loading ?
-         <> 
-          <div className="loader-box" style={{height:'100vh'}}>
-        <div className="position-relative" style={{marginLeft:'0%',marginTop:'0%'}}>
-          <ReactLoader loading={loading}  />
-        </div>
-        </div>
-        </>
-        : null}
+    {loading ?<ReactLoader loaderClass="position-relative" loading={loading}  />: null}
   <div className="main-wrapper">
  
     <div className="account-content">
@@ -121,29 +113,29 @@ const handleSubmit = (e)=>{
             <h3 className="account-title">Login</h3>
             <p className="account-subtitle">Access to our dashboard</p>
             {/* Account Form */}
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Email Address</label>
-                <input name="username" className="form-control" type="text" onChange={handleInputField}/>
+                <input name="username" className="form-control" type="text" onChange={handleInputField} required/>
               </div>
               <div className="form-group">
                 <div className="row">
                   <div className="col">
                     <label>Password</label>
                   </div>
-                  <div className="col-auto">
+                  {/* <div className="col-auto">
                     <Link className="text-muted" to="/forgot-password">
                       Forgot password?
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
-                <input className="form-control" name="password" type="password" onChange={handleInputField}/>
+                <input className="form-control" name="password" type="password" onChange={handleInputField} required/>
               </div>
               <div className="form-group text-center">
                 {/* <Link to="/" className="btn btn-primary account-btn">
                   Login
                 </Link> */}
-                <button onClick={handleSubmit} className="btn btn-primary account-btn" >Login</button>
+                <button type='submit' className="btn btn-primary account-btn" >Login</button>
               </div>
               {/* <div className="account-footer">
                 <p>

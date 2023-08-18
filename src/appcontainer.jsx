@@ -158,6 +158,12 @@ import ImportItem from "./components/master/ImportData/Items";
 import ImportData from "./components/master/customer/customerImport";
 import ItemList from "./components/master/ImportData/List";
 import Configuration from "./components/configuration";
+import FollowUpComp from "./components/followUp";
+import UserDashboard from "./components/dashboard/userdashboard";
+import PurposeComp from "./components/master/purpose";
+import ArchitectComp from "./components/master/architect";
+import BusinessNatureComp from "./components/master/businessnature";
+
 
 const AppUniversal = (props) => {  
 //   function toggleTheme(e) {     
@@ -259,6 +265,12 @@ const AppUniversal = (props) => {
           <Route path='/importitem' exact component ={ImportItem}/>
           <Route path='/itemlist' exact component ={ItemList}/>
           <Route path='/configuration' exact component = {Configuration}/>
+          <Route path='/followup' exact component = {FollowUpComp}/>
+          <Route path='/userdashboard' exact component = {UserDashboard}/>
+          <Route path='/purpose' exact component = {PurposeComp}/>
+          <Route path='/architect' exact component = {ArchitectComp}/>
+          <Route path='/businessnature' exact component = {BusinessNatureComp}/>
+
 
 
           {/* Invoices */}
