@@ -1,67 +1,100 @@
-
 import React from "react";
-import { Link, withRouter,useParams } from "react-router-dom";
+import { Link, withRouter, useParams } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars";
-import { avatar17 } from '../imagepath';
-import { BiAward, BiBarChartAlt2, BiCalendarAlt, BiClipboard, BiCog, BiCoinStack, BiCommand, BiCube, BiData, BiDockLeft, BiDockTop, BiEnvelope, BiError, BiGridAlt, BiHomeAlt, BiMenu, BiMobileAlt, BiPodcast, BiSearchAlt2, BiStation, BiTask, BiUser } from "react-icons/bi";
-import {SiMastercomfig} from 'react-icons/si'
-import {FcDataConfiguration} from 'react-icons/fc'
+import { avatar17 } from "../imagepath";
+import {
+  BiAward,
+  BiBarChartAlt2,
+  BiCalendarAlt,
+  BiClipboard,
+  BiCog,
+  BiCoinStack,
+  BiCommand,
+  BiCube,
+  BiData,
+  BiDockLeft,
+  BiDockTop,
+  BiEnvelope,
+  BiError,
+  BiGridAlt,
+  BiHomeAlt,
+  BiMenu,
+  BiMobileAlt,
+  BiPodcast,
+  BiSearchAlt2,
+  BiStation,
+  BiTask,
+  BiUser,
+} from "react-icons/bi";
+import { SiMastercomfig } from "react-icons/si";
+import { GrConfigure } from "react-icons/gr";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import {RiChatFollowUpLine} from 'react-icons/ri'
-
+import { RiChatFollowUpLine } from "react-icons/ri";
 
 const SidebarNav = (props) => {
   const param = useParams();
-  console.log('paramssssssss', param)
-  const exclusionArray = ["login", "register", "forgot-password", "error-404", "error-500", "email", "mail-view", "components"];
-  if (
-    exclusionArray.indexOf(props.location.pathname.split("/")[1]) >= 0
-  ) {
+
+  // console.log("paramssssssss", param);
+  const exclusionArray = [
+    "login",
+    "register",
+    "forgot-password",
+    "error-404",
+    "error-500",
+    "email",
+    "mail-view",
+    "components",
+  ];
+  if (exclusionArray.indexOf(props.location.pathname.split("/")[1]) >= 0) {
     return "";
   }
-  const { location } = props
-  let pathname = location.pathname
-  let history = useHistory()
-  const userData = sessionStorage.getItem('userData')
-  if(userData !== null){
-  var username = JSON.parse(userData).Admin;
+  const { location } = props;
+  let pathname = location.pathname;
+  let history = useHistory();
+  const userData = sessionStorage.getItem("userData");
+  if (userData !== null) {
+    var username = JSON.parse(userData).Admin;
   }
-  console.log('pathname', pathname)
+  // console.log("pathname", pathname);
 
   // --------sidebar jQUERRY-------------
-  var Sidemenu = function() {
-    this.$menuItem = $('#sidebar-menu a');
-};
+  var Sidemenu = function () {
+    this.$menuItem = $("#sidebar-menu a");
+  };
 
-function init() {
+  function init() {
     var $this = Sidemenu;
-    $('#sidebar-menu a').on('click', function(e) {
-        if ($(this).parent().hasClass('submenu')) {
-            e.preventDefault();
-        }
-        if (!$(this).hasClass('subdrop')) {
-            $('.sub-menus', $(this).parents('.sub-menus:first')).slideUp(350);
-            $('a', $(this).parents('.sub-menus:first')).removeClass('subdrop');
-            $(this).next('.sub-menus').slideDown(350);
-            $(this).addClass('subdrop');
-        } else if ($(this).hasClass('subdrop')) {
-            $(this).removeClass('subdrop');
-            $(this).next('.sub-menus').slideUp(350);
-        }
+    $("#sidebar-menu a").on("click", function (e) {
+      if ($(this).parent().hasClass("submenu")) {
+        e.preventDefault();
+      }
+      if (!$(this).hasClass("subdrop")) {
+        $(".sub-menus", $(this).parents(".sub-menus:first")).slideUp(350);
+        $("a", $(this).parents(".sub-menus:first")).removeClass("subdrop");
+        $(this).next(".sub-menus").slideDown(350);
+        $(this).addClass("subdrop");
+      } else if ($(this).hasClass("subdrop")) {
+        $(this).removeClass("subdrop");
+        $(this).next(".sub-menus").slideUp(350);
+      }
     });
-    $('#sidebar-menu ul li.submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
-}
+    $("#sidebar-menu ul li.submenu a.active")
+      .parents("li:last")
+      .children("a:first")
+      .addClass("active")
+      .trigger("click");
+  }
 
-// Sidebar Initiate
-React.useEffect(()=>{
-  init();
-},[])
-// -------------------------------------------------------------------------------------------------------------------------------
+  // Sidebar Initiate
+  React.useEffect(() => {
+    init();
+  }, []);
+  // -------------------------------------------------------------------------------------------------------------------------------
   return (
     <div className="sidebar" id="sidebar">
       <Scrollbars>
         <div className="sidebar-inner slimscroll">
-          <form action="search.html" className="mobile-view">
+          {/* <form action="search.html" className="mobile-view">
             <input
               className="form-control"
               type="text"
@@ -70,7 +103,7 @@ React.useEffect(()=>{
             <button className="btn" type="button">
               <BiSearchAlt2 />
             </button>
-          </form>
+          </form> */}
           <div id="sidebar-menu" className="sidebar-menu">
             <ul>
               <li className="nav-item nav-profile">
@@ -98,40 +131,42 @@ React.useEffect(()=>{
                   <span>Dashboard</span>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link className={`${pathname === "/userdashboard" ? "active" : ""}`} to="/userdashboard">
                   <BiHomeAlt />
                   <span>User Dashboard</span>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   className={`${pathname === "/configuration" ? "active" : ""}`}
                   to="/configuration"
                 >
-                  <FcDataConfiguration />
+                  <BiCog />
                   <span>Configuration</span>
                 </Link>
               </li>
 
               <li className="submenu">
                 <Link
-                  to="#"
+                  to="/"
                   className={`${
                     pathname === "/ursecreation" ||
                     pathname === "/department" ||
                     pathname === "/customer" ||
-                    pathname === "/modify/1" ||
                     pathname === "/list/1" ||
-                    pathname === "/modify/3" ||
-                    pathname === "/list/3" ||
-                    pathname === "/modify/2" ||
                     pathname === "/list/2" ||
+                    pathname === "/list/3" ||
+                    pathname === "/list/4" ||
+                    pathname === "/list/5" ||
+                    pathname === "/list/6" ||
+                    pathname === "/list/7" ||
                     pathname === "/importcustomer" ||
                     pathname === "/importitem" ||
-                    pathname === "/itemlist"||
-                    pathname === "/purpose"||
-                    pathname === "/architect"
+                    pathname === "/itemlist" ||
+                    pathname === "/purpose" ||
+                    pathname === "/architect" ||
+                    pathname === "/billsundry"
                       ? "active subdrop"
                       : ""
                   }`}
@@ -153,10 +188,10 @@ React.useEffect(()=>{
                             pathname === "/department" ? "active" : ""
                           }`}
                         >
-                          Add
+                          Add Department
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link
                           to="/modify/3"
                           className={`${
@@ -165,7 +200,7 @@ React.useEffect(()=>{
                         >
                           <span>Modify</span>
                         </Link>
-                      </li>
+                      </li> */}
                       <li>
                         <Link
                           to="/list/3"
@@ -173,7 +208,7 @@ React.useEffect(()=>{
                             pathname === "/list/3" ? "active" : ""
                           }`}
                         >
-                          <span>List</span>
+                          <span>Department List</span>
                         </Link>
                       </li>
                     </ul>
@@ -192,10 +227,10 @@ React.useEffect(()=>{
                               pathname === "/ursecreation" ? "active" : ""
                             }`}
                           >
-                            Add
+                            Add User
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             to="/modify/1"
                             className={`${
@@ -205,7 +240,7 @@ React.useEffect(()=>{
                           >
                             <span>Modify</span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/list/1"
@@ -213,7 +248,7 @@ React.useEffect(()=>{
                               pathname === "/list/1" ? "active" : ""
                             }`}
                           >
-                            <span>List</span>
+                            <span>User List</span>
                           </Link>
                         </li>
                       </ul>
@@ -231,10 +266,10 @@ React.useEffect(()=>{
                               pathname === "/customer" ? "active" : ""
                             }`}
                           >
-                            Add
+                            Add Customer
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             to="/modify/2"
                             className={`${
@@ -243,7 +278,7 @@ React.useEffect(()=>{
                           >
                             <span>Modify</span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/list/2"
@@ -251,7 +286,7 @@ React.useEffect(()=>{
                               pathname === "/list/2" ? "active" : ""
                             }`}
                           >
-                            <span>List</span>
+                            <span>Customer List</span>
                           </Link>
                         </li>
 
@@ -262,7 +297,7 @@ React.useEffect(()=>{
                               pathname === "/importcustomer" ? "active" : ""
                             }`}
                           >
-                            Import
+                            Import Customer
                           </Link>
                         </li>
                       </ul>
@@ -280,10 +315,10 @@ React.useEffect(()=>{
                               pathname === "/purpose" ? "active" : ""
                             }`}
                           >
-                            Add
+                            Add Purpose
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             to="/modify/4"
                             className={`${
@@ -292,7 +327,7 @@ React.useEffect(()=>{
                           >
                             <span>Modify</span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/list/4"
@@ -300,18 +335,19 @@ React.useEffect(()=>{
                               pathname === "/list/4" ? "active" : ""
                             }`}
                           >
-                            <span>List</span>
+                            <span>Purpose List</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
 
-{/* -----------business-nature----------- */}
+                    {/* -----------business-nature----------- */}
 
-<li className="submenu">
+                    <li className="submenu">
                       <Link to="#">
                         {" "}
-                        <span>Business Nature</span> <span className="menu-arrow" />
+                        <span>Business Nature</span>{" "}
+                        <span className="menu-arrow" />
                       </Link>
                       <ul className="sub-menus">
                         <li>
@@ -321,10 +357,10 @@ React.useEffect(()=>{
                               pathname === "/businessnature" ? "active" : ""
                             }`}
                           >
-                            Add
+                            Add Business Nature
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             to="/modify/6"
                             className={`${
@@ -333,20 +369,19 @@ React.useEffect(()=>{
                           >
                             <span>Modify</span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/list/6"
                             className={`${
                               pathname === "/list/6" ? "active" : ""
                             }`}
-                          > 
-                            <span>List</span>
+                          >
+                            <span>Business Nature List</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-
 
                     <li className="submenu">
                       <Link to="#">
@@ -361,10 +396,10 @@ React.useEffect(()=>{
                               pathname === "/architect" ? "active" : ""
                             }`}
                           >
-                            Add
+                            Add Contractor
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link
                             to="/modify/5"
                             className={`${
@@ -373,7 +408,7 @@ React.useEffect(()=>{
                           >
                             <span>Modify</span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/list/5"
@@ -381,13 +416,11 @@ React.useEffect(()=>{
                               pathname === "/list/5" ? "active" : ""
                             }`}
                           >
-                            <span>List</span>
+                            <span>Contractor List</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-
-                    
 
                     <li className="submenu">
                       <Link to="#">
@@ -402,7 +435,7 @@ React.useEffect(()=>{
                               pathname === "/importitem" ? "active" : ""
                             }`}
                           >
-                            <span>Import</span>
+                            <span>Import Item</span>
                           </Link>
                         </li>
                         <li>
@@ -412,7 +445,36 @@ React.useEffect(()=>{
                               pathname === "/itemlist" ? "active" : ""
                             }`}
                           >
-                            <span>List</span>
+                            <span>Item List</span>
+                          </Link>
+                        </li>
+                        {/* <li><Link to= '/list/2' className={`${pathname === "/list/2" ? "active" : ""}`}><span>List</span></Link></li> */}
+                      </ul>
+                    </li>
+                    <li className="submenu">
+                      <Link to="#">
+                        {" "}
+                        <span>Bill Sundry</span> <span className="menu-arrow" />
+                      </Link>
+                      <ul className="sub-menus">
+                        <li>
+                          <Link
+                            to="/billsundry"
+                            className={`${
+                              pathname === "/billsundry" ? "active" : ""
+                            }`}
+                          >
+                            <span>Add BillSundry</span>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/list/7"
+                            className={`${
+                              pathname === "/list/7" ? "active" : ""
+                            }`}
+                          >
+                            <span>BillSundry List</span>
                           </Link>
                         </li>
                         {/* <li><Link to= '/list/2' className={`${pathname === "/list/2" ? "active" : ""}`}><span>List</span></Link></li> */}
@@ -442,7 +504,7 @@ React.useEffect(()=>{
                   <span>FollowUp</span>
                 </Link>
               </li>
-{/* --------------------Task------------------- */}
+              {/* --------------------Task------------------- */}
               {/* <li>
                 <Link
                   className={`${pathname.includes("tasks") ? "active" : ""}`}
@@ -452,14 +514,14 @@ React.useEffect(()=>{
                   <span>Tasks</span>
                 </Link>
               </li> */}
-              <li>
+              {/* <li>
                 <Link
                   className={`${pathname.includes("contacts") ? "active" : ""}`}
                   to="/contacts"
                 >
                   <BiMobileAlt /> <span>Contacts</span>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   className={`${
@@ -480,22 +542,15 @@ React.useEffect(()=>{
                   <BiStation /> <span>Deals</span>
                 </Link>
               </li> */}
-              <li>
+              {/* <li>
                 <Link
                   className={`${pathname === "/projects" ? "active" : ""}`}
                   to="/projects"
                 >
                   <BiGridAlt /> <span>Projects</span>
                 </Link>
-              </li>
-              <li>
-                <Link
-                  className={`${pathname.includes("reports") ? "active" : ""}`}
-                  to="/reports"
-                >
-                  <BiBarChartAlt2 /> <span>Reports</span>
-                </Link>
-              </li>
+              </li> */}
+
               {/* --------------Activities------------------ */}
               {/* <li>
                 <Link
@@ -564,7 +619,52 @@ React.useEffect(()=>{
                   </li>
                 </ul>
               </li> */}
+
               <li className="submenu">
+                <Link
+                  to="#"
+                  className={`${
+                    pathname === "/quotation" || pathname === "/quotationlist"
+                      ? "active subdrop"
+                      : ""
+                  }`}
+                >
+                  <BiCalendarAlt /> <span>Quotation </span>{" "}
+                  <span className="menu-arrow" />
+                </Link>
+                <ul className="sub-menus">
+                  <li>
+                    <Link
+                      to="/quotation"
+                      className={`${pathname === "/quotation" ? "active" : ""}`}
+                    >
+                      Add Quotation
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/quotationlist"
+                      className={`${
+                        pathname === "/quotationlist" ? "active" : ""
+                      }`}
+                    >
+                      Quotation List
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/view-invoice"
+                      className={`${
+                        pathname === "/view-invoice" ? "active" : ""
+                      }`}
+                    >
+                      Quotation Details
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+
+              {/* <li className="submenu">
                 <Link
                   to="#"
                   className={`${
@@ -654,7 +754,7 @@ React.useEffect(()=>{
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
               {/* <li>
                 <Link
                   className={`${pathname.includes("email") ? "active" : ""}`}
@@ -671,6 +771,14 @@ React.useEffect(()=>{
                   <BiCog /> <span>Settings</span>
                 </Link>
               </li> */}
+              <li>
+                <Link
+                  className={`${pathname.includes("reports") ? "active" : ""}`}
+                  to="/reports"
+                >
+                  <BiBarChartAlt2 /> <span>Reports</span>
+                </Link>
+              </li>
               {/* <li className="menu-title">
               <span>Pages</span>
             </li> */}
@@ -697,35 +805,7 @@ React.useEffect(()=>{
               {/* <li>
               <Link className={`${pathname.includes("components") ? "active" : ""}`} to="/components"><BiDockLeft /> <span>Components</span></Link>
             </li> */}
-              {/* <li className="submenu">
-              <Link to="#" className={`${pathname.includes("sweetalerts") || pathname.includes("tooltip") || pathname.includes("popover")
-                || pathname.includes("ribbon") || pathname.includes("clipboard") || pathname.includes("drag-drop") || pathname.includes("rangeslider")
-                || pathname.includes("rating") || pathname.includes("toastr") || pathname.includes("text-editor") || pathname.includes("counter")
-                || pathname.includes("scrollbar") || pathname.includes("spinner") || pathname.includes("notification") || pathname.includes("lightbox")
-                || pathname.includes("stickynote") || pathname.includes("timeline") || pathname.includes("horizontal-timeline") || pathname.includes("form-wizard") ? "active subdrop" : ""}`}>
-                <BiCube /> <span> Elements </span> <span className="menu-arrow" /></Link>
-              <ul className="sub-menus">
-                <li><Link className={`${pathname.includes("sweetalerts") ? "active" : ""}`} to="/sweetalerts">Sweet Alerts</Link></li>
-                <li><Link className={`${pathname.includes("tooltip") ? "active" : ""}`} to="/tooltip">Tooltip</Link></li>
-                <li><Link className={`${pathname.includes("popover") ? "active" : ""}`} to="/popover">Popover</Link></li>
-                <li><Link className={`${pathname.includes("ribbon") ? "active" : ""}`} to="/ribbon">Ribbon</Link></li>
-                <li><Link className={`${pathname.includes("clipboard") ? "active" : ""}`} to="/clipboard">Clipboard</Link></li>
-                <li><Link className={`${pathname.includes("drag-drop") ? "active" : ""}`} to="/drag-drop">Drag & Drop</Link></li>
-                <li><Link className={`${pathname.includes("rangeslider") ? "active" : ""}`} to="/rangeslider">Range Slider</Link></li>
-                <li><Link className={`${pathname.includes("rating") ? "active" : ""}`} to="/rating">Rating</Link></li>
-                <li><Link className={`${pathname.includes("toastr") ? "active" : ""}`} to="/toastr">Toastr</Link></li>
-                <li><Link className={`${pathname.includes("text-editor") ? "active" : ""}`} to="/text-editor">Text Editor</Link></li>
-                <li><Link className={`${pathname.includes("counter") ? "active" : ""}`} to="/counter">Counter</Link></li>
-                <li><Link className={`${pathname.includes("scrollbar") ? "active" : ""}`} to="/scrollbar">Scrollbar</Link></li>
-                <li><Link className={`${pathname.includes("spinner") ? "active" : ""}`} to="/spinner">Spinner</Link></li>
-                <li><Link className={`${pathname.includes("notification") ? "active" : ""}`} to="/notification">Notification</Link></li>
-                <li><Link className={`${pathname.includes("lightbox") ? "active" : ""}`} to="/lightbox">Lightbox</Link></li>
-                <li><Link className={`${pathname.includes("stickynote") ? "active" : ""}`} to="/stickynote">Sticky Note</Link></li>
-                <li><Link className={`${pathname === "/timeline" ? "active" : ""}`} to="/timeline">Timeline</Link></li>
-                <li><Link className={`${pathname === "/horizontal-timeline" ? "active" : ""}`} to="/horizontal-timeline">Horizontal Timeline</Link></li>
-                <li><Link className={`${pathname.includes("form-wizard") ? "active" : ""}`} to="/form-wizard">Form Wizard</Link></li>
-              </ul>
-            </li> */}
+
               {/* <li className="submenu">
               <Link to="#" className={`${pathname.includes("chart-apex") || pathname.includes("chart-js")
                 || pathname.includes("chart-morris") || pathname.includes("chart-flot")
@@ -808,5 +888,5 @@ React.useEffect(()=>{
       </Scrollbars>
     </div>
   );
-}
+};
 export default withRouter(SidebarNav);

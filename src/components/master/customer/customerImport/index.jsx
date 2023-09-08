@@ -60,16 +60,16 @@ const ImportData = () => {
     e.preventDefault();
 
     let Url = `/api/LoadBusyAccMasterList?CompCode=${compCode}`;
-    console.log("urlData", Url);
+    // console.log("urlData", Url);
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let tableData = got.data;
         setTableData(tableData);
 
-        console.log("tabledata", tableData);
+        // console.log("tabledata", tableData);
 
         setLoading(false);
       } else {
@@ -85,7 +85,7 @@ const ImportData = () => {
   const saveTableDataHandler = async () => {
     var collectedData = [];
     tableData.forEach((item) => {
-      console.log("itemName", item.name);
+      // console.log("itemName", item.name);
       var tableBody = {
         Code: 0,
         Name: item.name,
@@ -108,7 +108,7 @@ const ImportData = () => {
     });
 
     var body = { CustomerMasterData: collectedData };
-    console.log("tableDataBody", body);
+    // console.log("tableDataBody", body);
 
     const urlCustomer = "/api/SaveCustomerMaster";
 
@@ -116,7 +116,7 @@ const ImportData = () => {
       setLoading(true);
       let { res, got } = await api(urlCustomer, "POST", body);
       if (res.status == 200) {
-        console.log("response");
+        // console.log("response");
         alert(got.msg);
 
         setLoading(false);

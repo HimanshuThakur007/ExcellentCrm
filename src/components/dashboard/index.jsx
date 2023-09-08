@@ -9,50 +9,228 @@ import SingleChart from "./linechart/singlelinechart";
 import TotalRevenuechart from "./barchart/totalreveue";
 import Salesstatictschart from "./barchart/salesstatistics";
 import Completedtaskchart from "./barchart/completedtaks";
-import useFetch from "../Hooks/useFetch";
 import { BiUser,BiDetail } from "react-icons/bi";
+import { Table } from 'antd';
+import 'antd/dist/antd.css';
+import "../antdstyle.css";
+import { itemRender, onShowSizeChange } from "../paginationfunction";
+import useFetch from '../Hooks/useFetch';
+import LeadHistoryModal from "./LeadHistoryModal";
 
 const Dashboard = () => {
   let api = useFetch();
-  const userData = sessionStorage.getItem("userData");
-  if (userData !== null) {
-    var dep = JSON.parse(userData).department;
-    var depname = JSON.parse(userData).depName;
+  const userDatas = JSON.parse(sessionStorage.getItem('userData'))
+  if (userDatas !== null) {
+    var userCode = userDatas.UserId;
   }
-//   console.log('depname', depname)
 
-  const [tableData, setTableData] = useState([])
-  //   console.log('ccccccccccccc',depCode)
 
-  const getTableList = async () => {
-    let Url = `/api/LoadPendingLead?Dep=${dep || 0}`;
-    // console.log("uuuuuuuuuuuu", Url);
+
+  const [followupList,setfollowupList] = React.useState([])
+  const [convertedLeadHistory,setConvertedLeadHistory] = React.useState([])
+  const [leadHistory,setleadHistory] = React.useState([])
+  const [convertedList,setConvertedList] = React.useState([])
+  const [pendingFollowup, setPendingFollowUp] = React.useState(false)
+  const [convertedShowHide, setConvertedShowHide] = React.useState(false)
+  const followupShowHide = ()=>{
+    setConvertedShowHide(false)
+    setPendingFollowUp(!pendingFollowup)
+    
+  }
+  const convertLeadShowHide = ()=>{
+    setPendingFollowUp(false)
+    setConvertedShowHide(!convertedShowHide)
+    
+  }
+  
+  const onRowClick =(record)=>{
+    // $("#followup-modal").modal("show");
+    // setSelectedTableData(record)
+//  setfollowupData(record)
+ let v = record.vchNo
+ getLeadHistory(v)
+ getConvertedLeadHistory(v)
+    // console.log(record)
+  }
+  const columns = [
+    {
+      title: "Lead No.",
+      dataIndex: "vchNo",
+      render: (text, record) => (
+        <>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#lead-details-modal" onClick={()=>onRowClick(record)}>{text}</a></>
+      ),
+      sorter: (a, b) => a.vchNo.length - b.vchNo.length,
+    },
+    {
+      title: "Name",
+      dataIndex: "customerName",
+      // render: (text, record) => (
+      //   <><a href="#" className="text-decoration-none"
+      //      data-bs-toggle="modal" data-bs-target="#followup-modal">{text}</a></>
+      //   ),
+      sorter: (a, b) => a.customerName.length - b.customerName.length,
+    },
+    {
+      title: "Mobile No.",
+      dataIndex: "mobNo",
+      sorter: (a, b) => a.mobNo.length - b.mobNo.length,
+    },
+    {
+      title: "E-Mail",
+      dataIndex: "email",
+      render: (text, record) => <>{text}</>,
+      sorter: (a, b) => a.email.length - b.email.length,
+    },
+    
+    {
+      title: "Lead Assign",
+      dataIndex: "assignDate",
+      render: (text, record) => <>{text}</>,
+      sorter: (a, b) => a.assignDate.length - b.assignDate.length,
+    },
+    {
+      title: "Lead Created",
+      dataIndex: "vchDate",
+      render: (text, record) => <>{text}</>,
+      sorter: (a, b) => a.vchDate.length - b.vchDate.length,
+    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (text, record) => (
+    //     <label className={record.className}>{text}</label>
+    //     ),
+    //   sorter: (a, b) => a.status.length - b.status.length,
+    // },
+    
+   
+  ];
+  // ----------------getFollow-up List-----------
+
+  const getFollowupList = async () => {
+    // console.log('calling from getfollowup list')
+    let Url = `/api/LoadFollowUpList?UCode=${userCode}&LStatus=0`;
     try {
       // setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         // console.log("data", got.data);
-        let tableData = got.data;
-
-        // console.log("tabledata", tableData);
-		setTableData(tableData)
-
-        //   setLoading(false);
+        let listData = got.data;
+         
+        // console.log("modifyData", listData);
+        setfollowupList(listData);
+        // setLoading(false);
       } else {
-        //   setLoading(false);
-        alert("Something Went Wrong in loading");
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
       }
     } catch (err) {
       // setLoading(false);
       alert(err);
     }
   };
-  React.useEffect(() => {
-   
-      getTableList();
+  // -------------------get Converted Lead-list---------------------
+  const getConvertedLeadList = async () => {
+    // console.log('calling from getfollowup list')
+    let Url = `/api/LoadFollowUpList?UCode=${userCode}&LStatus=1`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        // console.log("data", got.data);
+        let listData = got.data;
+         
+        // console.log("modifyData", listData);
+        setConvertedList(listData);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+// console.log('ffffffff', followupList)
+const getLeadHistory = async (vch) => {
     
-  }, []);
+    
+    let Url = `/api/LeadFollowUpHistory?VchNo=${vch}&lStatus=0`;
+    // console.log('uuurrr', Url)
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        console.log("leaddata", got.data);
+        let listData = got.data;
+         
+        //  console.log("leadHistory", listData);
+        setleadHistory(listData);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+const getConvertedLeadHistory = async (vch) => {
+    
+    
+    let Url = `/api/LeadFollowUpHistory?VchNo=${vch}&lStatus=1`;
+    // console.log('uuurrr', Url)
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        // console.log("leaddata", got.data);
+        let listData = got.data;
+         
+        //  console.log("modifyData", listData);
+        setConvertedLeadHistory(listData);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
 
+  React.useEffect(()=>{
+    getFollowupList();
+    getConvertedLeadList();
+    
+  },[])
+var followup = followupList.length
+var converted = convertedList.length
+var total = followup + converted
+  const state = {
+    labels: ['FollowUp', "LeadConverted"],
+    datasets: [
+      {
+        label: 'Pending Followup',
+        backgroundColor: [
+          '#9a55ff',
+          '#ff4d7c',
+          'blue'
+        
+        ],
+        // hoverBackgroundColor: [
+        // '#9a55ff',
+        // '#fe7096'
+        // ],
+        data: [followup,converted]
+      }
+    ]
+  }
+ 
   return (
     <div className="page-wrapper">
       <PageHelmet
@@ -61,64 +239,19 @@ const Dashboard = () => {
         helmetContent="Dashboard Page"
       />
       <div className="content container-fluid">
-        {/* <div className="crms-title row bg-white mb-4">
-          <div className="col">
-            <h3 className="page-title">
-              <span className="page-title-icon bg-gradient-primary text-white me-2">
-                <i className="fas fa-table"></i>
-              </span>{" "}
-              <span>Deals Dashboard</span>
-            </h3>
-          </div>
-          <div className="col text-end">
-            <ul className="breadcrumb bg-white float-end m-0 pl-0 pr-0">
-              <li className="breadcrumb-item">
-                <Link to="/">Dashboard</Link>
-              </li>
-              <li className="breadcrumb-item active">Deals Dashboard</li>
-            </ul>
-          </div>
-        </div> */}
+      
         <PageHeader
           iclassName="fas fa-table"
-          pageTitle="Deals Dashboard"
-          disableTitle="Deals Dashboard"
+          pageTitle="Home"
+          disableTitle="Home"
         />
+       
         <div className="row graphs">
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
-                <h3 className="card-title">Pending Visit</h3>
-                {/* <PieChart /> */}
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Pending Unassigned Leads</h3>
-                {/* <HorizontalBarChart /> */}
-                <div className="row">
-                  <div className="col-xl-6">
-                    <label className="col-form-label"><BiDetail/> Department: <span className="text-danger">{depname}</span></label>
-					
-                  </div>
-                  <div className="col-xl-6">
-                    <label className="col-form-label"><BiUser /> Leads: <span className="text-danger">{tableData.length}</span></label>
-                   
-					
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row graphs">
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Total Lead</h3>
-                <PieChart />
+                <h3 className="card-title">Total Lead: {total}</h3>
+                <PieChart data={state}/>
               </div>
             </div>
           </div>
@@ -132,6 +265,185 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="row graphs">
+         
+          <div className="col-md-6">
+            <div className="card h-100" onClick={followupShowHide} style={{cursor:'pointer'}}>
+              <div className="card-body">
+                <h3 className="card-title">Pending Leads (Followup)</h3>
+                {/* <HorizontalBarChart /> */}
+                <div className="row">
+                  {/* <div className="col-xl-6">
+                    <label className="col-form-label"><BiDetail/> Department: <span className="text-danger">depname</span></label>
+					
+                  </div> */}
+                  <div className="col-xl-6">
+                    <label className="col-form-label"><BiUser /> Leads: <span className="text-danger">{followupList.length}</span></label>
+                   
+					
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100" onClick={convertLeadShowHide} style={{cursor:'pointer'}}>
+              <div className="card-body">
+                <h3 className="card-title">Converted Leads</h3>
+                <div className="row">
+                <div className="col-xl-6">
+                    <label className="col-form-label"><BiUser /> Leads: <span className="text-danger">{convertedList.length}</span></label>
+                  </div>
+                </div>
+                {/* <PieChart /> */}
+              </div>
+            </div>
+          </div>
+        </div>
+        {pendingFollowup == true && followupList.length > 0?(
+            <div className="table-responsive">
+            <div className="card">
+              <div className="card-body">
+                <h4 className="pb-3">Pending Lead(FollowUp)</h4>
+                <Table                        
+                  className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
+                  pagination={{
+                    total: followupList.length,
+                    showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                    showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                  }}
+                  style={{ overflowX: "auto" }}
+                  columns={columns}
+                  dataSource={followupList}
+                  rowKey={(record) => record.code}
+                />
+              </div>
+            </div>
+          </div>
+        ):null}
+        {convertedShowHide == true && convertedList.length > 0? (
+          <div className="table-responsive">
+          <div className="card">
+            <div className="card-body">
+              <h4 className="pb-3">Converted Leads</h4>
+              <Table                        
+                className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
+                pagination={{
+                  total: convertedList.length,
+                  showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                  showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                }}
+                style={{ overflowX: "auto" }}
+                columns={columns}
+                dataSource={convertedList}
+                rowKey={(record) => record.code}
+              />
+            </div>
+          </div>
+        </div>
+        ):null}
+        {/* <div className="row all-reports m-0">
+          <div className="col-md-4 p-0">
+            <ul
+              className="nav nav-tabs card p-0 mb-0"
+              id="reports"
+              role="tablist"
+            >
+              <li className="nav-item w-100">
+                <a
+                  className="nav-link active"
+                  data-bs-toggle="tab"
+                  href="#personal-reports"
+                  role="tab"
+                  aria-controls="personal-reports"
+                >
+                  Pending Lead (Followup):- <span className="text-danger">{followupList.length}</span>
+                </a>
+              </li>
+              <li className="nav-item w-100">
+                <a
+                  className="nav-link"
+                  data-bs-toggle="tab"
+                  href="#shared-reports"
+                  role="tab"
+                  aria-controls="shared-reports"
+                >
+                  Converted Leads
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-md-8 pr-0 Reports">
+            <div className="tab-content pt-0">
+              <div
+                className="tab-pane active"
+                id="personal-reports"
+                role="tabpanel"
+              >
+                <div className="table-responsive">
+                  <div className="card">
+                    <div className="card-body">
+                      <h4 className="pb-3">Pending Lead(FollowUp)</h4>
+                      <Table                        
+                        className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
+                        pagination={{
+                          total: data.length,
+                          showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                          showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                        }}
+                        style={{ overflowX: "auto" }}
+                        columns={columns}
+                        dataSource={followupList}
+                        rowKey={(record) => record.id}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tab-pane" id="shared-reports" role="tabpanel">
+                <div className="table-responsive card">
+                  <div className="card-body">
+                    <h4 className="pb-3">Shared Reports</h4>
+                    <table className="table table-striped custom-table">
+                      <thead>
+                        <tr>
+                          <th>Report Name</th>
+                          <th>Date Created</th>
+                          <th>Created By</th>
+                          <th>Scheduled</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a href="#">Shared Report</a>
+                          </td>
+                          <td>07, Aug 2020</td>
+                          <td>John Doe</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>Project Management</td>
+                          <td>02, April 2020</td>
+                          <td>John Doe</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>Evaluation</td>
+                          <td>02, june 2020</td>
+                          <td>John Doe</td>
+                          <td>-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+             
+            </div>
+          </div>
+        </div> */}
+        {/* <div className="row graphs">
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
@@ -149,8 +461,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="row graphs">
+        </div> */}
+        {/* <div className="row graphs">
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
@@ -168,8 +480,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="row graphs">
+        </div> */}
+        {/* <div className="row graphs">
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
@@ -186,7 +498,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <LeadHistoryModal leadHistory={leadHistory} convertedLeadHistory={convertedLeadHistory}/>
       </div>
     </div>
   );

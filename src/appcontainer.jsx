@@ -19,8 +19,8 @@ import Error500 from "./components/error/error-500";
 //email
 import Components from "./components/components";
 //component
-import Email from "./components/email";
-import Mailview from "./components/email/mail-view";
+// import Email from "./components/email";
+// import Mailview from "./components/email/mail-view";
 import Lead from "./components/lead";
 import Task from "./components/task";
 import BasicTable from "./components/table/basictable";
@@ -163,6 +163,10 @@ import UserDashboard from "./components/dashboard/userdashboard";
 import PurposeComp from "./components/master/purpose";
 import ArchitectComp from "./components/master/architect";
 import BusinessNatureComp from "./components/master/businessnature";
+import QuotationComp from "./components/quotation";
+import QuotationListComp from "./components/quotation/List";
+import useFetch from "./components/Hooks/useFetch";
+import BillsundryComp from "./components/master/BillSundry";
 
 
 const AppUniversal = (props) => {  
@@ -220,8 +224,9 @@ const AppUniversal = (props) => {
 
   const url = props.location.pathname.split("/")[1];
   const exclusionArray = ["login", "register", "forgot-password", "error-404", "error-500"];
+
   return (
-    <Router basename={`${config.publicPath}`}>
+    <Router>
       <div className="main-wrapper">
         <Route render={(props) => <Header {...props} />} />        
         <Route render={(props) => <Sidebarnav {...props} />} />
@@ -270,6 +275,9 @@ const AppUniversal = (props) => {
           <Route path='/purpose' exact component = {PurposeComp}/>
           <Route path='/architect' exact component = {ArchitectComp}/>
           <Route path='/businessnature' exact component = {BusinessNatureComp}/>
+          <Route path='/quotation' exact component = {QuotationComp}/>
+          <Route path='/quotationlist' exact component = {QuotationListComp}/>
+          <Route path='/billsundry' exact component = {BillsundryComp}/>
 
 
 
@@ -298,8 +306,8 @@ const AppUniversal = (props) => {
           <Route path="/social-links" exact component={Sociallink} />
           <Route path="/social-settings" exact component={Socialmedia} />
           {/* Email   */}
-          <Route path="/email" exact component={Email} />
-          <Route path="/mail-view" exact component={Mailview} />
+          {/* <Route path="/email" exact component={Email} /> */}
+          {/* <Route path="/mail-view" exact component={Mailview} /> */}
           {/* Error Pages */}
           <Route path="/error-404" exact component={Error404} />
           <Route path="/error-500" exact component={Error500} />
@@ -365,6 +373,7 @@ const AppUniversal = (props) => {
           <Route path="/data-tables" exact component={DataTable} />
           <Route path="/profile" exact component={Profile} />
           <Route path="/settings" exact component={Settings} />
+          {/* <Route path="/login" exact component={() => <Login comp={compCode}/>} /> */}
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
 

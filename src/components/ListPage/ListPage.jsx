@@ -7,8 +7,10 @@ import {itemRender,onShowSizeChange} from "../paginationfunction"
  import "../antdstyle.css";
  import ReactLoader from '../CommonFile/ReactLoader';
 import zIndex from '@material-ui/core/styles/zIndex';
+import SubmitButton from '../CustomComp/SubmitButton';
 
-const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,onRow,onClick,loading}) => {
+const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,onRow,onClick,loading,onRowClick,routeParams}) => {
+  let id =routeParams.id
   return (
     <div className="page-wrapper">
     <Helmet>
@@ -32,6 +34,52 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
            </ul>
            </div>
        </div>
+       <div className="page-header pt-3 mb-0 ">
+              <div className="row">
+                {/* <div className="col">
+                  <div className="dropdown">
+                    <a className="dropdown-toggle recently-viewed" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Recently Viewed</a>
+                    <div className="dropdown-menu">
+                      <a className="dropdown-item" href="#">Recently Viewed</a>
+                      <a className="dropdown-item" href="#">Items I'm following</a>
+                      <a className="dropdown-item" href="#">All Companies</a>
+                      <a className="dropdown-item" href="#">Companies added in the last 24 hours</a>
+                      <a className="dropdown-item" href="#">Companies added in the last 7 days</a>
+                      <a className="dropdown-item" href="#">Companies with no notes in the last month</a>
+                      <a className="dropdown-item" href="#">Companies with no notes in the last 7 days</a>
+                    </div>
+                  </div>
+                </div> */}
+                <div className="col text-end">
+                  <ul className="list-inline-item pl-0">
+                    {/* <li className="nav-item dropdown list-inline-item add-lists">
+                      <a className="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div className="nav-profile-text">
+                          <i className="fa fa-th" aria-hidden="true" />
+                        </div>
+                      </a>
+                      <div className="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                        <a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add-new-list">Add New List View</a>
+                      </div>
+                    </li> */}
+                    <li className="list-inline-item">
+                      {/* <button className="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded" id="add-task" data-bs-toggle="modal" data-bs-target="#add_company">New Company</button> */}
+                      <SubmitButton 
+                      btnName={
+                      id == 1 ?'Add User': 
+                      id == 2 ?'Add Customer':
+                      id == 3 ?"Add Department":
+                      id == 4 ?"Add Purpose":
+                      id == 6 ? "Add Business Nature":
+                      id == 5 ? "Add Contractor":
+                      id == 7 ? "Add BillSundry":"Add"} 
+                      onClick={onRowClick}
+                      />
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
       {/* /Page Header */}
       <div className="row">
         <div className="col-sm-12">

@@ -35,21 +35,21 @@ const PurposeComp = () => {
           MasterType :6
          
         };
-        console.log('body', body)
+        // console.log('body', body)
         try {
-            console.log("url", urlpurpose);
-            console.log('body', body)
+            // console.log("url", urlpurpose);
+            // console.log('body', body)
             setLoading(true)
             let { res, got } = await api(urlpurpose, "POST", body);
             if (res.status == 200) {
-              console.log("maindata", body);
+              // console.log("maindata", body);
               showToastMessage(got.msg);
               setLoading(false);
               setInputValue({
                 name:'',
                
               });
-              console.log('code', code)
+              // console.log('code', code)
               if(code !== 0 && code != undefined){
                 history.push('/list/4')
               }
@@ -74,7 +74,7 @@ const PurposeComp = () => {
           setLoading(true)
           let { res, got } = await api(modifyUrl, "GET", "");
           if (res.status == 200) {
-            console.log("data", got.data);
+            // console.log("data", got.data);
             let listData = got.data[0];
             setInputValue({
               name:listData.name,

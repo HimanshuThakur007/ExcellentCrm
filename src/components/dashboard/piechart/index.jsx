@@ -3,7 +3,7 @@ import {Pie} from 'react-chartjs-2';
 
 
 const state = {
-    labels: ['Asia', 'Europe'],
+    labels: ['followup', 'LeadConverted'],
     datasets: [
       {
         label: 'Rainfall',

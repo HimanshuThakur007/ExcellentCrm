@@ -10,7 +10,7 @@ import ReactToast, { showToastError, showToastMessage } from "../../CustomComp/R
 const Customer = () => {
   const api = useFetch();
   let { state } = useLocation();
-
+  const history = useHistory();
   const [inputValue, setInputValue] = useState({
     custname: "",
     archname: "",
@@ -85,12 +85,12 @@ const Customer = () => {
         },
       ],
     };
-    console.log("bodyjson", body);
+    // console.log("bodyjson", body);
     try {
       setLoading(true);
       let { res, got } = await api(urlCustomer, "POST", body);
       if (res.status == 200) {
-        console.log("maindata", body);
+        // console.log("maindata", body);
         showToastMessage(got.msg);
         setInputValue({
           custname: "",
@@ -105,10 +105,10 @@ const Customer = () => {
           archmobile: "",
           gst: "",
         });
-        if(code !== 0 && code != undefined){
-          history.push('/modify/2')
-        }
         setLoading(false);
+        if(code !== 0 && code != undefined){
+          history.push('/list/2')
+        }
       } else {
         setLoading(false);
         showToastError(got.msg);
@@ -129,7 +129,7 @@ const Customer = () => {
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
         let listData = got.data;
-        console.log("CustomerModify", listData);
+        // console.log("CustomerModify", listData);
         listData.forEach((item) => {
           correctData.push({ value: item.code, label: item.name });
         });
@@ -155,7 +155,7 @@ const Customer = () => {
       setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let listData = got.data[0];
         // setModifiedValue(listData);
         setInputValue({

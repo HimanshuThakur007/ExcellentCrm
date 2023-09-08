@@ -8,7 +8,7 @@ import { FiEdit, FiPlusCircle, FiTrash2, FiXCircle } from 'react-icons/fi';
 const ListComp = () => {
   var api = useFetch()
   const routeParams = useParams()
-  console.log(routeParams,':--------')
+  // console.log(routeParams,':--------')
   var history = useHistory();
   const [listData,setListData]=useState([])
   const [rowData, setRowData] = useState([]);
@@ -23,7 +23,7 @@ const ListComp = () => {
     try {
       let { res, got } = await api(listUrl, "GET", "");
       if (res.status == 200) {
-        console.log('dataCustomer',got.data)
+        // console.log('dataCustomer',got.data)
         let list = got.data;
        
         setListData(list);
@@ -46,7 +46,7 @@ const ListComp = () => {
       setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        console.log('dataUserCreation',got.data)
+        // console.log('dataUserCreation',got.data)
         let list = got.data;
        
         setListData(list);
@@ -70,7 +70,7 @@ const ListComp = () => {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        console.log('depdata',got.data)
+        // console.log('depdata',got.data)
         let list = got.data;
        
         setListData(list);
@@ -94,7 +94,7 @@ const ListComp = () => {
      setLoading(true);
      let { res, got } = await api(Url, "GET", "");
      if (res.status == 200) {
-       console.log('depdata',got.data)
+      //  console.log('depdata',got.data)
        let list = got.data;
       
        setListData(list);
@@ -112,12 +112,12 @@ const ListComp = () => {
   // ---------------------business nature---------------------------------------
   const getBusinessNatureList = async () => {
 
-    let Url = `/api/LoadMasterData?MasterType=60`;
+    let Url = `/api/LoadMasterData?MasterType=7`;
     try {
      setLoading(true);
      let { res, got } = await api(Url, "GET", "");
      if (res.status == 200) {
-       console.log('depdata',got.data)
+      //  console.log('depdata',got.data)
        let list = got.data;
       
        setListData(list);
@@ -141,7 +141,7 @@ const ListComp = () => {
      setLoading(true);
      let { res, got } = await api(Url, "GET", "");
      if (res.status == 200) {
-       console.log('depdata',got.data)
+      //  console.log('depdata',got.data)
        let list = got.data;
       
        list.forEach((item)=>{
@@ -181,6 +181,30 @@ const ListComp = () => {
    }
  };
 
+//  ------------bill Sundery List----------
+const getBillSundryList = async () => {
+
+  let Url = `/api/BillSundaryDetails?Code=0`;
+  try {
+   setLoading(true);
+   let { res, got } = await api(Url, "GET", "");
+   if (res.status == 200) {
+     console.log('depdata',got.data)
+     let list = got.data;
+    
+     setListData(list);
+     setRowData(billsundry)
+     setLoading(false);
+   } else {
+     setLoading(false);
+     alert("Something Went Wrong in List loading");
+   }
+ } catch (err) {
+   setLoading(false);
+   alert(err);
+ }
+};
+
   // const handleDelete = (code) => {
   //   console.log('delete--', code)
   //   const updatedData = listData.filter((item) =>item.code !== code);
@@ -208,14 +232,22 @@ const ListComp = () => {
       case '6':
         history.push({ pathname: "/businessnature", state: {code : record.code }})
         break;
+      case '7':
+        history.push({ pathname: "/billsundry", state: {code : record.code }})
+        break;
         default:
 
     }
   }
+
   
   
    const columnCustomerList = [
-             
+    {
+      title: 'SrNo',
+      key: 'index',
+      render : (text, record, index) => index +1,
+    },
              {
                title: 'Name',
                dataIndex: 'name',
@@ -281,17 +313,21 @@ const ListComp = () => {
            ]
           //  -------------------create userList rowdata-------------------------------
            const columnss = [
-             
+            {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
             {
               title: 'Name',
               dataIndex: 'name',
                 sorter: (a, b) => a.name.length - b.name.length,
             },
-            {
-              title: 'Password',
-              dataIndex: 'pwd',
-              sorter: (a, b) => a.pwd.length - b.pwd.length,
-            },
+            // {
+            //   title: 'Password',
+            //   dataIndex: 'pwd',
+            //   sorter: (a, b) => a.pwd.length - b.pwd.length,
+            // },
           
             {
               title: 'Email',
@@ -360,7 +396,11 @@ const ListComp = () => {
           ]
           //  -------------------create DepartmentList rowdata-------------------------------
            const department = [
-             
+            {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
             {
               title: 'Name',
               dataIndex: 'name',
@@ -373,11 +413,11 @@ const ListComp = () => {
               sorter: (a, b) => a.email.length - b.email.length,
             },
 
-            {
-              title: 'UserName',
-              dataIndex: 'username',
-              sorter: (a, b) => a.username.length - b.username.length,
-            },
+            // {
+            //   title: 'UserName',
+            //   dataIndex: 'username',
+            //   sorter: (a, b) => a.username.length - b.username.length,
+            // },
             {
               title: 'Mobile No',
               dataIndex: 'monNo',
@@ -388,11 +428,11 @@ const ListComp = () => {
               dataIndex: 'compCode',
               sorter: (a, b) => a.compCode.length - b.compCode.length,
             },
-            {
-              title: 'Segment',
-              dataIndex: 'segment',
-              sorter: (a, b) => a.compCode.length - b.compCode.length,
-            },
+            // {
+            //   title: 'Segment',
+            //   dataIndex: 'segment',
+            //   sorter: (a, b) => a.compCode.length - b.compCode.length,
+            // },
             {
               title: 'Address',
               dataIndex: 'address',
@@ -416,6 +456,11 @@ const ListComp = () => {
           // --------------purposeList-------------------------
           const Purpose =[
             {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
+            {
               title: 'Name',
               dataIndex: 'name',
                 sorter: (a, b) => a.name.length - b.name.length,
@@ -437,6 +482,11 @@ const ListComp = () => {
           // -----------------BusinessNature---------------------------
           const BusinessNature =[
             {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
+            {
               title: 'Name',
               dataIndex: 'name',
                 sorter: (a, b) => a.name.length - b.name.length,
@@ -456,6 +506,11 @@ const ListComp = () => {
           ]
           // -----------------Contractor---------------------------
           const contractor =[
+            {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
             {
               title: 'Name',
               dataIndex: 'name',
@@ -536,11 +591,59 @@ const ListComp = () => {
               ),
             }
           ]
+          // -----------------Bill Sundry---------------------------
+          const billsundry =[
+            {
+              title: 'SrNo',
+              key: 'index',
+              render : (text, record, index) => index +1,
+            },
+            {
+              title: 'Name',
+              dataIndex: 'name',
+                sorter: (a, b) => a.name.length - b.name.length,
+            },
+            {
+              title: 'User Name',
+              dataIndex: 'userName',
+                sorter: (a, b) => a.userName.length - b.userName.length,
+            },
+            {
+              title: 'BillSundry Type',
+              dataIndex: "bsTypeName",
+                sorter: (a, b) => a.bsTypeName.length - b.bsTypeName.length,
+            },
+            {
+              title: 'Value',
+              dataIndex: "value",
+                sorter: (a, b) => a.value.length - b.value.length,
+            },
+            {
+              title: 'Feed As',
+              dataIndex: "feedAsName",
+                sorter: (a, b) => a.feedAsName.length - b.feedAsName.length,
+            },
+            
+             {
+              title:'Action',
+              dataIndex:'action',
+              fixed: 'right',
+              width: 100,
+              className: "text-end",
+              render: (text, record) => (
+                <div className="text-end">
+                 <a className="me-1 btn btn-sm bg-success-light" onClick={()=>onRowClick(record)}>
+                    <FiEdit className="feather-edit-3 me-1" /> Edit
+                    </a>
+                </div>
+              ),
+            }
+          ]
 
           useEffect(()=>{
             switch(routeParams.id){
               case "1":
-                console.log('call')
+                // console.log('call')
                 getuserCreationList();
                 break;
                 case "2":
@@ -558,6 +661,9 @@ const ListComp = () => {
                 case "6":
                   getBusinessNatureList()
                   break;
+                case "7":
+                  getBillSundryList()
+                  break;
                   default:
         
             }
@@ -573,6 +679,8 @@ const ListComp = () => {
         disableHeader='List' 
         defaultHead='List DataTable' 
         rowKey="code"
+        onRowClick={onRowClick}
+        routeParams={routeParams}
       //   onRow={(record) => ({
       //   onClick: () => onRowClick(record),
       // })}

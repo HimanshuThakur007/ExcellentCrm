@@ -8,7 +8,7 @@ const BusinessNatureComp = () => {
     const [loading, setLoading] = React.useState(false)
     const api = useFetch();
   const { state } = useLocation();
-//   const history = useHistory()
+  const history = useHistory()
   const [inputValue, setInputValue] = React.useState({
     name:'',
   });
@@ -36,21 +36,20 @@ const BusinessNatureComp = () => {
          
         };
         try {
-            console.log("url", urlBusinesspurpose);
-            console.log('body', body)
+            // console.log("url", urlBusinesspurpose);
+            // console.log('body', body)
             setLoading(true)
             let { res, got } = await api(urlBusinesspurpose, "POST", body);
             if (res.status == 200) {
-              console.log("maindata", body);
+              // console.log("maindata", body);
               showToastMessage(got.msg);
               setLoading(false)
               setInputValue({
                 name:'',
-               
               })
-              // if(code != 0){
-              //   history.push('/modify/3')
-              // }
+              if(code !== 0 && code != undefined){
+                history.push('/list/6')
+              }
             } else {
               setLoading(false)
               showToastError(got.msg);
@@ -72,7 +71,7 @@ const BusinessNatureComp = () => {
           setLoading(true)
           let { res, got } = await api(modifyUrl, "GET", "");
           if (res.status == 200) {
-            console.log("data", got.data);
+            // console.log("data", got.data);
             let listData = got.data[0];
             setInputValue({
               name:listData.name,

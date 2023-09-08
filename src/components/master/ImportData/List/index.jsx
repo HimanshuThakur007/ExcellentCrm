@@ -24,7 +24,7 @@ const ItemList = () => {
   const DepartementHandler = (department) => {
     setDepartment(department);
     setDepartmentCode(department.value);
-    console.log("depValue", department.value);
+    // console.log("depValue", department.value);
   };
   const groupHandler = (itemListGroup) => {
     setItemListGroup(itemListGroup);
@@ -39,7 +39,7 @@ const ItemList = () => {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let listData = got.data;
         listData.forEach((item) => {
           correctData.push({
@@ -48,7 +48,7 @@ const ItemList = () => {
             comp: item.compCode,
           });
         });
-        console.log("modifyData", correctData);
+        // console.log("modifyData", correctData);
         setDepartmentList(correctData);
         setLoading(false);
       } else {

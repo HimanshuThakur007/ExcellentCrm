@@ -10,7 +10,9 @@ const Configuration = () => {
   let api = useFetch();
   const [assignData, setAssignData] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [inputValue, setInputValue] = useState({});
+  const [inputValue, setInputValue] = useState({
+    fyear:'', prefix:'', compCode:'',seriesName:'',seriesPrefix:''
+  });
 
   let bool = assignData;
   let generateNumber = Number(bool);
@@ -27,7 +29,7 @@ const Configuration = () => {
     }));
   };
 
-  const { fyear, prefix } = inputValue;
+  const { fyear, prefix, compCode,seriesName,seriesPrefix } = inputValue;
 
   const saveHandler = async (e) => {
     e.preventDefault();
@@ -41,20 +43,27 @@ const Configuration = () => {
     // console.log('codeUsers', code)
     var body = {
       LAA: generateNumber,
-      FY: parseInt(fyear),
+      FY: parseInt(fyear)||0,
       PER: prefix,
+      CompCode: compCode,
+      SOQSeries: seriesName,
+      SOQSeriesPre : seriesPrefix
     };
-    console.log("body", body);
+    // console.log("body", body);
     try {
       let { res, got } = await api(urlCreateUser, "POST", body);
       if (res.status == 200) {
         // console.log("maindata", body);
         alert(got.msg);
-        // setInputValue({
-        //   fyear:'',
-        //   prefix:''
-        // })
+        setInputValue({
+          fyear:'',
+          prefix:'',
+          compCode:'',
+          seriesName:'',
+          seriesPrefix:''
+        })
         // setAssignData('')
+        loadConfigList()
       } else {
         alert(got.msg);
       }
@@ -70,11 +79,16 @@ const Configuration = () => {
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         let listData = got.data[0];
-        console.log("loadData", listData);
+        console.log("ConfigloadData", listData);
         setInputValue({
           fyear: listData.fy,
           prefix: listData.per,
+          compCode: listData.compCode,
+          seriesName: listData.soqSeries,
+          seriesPrefix: listData.soqSeriesPre
         });
+        let compCode = listData.compCode
+        sessionStorage.setItem("compCode", JSON.stringify({compCode}));
         setAssignData(listData.laa);
 
         // setConfigList(correctData);
@@ -145,9 +159,27 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
+                      <InputField
+                        type="text"
+                        name="compCode"
+                        labelName="Item CompCode"
+                        value={compCode}
+                        onChange={handleInputField}
+                        required
+                      />
+                      <InputField
+                        type="text"
+                        name="seriesName"
+                        labelName="Series Name"
+                        value={seriesName}
+                        onChange={handleInputField}
+                        required
+                      />
+                     
                     </div>
 
                     <div className="col-xl-6">
+
                       <InputField
                         type="text"
                         name="prefix"
@@ -156,6 +188,15 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
+                       <InputField
+                        type="text"
+                        name="seriesPrefix"
+                        labelName="Series Prefix"
+                        value={seriesPrefix}
+                        onChange={handleInputField}
+                        required
+                      />
+                       
                     </div>
                   </div>
                   <SubmitButton parentClass="text-end" btnName="Submit" />

@@ -44,12 +44,12 @@ const Department = () => {
       UserName: name,
       Segment: segment
     };
-    console.log("url", urlSaveDep);
+    // console.log("url", urlSaveDep);
     try {
       setLoading(true)
       let { res, got } = await api(urlSaveDep, "POST", body);
       if (res.status == 200) {
-        console.log("maindata", body);
+        // console.log("maindata", body);
         showToastMessage(got.msg);
         setLoading(false)
         setInputValue({
@@ -84,7 +84,7 @@ const Department = () => {
       setLoading(true)
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let listData = got.data[0];
         setInputValue({
           name:listData.name,

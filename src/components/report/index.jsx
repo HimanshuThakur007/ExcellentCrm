@@ -147,7 +147,7 @@ const Reports = () => {
               id="reports"
               role="tablist"
             >
-              <li className="nav-item w-100">
+              {/* <li className="nav-item w-100">
                 <a
                   className="nav-link active"
                   data-bs-toggle="tab"
@@ -157,8 +157,8 @@ const Reports = () => {
                 >
                   My Personal Reports
                 </a>
-              </li>
-              <li className="nav-item w-100">
+              </li> */}
+              {/* <li className="nav-item w-100">
                 <a
                   className="nav-link"
                   data-bs-toggle="tab"
@@ -168,7 +168,7 @@ const Reports = () => {
                 >
                   Shared Reports
                 </a>
-              </li>
+              </li> */}
               <li className="nav-item w-100">
                 <a
                   className="nav-link"
@@ -180,7 +180,7 @@ const Reports = () => {
                   All Reports
                 </a>
               </li>
-              <li className="nav-item w-100">
+              {/* <li className="nav-item w-100">
                 <a
                   className="nav-link"
                   data-bs-toggle="tab"
@@ -190,7 +190,7 @@ const Reports = () => {
                 >
                   Task Reports
                 </a>
-              </li>
+              </li> */}
               <li className="nav-item w-100">
                 <a
                   className="nav-link"
@@ -232,10 +232,10 @@ const Reports = () => {
                   role="tab"
                   aria-controls="deal-reports"
                 >
-                  Deal Reports
+                  Quotation Reports
                 </a>
               </li>
-              <li className="nav-item w-100">
+              {/* <li className="nav-item w-100">
                 <a
                   className="nav-link"
                   data-bs-toggle="tab"
@@ -245,7 +245,7 @@ const Reports = () => {
                 >
                   Project Reports
                 </a>
-              </li>
+              </li> */}
               <li className="nav-item w-100">
                 <a
                   className="nav-link"
@@ -287,7 +287,7 @@ const Reports = () => {
                   </div>
                 </div>
               </div>
-              <div className="tab-pane" id="shared-reports" role="tabpanel">
+              {/* <div className="tab-pane" id="shared-reports" role="tabpanel">
                 <div className="table-responsive card">
                   <div className="card-body">
                     <h4 className="pb-3">Shared Reports</h4>
@@ -325,7 +325,7 @@ const Reports = () => {
                     </table>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="tab-pane" id="all-reports" role="tabpanel">
                 <div className="table-responsive card">
                   <div className="card-body">

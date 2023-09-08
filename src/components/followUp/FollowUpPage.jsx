@@ -24,6 +24,7 @@ const FollowUpPage = (props) => {
   let d = props.selectedTableData
   const { Panel } = Collapse;
   const {callStatus,feedback} = props.inputValue
+  // console.log('statusLead', props.leadStatusCode)
 
   return (
     <>
@@ -71,7 +72,7 @@ const FollowUpPage = (props) => {
                     <Table
                       // rowSelection={{ type: props.selectionType, ...rowSelect }}
                      
-                      rowSelection={props.rowSelection}
+                      // rowSelection={props.rowSelection}
                       className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
                       pagination={{
                         total: props.data.length,
@@ -85,9 +86,9 @@ const FollowUpPage = (props) => {
                       columns={props.columns}
                       dataSource={props.data}
                       rowKey={(record) => record.code}
-                      onRow={(record) => ({
-                        onClick: () => props.onRowClick(record),
-                      })}
+                      // onRow={(record) => ({
+                      //   onClick: () => props.onRowClick(record),
+                      // })}
                     />
                   </div>
                 </div>
@@ -189,6 +190,18 @@ const FollowUpPage = (props) => {
                                     <td>Lead Created</td>
                                     <td>{d.vchDate}</td>
                                   </tr>
+                                  <tr>
+                                    <td>Lead Assign</td>
+                                    <td>{d.assignDate}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Lead Status</td>
+                                    <td>{d.lstatus}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Reschedule Date</td>
+                                    <td>{d.rescheduleDate}</td>
+                                  </tr>
                                   {/* <tr>
                                     <td className="border-0"> Lead Status</td>
                                     <label className={`${d.className}`}>
@@ -220,6 +233,7 @@ const FollowUpPage = (props) => {
                               onChange={(selectedOption) =>
                                 props.handleSelectChange(selectedOption, 'select3', props.setSelectedValues)}
                                 options={props.CallStatus}
+                                required
                             />
                           </div>
                           <div className="col-sm-6">
@@ -246,10 +260,11 @@ const FollowUpPage = (props) => {
                               placeholder="feedback"
                               value={feedback}
                               onChange={props.handleInputField}
+                              required
                             />
                           </div>
                          
-                          <div className="col-sm-6">
+                          {/* <div className="col-sm-6">
                           <InputSelect
                               labelClass=""
                               selectName="Reschedule"
@@ -260,8 +275,9 @@ const FollowUpPage = (props) => {
                                 onChange={(selectedOption) =>
                                   props.handleSelectChange(selectedOption, 'select2', props.setSelectedValues)}
                                 options={props.Reschedule}
+                                
                             />
-                            </div>
+                            </div> */}
                           <div className="col-sm-6">
                             <InputSelect
                               labelClass=""
@@ -273,9 +289,11 @@ const FollowUpPage = (props) => {
                               onChange={(selectedOption) =>
                                 props.handleSelectChange(selectedOption, 'select1', props.setSelectedValues)}
                                 options={props.leadStatus}
+                                required
                             />
                           </div>
                            <div className="col-sm-6">
+                            {props.leadStatusCode === 2?(
                             <DateTimeInput
                               datelabel="Reschedule Date"
                               timeInputLabel='Time'
@@ -285,6 +303,7 @@ const FollowUpPage = (props) => {
                                 props.handleDateChange("dateandtime", date)
                               }
                             />
+                            ):null}
                           </div>
                         </div>
 

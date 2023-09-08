@@ -2,20 +2,38 @@ import React,{useState} from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import IMG01 from "../../assets/images/logo.png";
+import { LogoSs } from "../imagepath";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import ReactLoader from "../CommonFile/ReactLoader";
+import useFetch from "../Hooks/useFetch";
 
 
-var url = localStorage.getItem("Url");
-var port = localStorage.getItem("Port");
 
-const Login =()=> {
+
+const Login =(props)=> {
   const history = useHistory();
+// let comp = props.comp
+// console.log('comp',comp)
+const[baseUrl,setBaseUrl]=useState('')
+const[port, setPort] = useState('')
   const [inputValue, setInputValue] = useState({
     username:"",
     password:""
  })
  const [loading, setLoading] = useState(false)
+
+//  ---------compCode Api----------------
+
+React.useEffect(()=>{
+var url = localStorage.getItem("Url","");
+var port = localStorage.getItem("Port","");
+if (url && port) {
+setBaseUrl(url);
+setPort(port);
+}
+},[])
+// console.log("port&url",port +":" +baseUrl)
+
 
 const handleInputField = (e) => {
   const { name, value } = e.target;
@@ -26,13 +44,15 @@ const handleInputField = (e) => {
 };
 
 const {username, password} = inputValue
+// let api = useFetch()
+
      
 
 const handleSubmit = (e)=>{
   // console.log('calling')
   e.preventDefault();
-  const urlStr = `http://${url}:${port}/api/Authentication?UserName=${username}&Pwd=${password}`;
-  console.log('url', urlStr)
+  const urlStr = `http://${baseUrl}:${port}/api/Authentication?UserName=${username}&Pwd=${password}`;
+  // console.log('url', urlStr)
   try {
     setLoading(true);
     const h = new Headers();
@@ -51,12 +71,9 @@ const handleSubmit = (e)=>{
    
     .then((json) => {
         const resultData = json
-        console.log('loginDataaaaa',resultData)
+        // console.log('loginDataaaaa',resultData)
         const loginData = resultData
         if(loginData.result == 1){
-          // sessionStorage.setItem('userName',username,)
-     
-          // let StoreData=[];
          
           let UserId= loginData.code;
           let TokenId= loginData.token
@@ -75,13 +92,13 @@ const handleSubmit = (e)=>{
 
         }else{
           alert('invalid username and password')
-          setLoading(false)
         }
+        setLoading(false)
         // setSerieslist(json.data)
     });
   } catch (err) {
+    alert(err) 
     setLoading(false)
-     alert(err) 
     //  setLoading(false)
     }
 
@@ -104,7 +121,7 @@ const handleSubmit = (e)=>{
         {/* Account Logo */}
         <div className="account-logo">
           <Link to="/">
-            <img src={IMG01} alt="Dreamguy's Technologies" />
+            <img src={LogoSs} alt="Dreamguy's Technologies" />
           </Link>
         </div>
         {/* /Account Logo */}
@@ -116,7 +133,7 @@ const handleSubmit = (e)=>{
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Email Address</label>
-                <input name="username" className="form-control" type="text" onChange={handleInputField} required/>
+                <input name="username" className="form-control" autoComplete="off" type="text" onChange={handleInputField} required/>
               </div>
               <div className="form-group">
                 <div className="row">
@@ -129,7 +146,7 @@ const handleSubmit = (e)=>{
                     </Link>
                   </div> */}
                 </div>
-                <input className="form-control" name="password" type="password" onChange={handleInputField} required/>
+                <input className="form-control" autoComplete="off" name="password" type="password" onChange={handleInputField} required/>
               </div>
               <div className="form-group text-center">
                 {/* <Link to="/" className="btn btn-primary account-btn">

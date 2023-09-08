@@ -1,8 +1,4 @@
-/**
- * Form Elemets
- */
 import React, { useEffect, useState,useRef } from "react";
-
 import {
   useHistory,
   useLocation,
@@ -56,7 +52,7 @@ const UserCeation = () => {
   };
 
   const handleMultiSelectChange = (selectOptions) => {
-    console.log(selectOptions);
+    // console.log(selectOptions);
     setMultiSelectValue(selectOptions);
   };
 
@@ -95,7 +91,7 @@ const UserCeation = () => {
       setLoading(true)
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let listData = got.data[0];
         let userCreateMaster = listData.userMasterDetails;
         let userDep = listData.userDepartment;
@@ -161,9 +157,12 @@ const UserCeation = () => {
       }
     }
     let mainArr = [];
+    if (multiSelectValue.length > 0){
     multiSelectValue.map((item) => {
-      mainArr.push({ department: item.value, code: code || 0 });
-    });
+      mainArr.push({ department: item.value , code: code || 0 });
+    })}else{
+      mainArr.push({department: parseInt(departmentCode), code:code||0})
+    }
     // console.log("main Arr", mainArr);
     const urlCreateUser = "/api/SaveUserMaster";
     // console.log('codeUsers', code)
@@ -226,12 +225,12 @@ const UserCeation = () => {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        console.log("data", got.data);
+        // console.log("data", got.data);
         let listData = got.data;
         listData.forEach((item) => {
           correctData.push({ value: item.code, label: item.name });
         });
-        console.log("modifyData", correctData);
+        // console.log("modifyData", correctData);
         setDepartmentList(correctData);
         setLoading(false);
       } else {

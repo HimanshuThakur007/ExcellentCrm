@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRouter from './approuter';
+// import './assets/css/style.css'
 // import * as serviceWorker from './client/serviceWorker';
 
 ReactDOM.render(<AppRouter/>, document.getElementById('root'));

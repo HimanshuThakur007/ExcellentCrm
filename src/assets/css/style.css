@@ -1598,6 +1598,7 @@ table.dataTable thead>tr>td.sorting {
 .user-menu {
 	float: right;
 	margin: 0;
+	margin-right: 10px;
 	position: relative;
 	z-index: 99;
 }

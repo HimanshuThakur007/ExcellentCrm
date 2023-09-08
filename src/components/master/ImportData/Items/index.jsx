@@ -28,12 +28,12 @@ const ImportItem = () => {
           setLoading(true);
           let { res, got } = await api(Url, "GET", "");
           if (res.status == 200) {
-            console.log('data',got.data)
+            // console.log('data',got.data)
             let listData = got.data;
            listData.forEach((item)=>{
             correctData.push({value:item.code, label:item.name, comp:item.compCode})
            })
-           console.log('modifyData', correctData)
+          //  console.log('modifyData', correctData)
             setDepartmentList(correctData);
             setLoading(false);
           } else {
@@ -51,16 +51,16 @@ const ImportItem = () => {
         e.preventDefault();
 
         let Url = `/api/LoadBusyItemMasterList?CompCode=${compCode}`;
-        console.log('urlData', Url)
+        // console.log('urlData', Url)
         try {
           setLoading(true);
           let { res, got } = await api(Url, "GET", "");
           if (res.status == 200) {
-            console.log('data',got.data)
+            // console.log('data',got.data)
             let tableData = got.data;
             setTableData(tableData)
            
-          console.log('tabledata', tableData)
+          // console.log('tabledata', tableData)
            
             setLoading(false);
           } else {
@@ -101,7 +101,7 @@ const ImportItem = () => {
         })
         
         var body = {ItemMasterDetails : collectedData}
-        console.log('tableDataBody',body)
+        // console.log('tableDataBody',body)
     
         const urlCustomer = "/api/SaveItemMaster"
         
@@ -109,7 +109,7 @@ const ImportItem = () => {
           setLoading(true)
           let { res, got } = await api(urlCustomer, "POST", body);
           if (res.status == 200) {
-            console.log("response");
+            // console.log("response");
             alert(got.msg);
            
             setLoading(false)

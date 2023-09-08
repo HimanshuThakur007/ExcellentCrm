@@ -35,10 +35,10 @@ const Header =(props)=> {
       <div className="header" id="heading">
         {/* Logo */}
         <div className="header-left">
-          <a href="/" className="logo">
+          <Link to="/" className="logo">
             <img src={LogoSs} alt="Logo" className="sidebar-logo" />
-            <img src={S_Logo} alt="Logo" className="mini-sidebar-logo" />
-          </a>
+            <img src={LogoSs} alt="Logo" className="mini-sidebar-logo" />
+          </Link>
         </div>
         {/* /Logo */}
         <a id="toggle_btn">
@@ -69,7 +69,7 @@ const Header =(props)=> {
           </li>
           {/* /Search */}
           {/* Flag */}
-          <li className="nav-item dropdown has-arrow flag-nav">
+          {/* <li className="nav-item dropdown has-arrow flag-nav">
             <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button">
               <img src={Flag_in} alt="" height={20} /> <span>India</span>
             </a>
@@ -87,10 +87,10 @@ const Header =(props)=> {
                 <img src={Flag_de} alt="" height={16} /> German
               </a>
             </div>
-          </li>
+          </li> */}
           {/* /Flag */}
           {/* Notifications */}
-          <li className="nav-item dropdown">
+          {/* <li className="nav-item dropdown">
             <a className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
               <FiBell /> <span className="badge badge-pill">3</span>
             </a>
@@ -172,11 +172,11 @@ const Header =(props)=> {
                 <a href="/activities">View all Notifications</a>
               </div>
             </div>
-          </li>
+          </li> */}
           {/* /Notifications */}
           {/* Message Notifications */}
           
-          <li className="nav-item dropdown">
+          {/* <li className="nav-item dropdown">
             <a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
               <BiMessageRounded /> <span className="badge badge-pill">8</span>
             </a>
@@ -278,13 +278,13 @@ const Header =(props)=> {
                 <a href="#">View all Messages</a>
               </div>
             </div>
-          </li>
+          </li> */}
           {/* /Message Notifications */}
           <li className="nav-item dropdown has-arrow main-drop">
             <a className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
               <span className="user-img"><img src={avatar21} alt="" />
                 <span className="status online" /></span>
-              <span>{username}</span>
+              <span style={{margin:"5px"}}>{username}</span>
             </a>
             <div className="dropdown-menu">
               <Link className="dropdown-item" to="/profile">My Profile</Link>

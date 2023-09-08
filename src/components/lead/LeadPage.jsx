@@ -75,11 +75,11 @@ const LeadPage = (props) => {
               <div className="card">
                 <div className="card-body">
                   <div className="row pt-2">
-                    <div className="col-xl-4">
+                    <div className="col-xl-9">
                       <InputSelect
-                        labelClass="col-lg-4"
+                        labelClass="col-lg-2"
                         selectName="Department"
-                        selectClass="col-lg-8"
+                        selectClass="col-lg-10"
                         name="department"
                         placeholder="Department"
                         // defaultValue={[{value: 2, label: "Tiles"}]}
@@ -92,7 +92,7 @@ const LeadPage = (props) => {
                        
                       />
                     </div>
-                    <div className="col-xl-4">
+                    {/* <div className="col-xl-4">
                       <InputSelect
                         labelClass="col-lg-4"
                         selectName="Lead Type"
@@ -105,8 +105,8 @@ const LeadPage = (props) => {
                         options={[{value:1,label:'Assigned Lead'},{value: 2, label: "UnAssigned Lead"}]}
                        
                       />
-                    </div>
-                    <div className="col-xl-4">
+                    </div> */}
+                    {/* <div className="col-xl-4">
                       <InputSelect
                         labelClass="col-lg-4"
                         selectName="Lead Status"
@@ -118,14 +118,14 @@ const LeadPage = (props) => {
                         options={[{value:1,label:'Assigned Lead'},{value: 2, label: "UnAssigned Lead"}]}
                        
                       />
-                    </div>
-                    {/* <div className="col-xl-3"> */}
+                    </div> */}
+                    <div className="col-xl-3">
                       <SubmitButton
-                        parentClass="text-end"
+                        parentClass="text-center"
                         onClick={props.getTableList}
                         btnName="Load Data"
                       />
-                    {/* </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -162,6 +162,7 @@ const LeadPage = (props) => {
             </div>
           </div>
           {/* --------assign to----------------- */}
+          {props.data.length > 0?(
           <div className="row">
             <div className="col-md-12">
               <div className="card">
@@ -191,7 +192,7 @@ const LeadPage = (props) => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>):null}
         </div>
       </div>
     </div>

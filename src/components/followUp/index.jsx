@@ -11,7 +11,15 @@ const Lead_status =[
   {
     value :1,
     label:"Converted"
-}
+},
+  {
+    value :2,
+    label:"Reschedule"
+},
+  {
+    value :3,
+    label:"Close"
+},
 ];
 
 const Reschedule = [
@@ -59,7 +67,8 @@ const FollowUpComp = () => {
    {
     selectName == "select1" ? setLeadStatusCode(selectedOption.value): 
     selectName == 'select2'?setRescheduleCode(selectedOption.value):
-    selectName == 'select3'?setCallStatusCode(selectedOption.value):null
+    selectName == 'select3'?setCallStatusCode(selectedOption.value):
+    null
    }
   
    setSelectedValues((prevSelectedValues) => ({
@@ -82,23 +91,21 @@ const FollowUpComp = () => {
     // const [followUpTableData, setFollowUpTableData] = useState([]);
 
    
-      const onRowClick =(record)=>{
-     
+      const onRowClick =(record)=>{     
         $("#followup-modal").modal("show");
         setSelectedTableData(record)
-    
-        
-        console.log(record)
+
+        // console.log(record)
       }
      
       const getFollowupList = async () => {
-        console.log('calling from getfollowup list')
-        let Url = `/api/LoadFollowUpList?UCode=${userCode}`;
+        // console.log('calling from getfollowup list')
+        let Url = `/api/LoadFollowUpList?UCode=${userCode}&LStatus=0`;
         try {
           setLoading(true);
           let { res, got } = await api(Url, "GET", "");
           if (res.status == 200) {
-            console.log("data", got.data);
+            // console.log("data", got.data);
             let listData = got.data;
              
             // console.log("modifyData", listData);
@@ -130,11 +137,11 @@ const FollowUpComp = () => {
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-          console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            "selectedRows: ",
-            selectedRows
-          );
+          // console.log(
+          //   `selectedRowKeys: ${selectedRowKeys}`,
+          //   "selectedRows: ",
+          //   selectedRows
+          // );
           
           // setSelectedTableData(selectedRows)
         },
@@ -251,16 +258,16 @@ const FollowUpComp = () => {
           CallStatus :callStatusCode,
           Feedback : feedback,
           FDate: convertDate(dates.startDate),
-          Reschedule : rescheduleCode,
+          // Reschedule : rescheduleCode,
           RecheduleDT : convertDate(dates.dateandtime),
           LStatus :leadStatusCode
         };
-        console.log("bodyjson", body);
+        // console.log("bodyjson", JSON.stringify(body));
         try {
           setLoading(true);
           let { res, got } = await api(urlfollow, "POST", body);
           if (res.status == 200) {
-            console.log("maindata", body);
+            // console.log("maindata", body);
             alert(got.msg);
             setInputValue({
              feedback:''
@@ -275,7 +282,7 @@ const FollowUpComp = () => {
               dateandtime: new Date(),
             });
             $("#followup-modal").modal("hide")
-            getFollowupList()
+            getFollowupList();
             setLoading(false);
           } else {
             setLoading(false);
@@ -287,7 +294,19 @@ const FollowUpComp = () => {
         }
       };
 
+     
+
       const columns = [
+        {
+          title: "Lead No.",
+          dataIndex: "vchNo",
+          // render: (text, record) => <>{text}</>,
+          render: (text, record) => (
+            <>
+              <a href="#" onClick={()=>onRowClick(record)}>{text}</a></>
+          ),
+          sorter: (a, b) => a.vchNo.length - b.vchNo.length,
+        },
         {
           title: "Name",
           dataIndex: "customerName",
@@ -309,12 +328,7 @@ const FollowUpComp = () => {
           render: (text, record) => <>{text}</>,
           sorter: (a, b) => a.email.length - b.email.length,
         },
-        {
-          title: "Lead No.",
-          dataIndex: "vchNo",
-          render: (text, record) => <>{text}</>,
-          sorter: (a, b) => a.vchNo.length - b.vchNo.length,
-        },
+        
         {
           title: "Lead Assign",
           dataIndex: "assignDate",
@@ -324,9 +338,21 @@ const FollowUpComp = () => {
         {
           title: "Lead Created",
           dataIndex: "vchDate",
-          ...getColumnSearchProps('vchDate'),
+          // ...getColumnSearchProps('vchDate'),
           render: (text, record) => <>{text}</>,
           sorter: (a, b) => a.vchDate.length - b.vchDate.length,
+        },
+        {
+          title: "Lead Status",
+          dataIndex: "lstatus",
+          // ...getColumnSearchProps('vchDate'),
+          render: (text, record) => <>{text}</>,
+          // sorter: (a, b) => a.lstatus.length - b.lstatus.length,
+        },
+        {
+          title: "Reschedule Date",
+          dataIndex: "rescheduleDate",
+          render: (text, record) => <>{text}</>,
         },
         // {
         //   title: "Status",
@@ -363,6 +389,7 @@ const FollowUpComp = () => {
         savefollowUpHandler={savefollowUpHandler}
         Reschedule={Reschedule}
         CallStatus={Call_Status}
+        leadStatusCode={leadStatusCode}
         />
     </div>
   )

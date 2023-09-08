@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from "react-helmet";
+import { LogoSs } from '../../imagepath';
 import IMG01 from '../../../assets/images/logo.png'
 import IMG02 from '../../../assets/images/signature.png'
 const ViewInvoices =()=>{
@@ -21,17 +22,17 @@ const ViewInvoices =()=>{
                         <div className="row">
                         <div className="col-md-6">
                             <div className="invoice-logo">
-                            <img src={IMG01} />
+                            <img src={LogoSs} />
                             </div>
                             <div className="invoice-head">
-                            <h2>Invoice</h2>
-                            <p>Invoice Number : In983248782</p>
+                            <h2>Quotation</h2>
+                            <p>Quotation Number : In983248782</p>
                             </div>
                         </div>
                         <div className="col-md-6">
                             <div className="invoice-info">
                             <strong className="customer-text-one">
-                                Invoice From
+                            Quotation From
                             </strong>
                             <h6 className="invoice-name">Company Name</h6>
                             <p className="invoice-details">

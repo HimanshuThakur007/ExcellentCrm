@@ -75,7 +75,7 @@ const ImportData = () => {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        console.log('table-data',got.data)
+        // console.log('table-data',got.data)
         let tableData = got.data;
    
        setTableData(tableData)
@@ -173,7 +173,7 @@ const ImportData = () => {
       setLoading(true)
       let { res, got } = await api(url, "POST", body);
       if (res.status == 200) {
-        console.log("maindata",body);
+        // console.log("maindata",body);
         alert(got.msg);
         getTableList()
         setLoading(false)
@@ -192,7 +192,7 @@ const ImportData = () => {
   // -----multiple-Select-----------------------
   const handleSelectChange = (selectedOption, selectName, setSelectedValues) => {
  
-    console.log(`Selected value for ${selectName}:`, selectedOption);
+    // console.log(`Selected value for ${selectName}:`, selectedOption);
     
  {
   selectName == "select1" ? setDepCode(selectedOption.value): selectName == 'select2'?setCode(selectedOption.value):null
@@ -247,17 +247,17 @@ const ImportData = () => {
       sorter: (a, b) => a.email.length - b.email.length,
     },
     {
-      title: "Address",
-      dataIndex: "status",
+      title: "Bath No",
+      dataIndex: "bathNo",
       render: (text, record) => <label>{text}</label>,
-      sorter: (a, b) => a.status.length - b.status.length,
+      sorter: (a, b) => a.bathNo.length - b.bathNo.length,
     },
-    // {
-    //   title: "Lead Created",
-    //   dataIndex: "created",
-    //   render: (text, record) => <>{text}</>,
-    //   sorter: (a, b) => a.created.length - b.created.length,
-    // },
+    {
+      title: "Construction Area",
+      dataIndex: "cArea",
+      render: (text, record) => <>{text}</>,
+      sorter: (a, b) => a.cArea.length - b.cArea.length,
+    },
     // {
     //   title: "Lead Owner",
     //   dataIndex: "owner",
@@ -337,11 +337,11 @@ const ImportData = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   "selectedRows: ",
+      //   selectedRows
+      // );
       setSelectedTableData(selectedRows)
     },
     getCheckboxProps: (record) => ({

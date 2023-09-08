@@ -23,6 +23,7 @@ const InputField = (props) => {
             value={props.value}
             placeholder={props.placeholder}
             // ref={props.ref}
+            min={props.min}
             required={props.required}
             disabled={props.disabled}
             

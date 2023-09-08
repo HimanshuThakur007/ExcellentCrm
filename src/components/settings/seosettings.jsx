@@ -43,36 +43,36 @@ const seosettings =()=> {
               Localization
             </Link>
           </li>
-          <li className="nav-item ">
+          {/* <li className="nav-item ">
             <Link className="nav-link" to="/payment-settings">
               Payment Settings
             </Link>
-          </li>
-          <li className="nav-item ">
+          </li> */}
+          {/* <li className="nav-item ">
             <Link className="nav-link" to="/email-settings">
               Email Settings
             </Link>
-          </li>
-          <li className="nav-item ">
+          </li> */}
+          {/* <li className="nav-item ">
             <Link className="nav-link" to="/social-settings">
               Social Media Login
             </Link>
-          </li>
-          <li className="nav-item ">
+          </li> */}
+          {/* <li className="nav-item ">
             <Link className="nav-link" to="/social-links">
               Social Links
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item active">
             <Link className="nav-link" to="/seo-settings">
               SEO Settings
             </Link>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link className="nav-link" to="/others-settings">
               Others
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div className="row">

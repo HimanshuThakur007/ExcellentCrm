@@ -292,7 +292,7 @@ const Company =()=> {
                         <input className="form-control" type="text" placeholder="Organization Name" name="organization" />
                       </div>
                     </div>
-                    <div className="form-group row">
+                    {/* <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">Organization</label>
                         <select className="form-control">
@@ -303,7 +303,7 @@ const Company =()=> {
                         <label className="col-form-label">Title</label>
                         <input type="text" className="form-control" name="title" placeholder="Title" />
                       </div>
-                    </div>
+                    </div> */}
                     <h4>Organization Contact Details</h4>
                     <div className="form-group row">
                       <div className="col-sm-6">
@@ -311,8 +311,8 @@ const Company =()=> {
                         <input type="text" className="form-control" name="phone" placeholder="Phone" />
                       </div>
                       <div className="col-sm-6">
-                        <label className="col-form-label">Fax</label>
-                        <input type="text" className="form-control" name="fax" placeholder="Fax" />
+                        <label className="col-form-label">Email</label>
+                        <input type="text" className="form-control" name="email" placeholder="email" />
                       </div>
                     </div>
                     <div className="form-group row">
@@ -320,12 +320,12 @@ const Company =()=> {
                         <label className="col-form-label">Website</label>
                         <input type="text" className="form-control" name="website" placeholder="Website" />
                       </div>
-                      <div className="col-sm-6">
+                      {/* <div className="col-sm-6">
                         <label className="col-form-label">Linkedin</label>
                         <input type="text" className="form-control" name="linkedin" placeholder="Linkedin" />
-                      </div>
+                      </div> */}
                     </div>
-                    <div className="form-group row">
+                    {/* <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">Facebook</label>
                         <input type="text" className="form-control" name="fb" placeholder="Facebook" />
@@ -334,13 +334,13 @@ const Company =()=> {
                         <label className="col-form-label">Twitter</label>
                         <input type="text" className="form-control" name="twitter" placeholder="Twitter" />
                       </div>
-                    </div>
-                    <div className="form-group row">
+                    </div> */}
+                    {/* <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">Email Domains</label>
                         <input type="text" className="form-control" name="domains" placeholder="Email Domains" />
                       </div>
-                    </div>
+                    </div> */}
                     <h4>Address Information</h4>
                     <div className="form-group row">
                       <div className="col-sm-6">
@@ -394,8 +394,8 @@ const Company =()=> {
                         </select>
                       </div>
                     </div>
-                    <h4>Additional Information</h4>
-                    <div className="form-group row">
+                    {/* <h4>Additional Information</h4> */}
+                    {/* <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">Dates To Remember <span className="text-danger">*</span></label>
                         <div className="cal-icon">
@@ -407,22 +407,22 @@ const Company =()=> {
                             showDayMonthYearPicker />
                         </div>
                       </div>
-                    </div>
-                    <h4>Description Information</h4>
+                    </div> */}
+                    {/* <h4>Description Information</h4>
                     <div className="form-group row">
                       <div className="col-sm-12">
                         <label className="col-form-label">Description </label>
                         <textarea className="form-control" rows={3} id="description" placeholder="Description" defaultValue={""} />
                       </div>
-                    </div>
-                    <h4>Tag Information</h4>
+                    </div> */}
+                    {/* <h4>Tag Information</h4>
                     <div className="form-group row">
                       <div className="col-sm-12">
                         <label className="col-form-label">Tag List</label>
                         <input type="text" className="form-control" name="tag-name" placeholder="Tag List" />
                       </div>
-                    </div>
-                    <h4>Permissions</h4>
+                    </div> */}
+                    {/* <h4>Permissions</h4>
                     <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">Permission</label>
@@ -431,7 +431,7 @@ const Company =()=> {
                           <option>Private Task</option>
                         </select>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="text-center py-3">
                       <button type="button" className="border-0 btn btn-primary btn-gradient-primary btn-rounded">Save</button>&nbsp;&nbsp;
                       <button type="button" className="btn btn-secondary btn-rounded">Cancel</button>
