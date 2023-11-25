@@ -6,7 +6,8 @@ import InputSelect from "../CustomComp/InputSelect";
 import InputField from "../CustomComp/InputField";
 import useFetch from "../Hooks/useFetch";
 import BillsundryTable from "./BillsundryTable";
-
+import ReactLoader from "../CommonFile/ReactLoader";
+var Grand;
 let Data = [
   { value: 1, label: "Mouse" },
   { value: 2, label: "Mobile" },
@@ -15,12 +16,13 @@ let Data = [
 ];
 
 const QuotationTable = (props) => {
-  const userData = sessionStorage.getItem('userData')
+  const userData = sessionStorage.getItem("userData");
+  let ip = localStorage.getItem("Url");
+  let port = localStorage.getItem("Port");
 
- 
   if (userData !== null) {
     var username = JSON.parse(userData).Admin;
-    console.log(username)
+    console.log(username);
   }
   let api = useFetch();
   const customStyles = {
@@ -30,21 +32,27 @@ const QuotationTable = (props) => {
       // minHeight: 35
     }),
   };
-  const [prefix, setPrefix] = React.useState('');
-  const [soqSeries, setSoqSeries] = React.useState('');
+  const [prefix, setPrefix] = React.useState("");
+  const [soqSeries, setSoqSeries] = React.useState("");
   const [quotationCode, setQuotationCode] = React.useState(0);
   const [totalValue, setTotalValue] = React.useState(0);
   const [totalQty, setTotalQty] = React.useState(0);
   const [grandTotal, setGrandTotal] = React.useState(0);
   const [qutCustomerCode, setQutCustomerCode] = React.useState(0);
+  const [QuotCustName, setQuotCustName] = React.useState("");
   const [selectQutCustomer, setSelectQutCustomer] = React.useState(null);
   const [BillsunData, setBillsunData] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [BusyBillsunData, setBusyBillsunData] = React.useState([]);
   const [itemListData, setitemListData] = React.useState([]);
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const [menuOpenStates, setMenuOpenStates] = React.useState([]);
   const [rowsData, setRowsData] = React.useState([
     {
       item: "",
       qty: 0,
       price: 0,
+      disc:0,
       uom: "",
       value: 0,
       code: 0,
@@ -53,10 +61,14 @@ const QuotationTable = (props) => {
   const [dates, setDates] = React.useState({
     date1: new Date(),
   });
+  const [compCode, setCompCode] = React.useState("");
+  const [fYear, setFYear] = React.useState("");
+  const [busyBaseUrl, setBusyBaseUrl] = React.useState("");
 
-  var qtNo = `${prefix + - + quotationCode}`
+  var qtNo = `${prefix + -+quotationCode}`;
   const qutcustomerListHandler = (select) => {
     setSelectQutCustomer(select);
+    setQuotCustName(select.label);
     setQutCustomerCode(select.value);
     //  console.log('se3', selectCustomer)
   };
@@ -67,11 +79,13 @@ const QuotationTable = (props) => {
       [dateFieldName]: dateValue,
     });
   };
-  const { item, qty, uom, price, value } = rowsData;
+  const { item, qty, uom, price, value,disc } = rowsData;
 
   const selectHandler = (select, index) => {
+    console.log(select);
     setRowsData((rowsData) => {
       return rowsData.map((obj, ind) => {
+        console.log("obj", obj);
         return ind === index
           ? {
               ...obj,
@@ -85,19 +99,20 @@ const QuotationTable = (props) => {
       });
     });
   };
-  let row= rowsData[0]
-  // console.log(rowsData[0].price, 'rrrr')
 
+  let row = rowsData[0];
+  // console.log(rowsData[0].price, 'rrrr')
 
   const addTableRows = () => {
     const rowsInput = {
-      srNo:'',
+      srNo: "",
       // id:0,
+      disc:0,
       item: "",
-      qty: "",
-      price: "",
+      qty: 0,
+      price:0,
       uom: "",
-      value: "",
+      value: 0,
     };
     setRowsData([...rowsData, rowsInput]);
     // console.log("row input", rowsInput);
@@ -128,61 +143,54 @@ const QuotationTable = (props) => {
   };
 
   const handleQtyTotal = () => {
-    let inputsqty = document.querySelectorAll('[id^="qty"]');
-
-    let total = 0;
-    for (var i = 0; i < inputsqty.length; i++) {
-      if (parseFloat(inputsqty[i].value))
-        total += parseFloat(inputsqty[i].value);
-      // console.log("totalValue", total);
+    var qty=0 ;
+   
+    if(rowsData.length > 0){
+      rowsData.forEach((item)=>{
+        qty = parseFloat(qty) +parseFloat(item.qty)
+      })
     }
-
-    document.getElementById("quintity").innerHTML = total;
-    setTotalQty(total)
+    console.log('qty', qty)
+   
+    setTotalQty(qty);
   };
-
 
   const handleValueTotal = () => {
-    let inputsvalue = document.querySelectorAll('[id^="value"]');
-    if(inputsvalue){
-
-    let total = 0;
-    for (var i = 0; i < inputsvalue.length; i++) {
-      if (parseFloat(inputsvalue[i].value))
-        total += parseFloat(inputsvalue[i].value);
-      // console.log(total);
+    var tot = 0;
+    if (rowsData.length > 0) {
+      rowsData.forEach((obj) => {
+        tot = tot + obj.value;
+      });
+      setTotalValue(tot);
     }
-
-    document.getElementById("totalvalue").innerHTML = total;
-    setTotalValue(total)
-  }
   };
 
-  React.useEffect(()=>{handleValueTotal()},[row.qty, totalQty])
+  React.useEffect(() => {
+    handleValueTotal();
+    console.log('TotalValues')
+  }, [rowsData]);
 
   // --------------grandTotal Value--------------------------------
 
-  const grandTotalValue = ()=>{
+  const grandTotalValue = () => {
     let inputGrandTotal = document.querySelectorAll('[id^="gvalue"]');
-    if(inputGrandTotal){
+    if (inputGrandTotal) {
+      let total = 0;
+      for (var i = 0; i < inputGrandTotal.length; i++) {
+        if (parseFloat(inputGrandTotal[i].value))
+          total += parseFloat(inputGrandTotal[i].value);
+        // console.log(total);
+      }
 
-    let total = 0;
-    for (var i = 0; i < inputGrandTotal.length; i++) {
-      if (parseFloat(inputGrandTotal[i].value))
-        total += parseFloat(inputGrandTotal[i].value);
-      // console.log(total);
+      document.getElementById("grandValue").innerHTML = total;
+      setGrandTotal(total);
     }
+  };
 
-    document.getElementById("grandValue").innerHTML = total;
-    setGrandTotal(total)
-  }
-  }
-
-  let Grand = totalValue+grandTotal
-  // console.log('grand',Grand)
-
-
-
+  const showTotal = (value) => {
+    // console.log('sstttt',value)
+    Grand = value;
+  };
 
   const loadConfigList = async () => {
     let Url = `/api/Loadconfiguration`;
@@ -191,20 +199,57 @@ const QuotationTable = (props) => {
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         let listData = got.data[0];
-        console.log("loadData", listData);
-        
+        // console.log("loadData", listData);
+
         let compCode = listData.compCode;
-        let pre = listData.soqSeriesPre
-        let soq=listData.soqSeries
+        let pre = listData.soqSeriesPre;
+        let soq = listData.soqSeries;
+        let fyear = listData.fy;
         itemListHandler(compCode);
-        setPrefix(pre)
-        setSoqSeries(soq)
+        setCompCode(compCode);
+        setFYear(fyear);
+        setPrefix(pre);
+        setSoqSeries(soq);
+        setBusyBaseUrl(listData.squrl);
+        // loadBusySeriesList(listData.squrl,fyear,compCode)
       } else {
         // setLoading(false);
         alert("Something Went Wrong in List loading");
       }
     } catch (err) {
       // setLoading(false);
+      alert(err);
+    }
+  };
+  // ======================BusySeriesLoad================================
+  const loadBusySeriesList = async (url,fY,code) => {
+    let Url = `${url}/api/values/GetBusyMaster?VchType=26&CompCode=${code}&FY=${fY}&MasterType=21`;
+    console.log('seriesUrl',Url);
+    try {
+      setLoading(true)
+      const h = new Headers();
+      h.append("Accept", "application/json");
+      // h.append("Authorization", token);
+      h.append("CompCode", "ESCRMDB");
+      h.append("FYear", "0");
+
+      const myRequest1 = new Request(Url, {
+        method: "GET",
+        headers: h,
+        // mode: "cors",
+        cache: "default",
+      });
+
+      fetch(myRequest1)
+        .then((response) => response.json())
+
+        .then((json) => {
+          const TableData = json;
+           console.log('StateData',TableData)
+          // setTemplateList(TableData);
+          setLoading(false)
+        });
+    } catch (err) {
       alert(err);
     }
   };
@@ -218,8 +263,8 @@ const QuotationTable = (props) => {
       if (res.status == 200) {
         let listData = got.data;
         // console.log("quotationno", listData);
-        
-        setQuotationCode(listData)
+
+        setQuotationCode(listData);
         // setLoading(false);
       } else {
         // setLoading(false);
@@ -231,10 +276,39 @@ const QuotationTable = (props) => {
     }
   };
 
+  const CalculateTable = (index, event)=>{
+   
+    var Quantity = rowsData[index]['qty'];
+
+    var Price = rowsData[index]['price'];
+    var Discount = rowsData[index]['disc'];
+    var Value = rowsData[index]['value'];
+    var Uom = rowsData[index]['item']['uom']
+    var TotalCalcValue = Quantity * Price - Quantity * Price * Discount/100
+    Value = TotalCalcValue;
+
+    setRowsData((previousData)=>{
+      var locArr=previousData
+      locArr[index]['qty'] = Quantity;
+      locArr[index]['price'] = Price;
+      locArr[index]['disc'] = Discount;
+      locArr[index]['uom'] = Uom;
+      locArr[index]['value'] = Value;
+      return previousData
+    })
+
+
+
+    console.log('qtylatest',Quantity,Price,Discount,Value,Uom)
+  }
+
+   
+
 
   React.useEffect(() => {
     loadConfigList();
     loadQuotationNo();
+    
   }, []);
 
   // -----------------item-data-load------------------
@@ -254,6 +328,7 @@ const QuotationTable = (props) => {
           correctData.push({
             value: item.bCode,
             label: item.name,
+            alias: item.alias,
             uom: item.unit,
             price: item.salePrice,
           });
@@ -261,7 +336,7 @@ const QuotationTable = (props) => {
 
         setitemListData(correctData);
 
-        // console.log("itemlistdata", correctData);
+        console.log("itemlistdata", itemData);
 
         // setLoading(false);
       } else {
@@ -274,66 +349,182 @@ const QuotationTable = (props) => {
     }
   };
 
+  // =========================busy Api save======================
+  const quotationSaveHandler = async (e) => {
+    e.preventDefault();
+    let qtItemDt = [];
+    rowsData.forEach((item, index) => {
+      console.log("item", item);
+      let val = item.item.value;
+      let lab = item.item.label;
+      let listprice = item.item.price;
+      qtItemDt.push({
+        ItemCode: val,
+        ItemName: lab,
+        Qty: item.qty,
+        MainUnit: item.uom,
+        AltUnit: "",
+        ListPrice: listprice,
+        DiscPerent: "0",
+        AddDiscount: "0",
+        Discount: "00.00",
+        ConFactor: 0,
+        AltQty: item.qty,
+        Price: listprice,
+        Amount: listprice,
+        IRemarks: "",
+        BillingUnit: 0,
+        IDescription1: "",
+        IDescription2: "",
+        IDescription3: "",
+        IDescription4: "",
+        ItemParamDet: [],
+        ItemSerailDT: [],
+      });
+    });
+    var qutBody = {
+      SeriesCode: 269,
+      SeriesName: soqSeries,
+      AccName: QuotCustName,
+      STPTName: "I/GST-5%",
+      MCName: "MAin Store",
+      Transport: "",
+      Station: "",
+      Remarks: "",
+      Salesman: "",
+      ItemDT: [...qtItemDt],
+      BSDetail: BusyBillsunData,
+    };
+    // console.log(("bodyData",qutBody))
+    // const url = `http://${ip}:203/api/Values/SaveInvoiceAuto?VchType=26&CompCode=${compCode}&Fy=${fYear}`
+    const url = `${busyBaseUrl}/api/values/SaveInvoiceAuto?VchType=26&CompCode=${compCode}&Fy=${fYear}`;
+    console.log(url);
+    let h = new Headers();
+    h.append("Accept", "application/json");
+    h.append("Content-Type", "application/json");
+    // console.log(JSON.stringify(qutBody))
+    var req1 = new Request(url, {
+      method: "POST",
+      headers: h,
+      body: JSON.stringify(qutBody),
+      mode: "cors",
+    });
+    console.log("msgggg", JSON.stringify(qutBody));
+    try {
+      setLoading(true);
+      const response = await fetch(req1);
+      const data = await response.json();
+      console.log("datastatus", data);
+
+      if (response.status == 200) {
+        let orderId = data.OrderId;
+        saveHandler(orderId);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    } catch (err) {
+      alert(err);
+      setLoading(false);
+    }
+  };
+
+  // React.useEffect(()=>{
+  //   quotationSaveHandler()
+  // },[rowsData])
+
   // =================================================
 
-  const saveHandler = async(e) => {
-  e.preventDefault()
+  const saveHandler = async (orderId) => {
+    // e.preventDefault()
     let bodydata = [];
-    rowsData.forEach((item,index) => {
-      let val = item.item.value
+    rowsData.forEach((item, index) => {
+      let val = item.item.value;
       // console.log("itemTable", val);
       bodydata.push({
         Code: 0,
-        SrNo :index+1,
-        Item :val,
-        Qty : parseFloat(item.qty),
-        Val : parseFloat(item.qty * item.price),
+        SrNo: index + 1,
+        Item: val,
+        Qty: parseFloat(item.qty),
+        Val: parseFloat(item.qty * item.price),
       });
     });
 
-    let lead = props.record.code
-    let formData={
-      Code:0,
-      Series :soqSeries,
-      Pre : prefix,
-      QtNo : qtNo,
-      Date : dates.date1,
-      Customer : parseInt(qutCustomerCode),
-      Lead : parseInt(lead||0),
-      TotQty : parseFloat(totalQty),
-      TotVal : parseFloat(totalValue),
-      BusyPost :0,
-      UserName :username||'',
-    }
+    let lead = props.record.code;
+    let lSubNo = props.record.lSubNo;
+    let formData = {
+      Code: 0,
+      Series: soqSeries,
+      Pre: prefix,
+      QtNo: qtNo,
+      Date: dates.date1,
+      Customer: parseInt(qutCustomerCode),
+      Lead: parseInt(lead || 0),
+      TotQty: parseFloat(totalQty),
+      TotVal: parseFloat(totalValue),
+      BusyPost: 0,
+      lSubNo: lSubNo || "",
+      BusyVchNo: parseInt(orderId),
+      UserName: username || "",
+    };
     let body = {
-      SaleQuotationHeader :[formData],
-      SaleQuotationDetails:bodydata,
-      SaleQuotationBSDetails:BillsunData
-    }
-    console.log('formData',JSON.stringify(body))
+      SaleQuotationHeader: [formData],
+      SaleQuotationDetails: bodydata,
+      SaleQuotationBSDetails: BillsunData,
+    };
+    console.log("formData", JSON.stringify(body));
     const url = "/api/SaleQuotationSaving";
     // console.log('bodyData', body)
 
     try {
-      // setLoading(true)
+      setLoading(true);
       let { res, got } = await api(url, "POST", body);
       if (res.status == 200) {
         // console.log("maindata",body);
         alert(got.msg);
         props.setQuotationShowHide(false);
-        // setLoading(false)
-      
+        setLoading(false);
       } else {
-        // setLoading(false)
+        setLoading(false);
         alert(got.msg);
       }
     } catch (error) {
-      // setLoading(false)
+      setLoading(false);
       alert(error);
     }
   };
+  // ======================================Customer filter with name And Mobile================================================
 
-  
+
+  const customFilter = (option, searchText) => {
+    // console.log(option.data.value,'vvvvv')
+    return (
+      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.mobile.toLowerCase().includes(searchText.toLowerCase())
+    )
+  }
+  const customFilter2 = (option, searchText) => {
+    // console.log(option.data.value,'vvvvv')
+    return (
+      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.alias.toLowerCase().includes(searchText.toLowerCase())
+    )
+  }
+
+  const toggleMenu = (isOpen) => {
+    setMenuOpen(isOpen)
+  }
+
+
+
+  const toggleMenu2 = (isOpen, rowIndex) => {
+
+    const updatedMenu = [...menuOpenStates];
+    updatedMenu[rowIndex] = isOpen; 
+
+
+    setMenuOpenStates(updatedMenu);
+  };
 
   return (
     <div>
@@ -343,6 +534,9 @@ const QuotationTable = (props) => {
 
       <div className="row">
         <div className="col-md-12">
+          {loading ? (
+            <ReactLoader loaderClass="position-absolute" loading={loading} />
+          ) : null}
           <div className="card invoices-add-card">
             <div className="card-body">
               <form className="invoices-form">
@@ -367,21 +561,33 @@ const QuotationTable = (props) => {
                           selectClass="col-lg-12"
                           name="customer"
                           placeholder="Customer"
-                          value={selectQutCustomer}
+                          // value={selectQutCustomer}
+                          getOptionLabel={(option) => `${option.label}`}
+                          getOptionValue={(option) => `${option}`}
+                          isOptionSelected={(option) =>
+                            qutCustomerCode === option.value
+                          }
                           onChange={qutcustomerListHandler}
                           options={props.customerList}
+                          isSearchable={true}
+                          filterOption={customFilter}
+                          onMenuOpen={() => toggleMenu(true)}
+                          onMenuClose={() => toggleMenu(false)}
+                          noOptionsMessage={() => null}
+                          autoFocus={true}
+                          menuIsOpen={menuOpen}
                           required
                         />
                       )}
 
                       <div className="form-group">
-                      <label>Series</label>
-                          <input
-                            className="form-control"
-                            type="text"
-                            defaultValue={soqSeries}
-                            disabled
-                          />
+                        <label>Series</label>
+                        <input
+                          className="form-control"
+                          type="text"
+                          defaultValue={soqSeries}
+                          disabled
+                        />
                         {/* <InputSelect
                           labelClass="col-lg-12"
                           selectName="Series"
@@ -402,7 +608,7 @@ const QuotationTable = (props) => {
                       <div className="invoice-details-box">
                         <div className="invoice-inner-head">
                           <span>
-                            Quotation No.{" "} {qtNo}
+                            Quotation No. {qtNo}
                             {/* <Link to="/view-invoice">IN093439#@09</Link> */}
                           </span>
                         </div>
@@ -457,6 +663,7 @@ const QuotationTable = (props) => {
                           <th>Items</th>
                           <th>Quantity</th>
                           <th>Price</th>
+                          <th>Discount %</th>
                           <th>Uom</th>
                           <th>Value</th>
                           <th>
@@ -476,7 +683,7 @@ const QuotationTable = (props) => {
                       </thead>
                       <tbody style={{ position: "relative", zIndex: "0" }}>
                         {rowsData.map((data, index) => {
-                          // console.log('dataPrice',data.uom)
+                          console.log('dataPrice',data)
                           return (
                             <tr key={index}>
                               <td className="srno">{index + 1}</td>
@@ -486,11 +693,24 @@ const QuotationTable = (props) => {
                                     //  ref={selectRef}
                                     name="item"
                                     style={{ width: "20%" }}
-                                    value={item}
+                                    // value={item}
+                                    getOptionLabel={(option) =>
+                                      `${option.label}`
+                                    }
+                                    getOptionValue={(option) => `${option}`}
+                                    isOptionSelected={(option) =>
+                                      data.code === option.value
+                                    }
                                     onChange={(event) => {
                                       selectHandler(event, index);
                                     }}
-                                    // onMenuClose={(evt)=>handleMenuClose(evt,index)}
+                                    isSearchable={true}
+                                    filterOption={customFilter2}
+                                    onMenuOpen={() => toggleMenu2(true,index)}
+                                    onMenuClose={() => toggleMenu2(false,index)}
+                                    noOptionsMessage={() => null}
+                                    autoFocus={true}
+                                    menuIsOpen={menuOpenStates[index]}
                                     options={itemListData}
                                     styles={customStyles}
                                     maxMenuHeight={170}
@@ -503,6 +723,7 @@ const QuotationTable = (props) => {
                                   onChange={(evnt) => {
                                     handleChange(index, evnt);
                                     handleQtyTotal();
+                                    CalculateTable(index, evnt);
                                     // handleValueTotal();
                                   }}
                                   // onBlur={handleValueTotal}
@@ -518,9 +739,11 @@ const QuotationTable = (props) => {
 
                               <td>
                                 <input
-                                  value={data.price}
+                                  value={data.price || price}
                                   onChange={(evnt) => {
                                     handleChange(index, evnt);
+                                    // handleQtyTotal();
+                                    CalculateTable(index, evnt);
                                   }}
                                   // onBlur={handleValueTotal}
                                   // onBlur={addTableRows}
@@ -531,7 +754,26 @@ const QuotationTable = (props) => {
                                   id="price"
                                   name="price"
                                   autoComplete="off"
-                                  disabled
+                                  // disabled
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  value={disc}
+                                  onChange={(evnt) => {
+                                    handleChange(index, evnt);
+                                    CalculateTable(index, evnt);
+                                    // handleQtyTotal();
+                                    // handleValueTotal();
+                                  }}
+                                  // onBlur={handleValueTotal}
+                                  onKeyDown={handleEnter}
+                                  className="form-control"
+                                  type="Number"
+                                  min="0"
+                                  id="disc"
+                                  name="disc"
+                                  autoComplete="off"
                                 />
                               </td>
                               <td>
@@ -549,9 +791,7 @@ const QuotationTable = (props) => {
                               </td>
                               <td>
                                 <input
-                                  value={
-                                    rowsData[index].qty * rowsData[index].price
-                                  }
+                                  value={data.value}
                                   onChange={(evnt) => {
                                     handleChange(index, evnt);
                                   }}
@@ -574,17 +814,18 @@ const QuotationTable = (props) => {
                                 >
                                   <i className="fa fa-plus-circle" />
                                 </span>
-                              {rowsData.length > 1?(
-                                <span
-                                  // href="#"
-                                  className="remove-btn"
-                                  onClick={() => {
-                                    deleteTableRows(index);
-                                    // handleValueTotal();
-                                  }}
-                                >
-                                  <i className="fa fa-trash" />
-                                </span>):null}
+                                {rowsData.length > 1 ? (
+                                  <span
+                                    // href="#"
+                                    className="remove-btn"
+                                    onClick={() => {
+                                      deleteTableRows(index);
+                                      // handleValueTotal();
+                                    }}
+                                  >
+                                    <i className="fa fa-trash" />
+                                  </span>
+                                ) : null}
                               </td>
                             </tr>
                           );
@@ -600,10 +841,11 @@ const QuotationTable = (props) => {
                       <div className="invoice-total-box">
                         <div className="invoice-total-inner">
                           <p>
-                            Total Quantity <span id="quintity"></span>
+                            Total Quantity <span id="quintity">{totalQty}</span>
                           </p>
                           <p>
-                            Total Value <span id="totalvalue"></span>
+                            Total Value{" "}
+                            <span id="totalvalue">{totalValue}</span>
                           </p>
                         </div>
                       </div>
@@ -614,7 +856,15 @@ const QuotationTable = (props) => {
                       {/* <h4 className="invoice-total-title">Summary</h4> */}
                       <div className="invoice-total-box">
                         <div className="invoice-total-inner">
-                          <BillsundryTable  setBillsunData={setBillsunData} totalValue={totalValue} grandTotalValue={grandTotalValue}/>
+                          <BillsundryTable
+                            totalQty={totalQty}
+                            setBusyBillsunData={setBusyBillsunData}
+                            showTotal={showTotal}
+                            grandTotal={grandTotal}
+                            setBillsunData={setBillsunData}
+                            totalValue={totalValue}
+                            grandTotalValue={grandTotalValue}
+                          />
                         </div>
                         <div className="invoice-total-footer">
                           <h4>
@@ -630,7 +880,7 @@ const QuotationTable = (props) => {
                           className="btn btn-primary"
                           type="submit"
                           onClick={
-                            saveHandler
+                            quotationSaveHandler
                             // props.setQuotationShowHide(false);
                           }
                         >

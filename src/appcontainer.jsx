@@ -167,6 +167,14 @@ import QuotationComp from "./components/quotation";
 import QuotationListComp from "./components/quotation/List";
 import useFetch from "./components/Hooks/useFetch";
 import BillsundryComp from "./components/master/BillSundry";
+import LocationComp from "./components/master/Location";
+import SourceMasterComp from "./components/master/sourceMaster";
+import UserTypeComp from "./components/master/userType/UserTypeComp";
+import WhatsAppConfigPage from "./components/WhatsAppConfig/WhatsAppConfigPage";
+import LeadSummaryReport from "./components/report/LeadSummaryReport.jsx";
+import LeadTrailReport from "./components/report/LeadTrailReport.jsx";
+import OpportunityComp from "./components/opportunity/OpportunityComp.jsx";
+// import UserRight from "./components/UserRightTree/UserRight";
 
 
 const AppUniversal = (props) => {  
@@ -278,6 +286,13 @@ const AppUniversal = (props) => {
           <Route path='/quotation' exact component = {QuotationComp}/>
           <Route path='/quotationlist' exact component = {QuotationListComp}/>
           <Route path='/billsundry' exact component = {BillsundryComp}/>
+          <Route path='/location' exact component = {LocationComp}/>
+          <Route path='/source' exact component = {SourceMasterComp}/>
+          <Route path='/user_type' exact component = {UserTypeComp}/>
+          <Route path='/whatsapp_config' exact component = {WhatsAppConfigPage}/>
+          <Route path='/lead_summary' exact component = {LeadSummaryReport}/>
+          <Route path='/lead_trail' exact component = {LeadTrailReport}/>
+          <Route path='/opportunity' exact component = {OpportunityComp}/>
 
 
 
@@ -327,7 +342,7 @@ const AppUniversal = (props) => {
           <Route path="/drag-drop" exact component={Dragdrop} />
           <Route path="/rating" exact component={Rating} />
           <Route path="/toastr" exact component={Toastr} />
-          <Route path="/text-editor" exact component={Texteditor} />
+          {/* <Route path="/text-editor" exact component={Texteditor} /> */}
           <Route path="/counter" exact component={Counter} />
           <Route path="/scrollbar" exact component={Scrollbar} />
           <Route path="/spinner" exact component={Spinner} />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import TextEditor from "../common/editor";
+// import TextEditor from "../common/editor";
 // import { Editor } from "react-draft-wysiwyg";
 // import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const Othersettings =()=> {
@@ -338,7 +338,7 @@ const Othersettings =()=> {
                       wrapperClassName="wrapperClassName"
                       editorClassName="editorClassName"
                     /> */}
-                    <TextEditor/>
+                    {/* <TextEditor/> */}
                   </div>
                   <div className="form-group mb-0">
                     <div className="settings-btns">

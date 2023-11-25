@@ -14,9 +14,9 @@ const ArchitectPage = (props) => {
   return (
     <div className="page-wrapper">
       <PageHelmet
-        helmetTitle="Architect - S&S Enterprises"
+        helmetTitle="ContactMaster - S&S Enterprises"
         helmetName="description"
-        helmetContent="Architect Page"
+        helmetContent="ContactMaster Page"
       />
 
       {props.loading ? (
@@ -27,14 +27,14 @@ const ArchitectPage = (props) => {
         {/* Page Header */}
         <PageHeader
           iclassName="fa fa-object-group"
-          pageTitle="Architect"
-          disableTitle="Architect"
+          pageTitle="Contact Master"
+          disableTitle="Contact Master"
         />
         {/* /Page Header */}
 
         <CardComp
-          cardTitle="Architect Form"
-          cardBodyTitle="Architect Information"
+          cardTitle="Contact Master Form"
+          cardBodyTitle="Information"
         >
           <form onSubmit={props.saveHandler}>
             <div className="row">
@@ -65,7 +65,6 @@ const ArchitectPage = (props) => {
                   placeholder="Alternate Mobile No."
                   value={mobile2.slice(0, 10)}
                   onChange={props.handleInputField}
-                  required
                 />
                 <InputField
                   type="email"
@@ -90,7 +89,7 @@ const ArchitectPage = (props) => {
 
                 <InputSelect
                   labelClass="col-lg-3"
-                  selectName="Business Nature"
+                  selectName="Type Of Trade"
                   selectClass="col-lg-9"
                   name="businness"
                   placeholder="Business Nature"
@@ -143,13 +142,23 @@ const ArchitectPage = (props) => {
                   onChange={props.handleInputField}
                   required
                 />
-                <InputField
+                {/* <InputField
                   type="text"
                   name="location"
                   labelName="Location"
                   value={location}
                   onChange={props.handleInputField}
                   required
+                /> */}
+                 <InputSelect
+                  labelClass="col-lg-3"
+                  selectName="Location"
+                  selectClass="col-lg-9"
+                  name="location"
+                  placeholder="Select Location"
+                  value={props.location}
+                  onChange={props.locationHandler}
+                  options={props.locationList}
                 />
 
                 <DateTimeInput

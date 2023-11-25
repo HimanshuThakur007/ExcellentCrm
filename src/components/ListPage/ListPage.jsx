@@ -70,9 +70,13 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
                       id == 2 ?'Add Customer':
                       id == 3 ?"Add Department":
                       id == 4 ?"Add Purpose":
-                      id == 6 ? "Add Business Nature":
-                      id == 5 ? "Add Contractor":
-                      id == 7 ? "Add BillSundry":"Add"} 
+                      id == 6 ? "Add Trade Type":
+                      id == 5 ? "Add Contact":
+                      id == 7 ? "Add BillSundry":
+                      id == 8 ? "Add Location":
+                      id == 9 ? "Add Source":
+                      id == 10 ? "Add User Type":"Add"
+                    } 
                       onClick={onRowClick}
                       />
                     </li>

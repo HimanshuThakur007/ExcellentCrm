@@ -40,6 +40,7 @@ const DepartmentPage = (props) => {
                   name="name"
                   labelName="Name"
                   value={name}
+                  star='*'
                   onChange={props.handleInputField}
                   required
                 />
@@ -47,24 +48,40 @@ const DepartmentPage = (props) => {
                   type="email"
                   name="email"
                   labelName="Email"
+                  star='*'
                   value={email}
                   onChange={props.handleInputField}
                   required
                 />
-                <InputField
+                {/* <InputField
                   type="text"
                   name="address"
                   labelName="Address"
                   value={address}
                   onChange={props.handleInputField}
                   required
-                />
+                /> */}
+                 <div className="form-group row">
+                  <label className="col-lg-3 col-form-label">Address</label>
+                  <div className="col-lg-9">
+                    <textarea
+                      type="text"
+                      name="address"
+                      rows="6"
+                      className="form-control"
+                      placeholder="Address.."
+                      value={address}
+                      onChange={props.handleInputField}
+                    />
+                  </div>
+                </div>
               </div>
               <div className="col-xl-6">
                 <InputField
-                  type="text"
+                  type="number"
                   name="mobile"
                   labelName="Mobile No."
+                  star='*'
                   value={mobile.slice(0, 10)}
                   onChange={props.handleInputField}
                   required
@@ -73,6 +90,7 @@ const DepartmentPage = (props) => {
                   type="text"
                   name="compcode"
                   labelName="Company Code"
+                  star='*'
                   value={compcode}
                   onChange={props.handleInputField}
                   required

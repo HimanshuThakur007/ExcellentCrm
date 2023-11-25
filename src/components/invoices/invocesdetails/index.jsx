@@ -3,7 +3,15 @@ import { Helmet } from "react-helmet";
 import { LogoSs } from '../../imagepath';
 import IMG01 from '../../../assets/images/logo.png'
 import IMG02 from '../../../assets/images/signature.png'
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 const ViewInvoices =()=>{
+    let history = useHistory()
+    const { state } = useLocation();
+    if (state){
+
+        var data = state.record
+        console.log('state', data)
+    }
     return(
         <>
         {/* Page Wrapper */}
@@ -15,8 +23,12 @@ const ViewInvoices =()=>{
             {/* Page Content */}
             <div className="content container-fluid">
             <div className="row justify-content-center">
+           
+                     
+                    
                 <div className="col-xl-10">
                 <div className="card invoice-info-card">
+              
                     <div className="card-body">
                     <div className="invoice-item invoice-item-one">
                         <div className="row">
@@ -26,7 +38,7 @@ const ViewInvoices =()=>{
                             </div>
                             <div className="invoice-head">
                             <h2>Quotation</h2>
-                            <p>Quotation Number : In983248782</p>
+                            <p>Quotation Number : {data && data.qtNo||''}</p>
                             </div>
                         </div>
                         <div className="col-md-6">
@@ -34,11 +46,14 @@ const ViewInvoices =()=>{
                             <strong className="customer-text-one">
                             Quotation From
                             </strong>
-                            <h6 className="invoice-name">Company Name</h6>
+                            <h6 className="invoice-name">S & S Enterprises</h6>
                             <p className="invoice-details">
-                                9087484288 <br />
-                                Address line 1, Address line 2<br />
-                                Zip code ,City - Country
+                             09829837433 <br />
+                             New Sanganer Rd, opp.<br />
+                             Mansarovar Metro Depot, <br />
+                             near Kisan Dharm Kanta, <br />
+                             SBBJ Officers COlony, <br />
+                             302020 , Rajasthan - India
                             </p>
                             </div>
                         </div>
@@ -50,7 +65,7 @@ const ViewInvoices =()=>{
                         <div className="col-md-6">
                             <div className="invoice-info">
                             <strong className="customer-text-one">Billed to</strong>
-                            <h6 className="invoice-name">Customer Name</h6>
+                            <h6 className="invoice-name">{data && data.customerName}</h6>
                             <p className="invoice-details invoice-details-two">
                                 9087484288 <br />
                                 Address line 1, <br />
@@ -83,7 +98,7 @@ const ViewInvoices =()=>{
                         <div className="row">
                         <div className="col-lg-4 col-md-4">
                             <div className="invoice-issues-date">
-                            <p>Issue Date : 27 Jul 2022</p>
+                            <p>Issue Date : {data && data.date}</p>
                             </div>
                         </div>
                         <div className="col-lg-4 col-md-4">
@@ -196,6 +211,11 @@ const ViewInvoices =()=>{
                         />
                         <span className="d-block">Harristemp</span>
                     </div>
+                    </div>
+                    <div className='card-footer'>
+                   
+                        <h4 className="text-primary" onClick={()=>history.goBack()} style={{cursor:'pointer'}}>{"<<---- Goback"}</h4>
+                    
                     </div>
                 </div>
                 </div>

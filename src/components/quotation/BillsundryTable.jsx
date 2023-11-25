@@ -3,7 +3,15 @@ import Select from "react-select";
 import useFetch from "../Hooks/useFetch";
 // import './index.css'
 
+
+
+var perTotal =0
 const BillsundryTable = (props) => {
+  var totalQty = props.totalQty
+    var totalvalue = props.totalValue
+    var div =0;
+   
+    var grt = 0
   let api = useFetch();
   const customStyles = {
     control: (base) => ({
@@ -26,9 +34,11 @@ const BillsundryTable = (props) => {
 
   const { desc, rate, value } = rowsData;
   var tot = props.totalValue;
+  var totqty = props.totalQty
+  // console.log('tot45', totqty*)
 
   const selectHandler = (select, index) => {
-    console.log('select', select.feed)
+    console.log('select', select)
     
     setRowsData((rowsData) => {
       return rowsData.map((obj, ind) => {
@@ -36,32 +46,62 @@ const BillsundryTable = (props) => {
           ? {
               ...obj,
               desc: select,
-              rate: parseFloat(select.value),
-              value: select.feed == 1 ? parseFloat((tot * select.value) / 100):parseFloat(select.value),
+              // rate: parseFloat(select.value),
+              rate: parseFloat(select.cvalue),
+              // value: select.feed == 1 ? parseFloat((tot * select.value) / 100):parseFloat(select.value),
+              value: select.feed == 1 ? parseFloat((tot * select.cvalue) / 100): select.feed == 0 ? 
+              parseFloat(select.cvalue): select.feed == 2 ? parseFloat((totqty * select.cvalue)):'',
               //   price: select.price,
+              
             }
           : obj;
-        // console.log('price', price)
       });
       
     })
+    // console.log('rowwww',rowsData)
 
     document.getElementById(index).value = select.value || 0;
   };
+  // console.log('rowsData34',rowsData)
 
-  const getBillSundryList = async () => {
+  // ==========configurationApi===================================
+  const loadConfigList = async () => {
+    let Url = `/api/Loadconfiguration`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        let listData = got.data[0];
+        // console.log("loadData", listData);
+        let compCode = listData.compCode;
+        getBillSundryList(compCode);
+        
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+
+ 
+
+
+  const getBillSundryList = async (code) => {
     let corrData = [];
 
-    let Url = `/api/BillSundaryDetails?Code=0`;
+    let Url = `/api/LoadBusyBillSundaryList?CompCode=${code}`;
     try {
       //  setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         let list = got.data;
         list.forEach((element) => {
-          corrData.push({ value: element.code, label: element.name ,feed:element.feedAs});
+          corrData.push({ value: element.code, label: element.name ,feed:element.feedAs, cvalue:element.value,bsType : element.bsType});
         });
-        console.log('billsundry',corrData)
+        // console.log('billsundry',list)
         setBillSunListData(corrData);
         //    setLoading(false);
       } else {
@@ -74,20 +114,20 @@ const BillsundryTable = (props) => {
     }
   };
   React.useEffect(() => {
-    getBillSundryList();
+    // getBillSundryList();
+    loadConfigList();
   }, []);
 
   const addTableRows = () => {
     const rowsInput = {
       srNo: "",
-      // id:0,
       desc: "",
       rate: 0,
       value: 0,
     };
     setRowsData([...rowsData, rowsInput]);
     // console.log("row input", rowsInput);
-    console.log("row data", rowsData);
+    // console.log("row data", rowsData);
   };
 
   const handleChange = (index, evnt) => {
@@ -96,8 +136,7 @@ const BillsundryTable = (props) => {
     const rowsInput = [...rowsData];
     rowsInput[index][name] = value;
 
-    console.log(name, " : ", value);
-    // rowsInput[index][id] = index;
+    // console.log(name, " : ", value);
     setRowsData(rowsInput);
   };
 
@@ -105,38 +144,135 @@ const BillsundryTable = (props) => {
     const rows = [...rowsData];
     rows.splice(index, 1);
     setRowsData(rows);
+    
   };
   // console.log(props.totalValue,'ttt')
 
   var billData = [];
+  var busyBillData=[]
   React.useEffect(() => {
     rowsData.forEach((item, index) => {
+      console.log('iitteemm45',item)
       let val = item.desc.value;
+      let lbl = item.desc.label
       let currentvalue = document
         .getElementById(`r${index}`)
         .childNodes[3].getElementsByTagName("input")[0].value;
-      // console.log("itemTable", item);
+      // console.log("itemTable", currentvalue);
       billData.push({
         Code: 0,
         Desc: val,
         Rate: parseFloat(item.rate),
         Value: parseFloat(currentvalue),
       });
+      busyBillData.push({
+        SrNo: index + 1,
+        BSCode: val,
+        BSName: lbl,
+        PercentVal: item.value,
+        Amount: perTotal,
+      });
     });
 
+console.log('bbddd',busyBillData)
+
     props.setBillsunData(billData);
+    props.setBusyBillsunData(busyBillData)
   }, [rowsData]);
 
   //   console.log(billData,'bbbb')
 
   React.useEffect(() => {
     props.grandTotalValue();
-  }, [rowsData, props.totalValue]);
+    // console.log('totalv',props.totalValue)
+  }, [props.totalValue]);
+  // console.log('val', props.grandTotal+props.totalValue)
+
+  const billSundryCalcHandler = (index, event) => {
+    let totRate = event.target.value;
+
+    let feedAs = rowsData[index]["desc"]["feed"];
+    let bsType = rowsData[index]["desc"]["bsType"];
+
+    if (rowsData.length == 1) {
+      if (feedAs == 1) {
+        grt = (totalvalue * totRate) / 100;
+        div = grt;
+        if (bsType == 1) {
+          perTotal = div + totalvalue;
+        } else {
+          perTotal = totalvalue - div;
+        }
+      } else if (feedAs == 2) {
+        grt = totqty * totRate;
+        div = grt;
+        if (bsType == 1){
+        perTotal = div + totalvalue;
+        }else {
+          perTotal = totalvalue - div;
+        }
+      } else {
+        div = totRate;
+        if (bsType == 1){
+        perTotal = div + totalvalue;
+        }else{
+          perTotal = totalvalue-div;
+        }
+      }
+    } else {
+      console.log("hello else", perTotal);
+      if (feedAs == 1) {
+        grt = (perTotal * totRate) / 100;
+        div = grt;
+        if (bsType == 1) {
+        perTotal = div + perTotal;
+        }else{
+          perTotal = perTotal - div;
+        }
+      } else if (feedAs == 2) {
+        grt = totqty * totRate;
+        div = grt;
+        if (bsType == 1) {
+        perTotal = div + perTotal;
+        }else{
+          perTotal = perTotal - div;
+        }
+      } else {
+        div = totRate;
+        if (bsType == 1) {
+        perTotal = div + perTotal;
+        }else{
+          perTotal = perTotal - div;
+        }
+      }
+    }
+    var locObj = rowsData[index];
+    locObj["value"] = div;
+    props.showTotal(perTotal);
+
+    setRowsData([...rowsData, locObj]);
+    console.log(rowsData[index]);
+    console.log(perTotal, "kkklllgg");
+    console.log(feedAs, "feedAs");
+    console.log(div, "calculated Value");
+ 
+    console.log(
+      "totqty",
+      totalQty,
+      "val",
+      totalvalue,
+      rowsData[index]["desc"]["feed"]
+    );
+    console.log("totalRate", totRate);
+  };
+
+
+
 
   return (
     <>
       <div className="invoice-add-table">
-        <h4>BillSundry</h4>
+        <h4>Bill Sundry</h4>
         <div
           className="table-responsive"
           style={{ height: "40vh", minHeight: "40vh" }}
@@ -165,11 +301,13 @@ const BillsundryTable = (props) => {
             </thead>
             <tbody style={{ position: "relative", zIndex: "0" }}>
               {rowsData.map((data, index) => {
+                let val = div
                 // console.log('dataPrice',data.desc.feed)
-                var div;
-                if(data.desc.feed == 1){
-                 div = parseFloat((data.rate * tot) / 100);
-                }else{div = parseFloat(data.rate)}
+                // var div;
+                // if(data.desc.feed == 1){
+                //  div = parseFloat((data.rate * tot) / 100);
+                // }else if(data.desc.feed == 2){div = parseFloat(data.rate * totqty)}
+                // else{div = parseFloat(data.rate)}
                 return (
                   <tr key={index} id={"r" + index}>
                     <td className="srno">{index + 1}</td>
@@ -195,6 +333,7 @@ const BillsundryTable = (props) => {
                         id={index}
                         value={data.rate}
                         onChange={(evnt) => {
+                          billSundryCalcHandler(index,evnt)
                           handleChange(index, evnt);
                         }}
                         //   onKeyDown={handleEnter}
@@ -208,7 +347,7 @@ const BillsundryTable = (props) => {
 
                     <td>
                       <input
-                        value={div}
+                        value={data.value}
                         onChange={(evnt) => {
                           handleChange(index, evnt);
                         }}

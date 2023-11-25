@@ -1,19 +1,15 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   useHistory,
   useLocation,
 } from "react-router-dom/cjs/react-router-dom.min";
 import UserCreation from "./UserCreation";
 import useFetch from "../../Hooks/useFetch";
-import ReactToast, { showToastMessage,showToastError } from "../../CustomComp/ReactToast";
-
-
-const user_type_list = [
-  { label: "HOD", value: 1 },
-  { label: "Sales Person", value: 2 },
-  { label: "Customer", value: 3 },
-  { label: "FollowUp", value: 4 },
-];
+import ReactToast, {
+  showToastMessage,
+  showToastError,
+} from "../../CustomComp/ReactToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const block_list = [
   { label: "No", value: 0 },
@@ -24,23 +20,53 @@ const UserCeation = () => {
   const { state } = useLocation();
   const history = useHistory();
   const api = useFetch();
-  const [visibility, setVisibility]= useState(false);
+  const [imagePath, setImagePath] = useState("");
+  const [visibility, setVisibility] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [multiSelectValue, setMultiSelectValue] = useState([]);
   const [blockOption, setBlockOption] = useState(null);
   const [typeVal, setTypeVal] = useState(null);
+  const [typeList, setTypeList] = useState([]);
   const [blockVal, setBlockVal] = useState(null);
   const [modifySelect, setModifySelect] = useState();
   const [departmentList, setDepartmentList] = useState([]);
+  const [userRightList, setUserRightList] = useState([]);
   const [department, setDepartment] = useState(null);
   const [departmentCode, setDepartmentCode] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [image, setImage] = React.useState(null);
+  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState({
     username: "",
     password: "",
     email: "",
     confirmpassword: "",
+    address: "",
+    whtsap: "",
   });
+  // console.log('useImagePath', imagePath)
+  const [dates, setDates] = useState({
+    dob: new Date(),
+
+    // Add more date fields as needed
+  });
+  const [checked, setChecked] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+
+  React.useEffect(() => {
+    var uniqueChars;
+    let child = checked.concat(expanded);
+    uniqueChars = [...new Set(child)];
+    console.log(uniqueChars, "checked+++++");
+    console.log("expand", expanded);
+  }, [checked, expanded]);
+
+  // --------------------------date handler-----------------------------------------
+  const handleDateChange = (dateFieldName, dateValue) => {
+    setDates({
+      ...dates,
+      [dateFieldName]: dateValue,
+    });
+  };
 
   // const toastmsg = showToastMessage()
 
@@ -77,7 +103,57 @@ const UserCeation = () => {
       [name]: value,
     }));
   };
-  const { username, password, email, confirmpassword, mobile } = inputValue;
+  const {
+    username,
+    password,
+    email,
+    confirmpassword,
+    mobile,
+    address,
+    whtsap,
+  } = inputValue;
+
+  const convertToIST = (dateString) => {
+    const [day, month, year] = dateString.split("/").map(Number);
+    const dateObject = new Date(year, month - 1, day); // Note: JavaScript months are 0-indexed
+    const options = {
+      timeZone: "Asia/Kolkata", // Indian Standard Time
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    return dateObject.toString("en-IN", options);
+  };
+
+  // ----------------listLoad -in Type Field--------------------
+  const getUserTypeList = async () => {
+    let currData = [];
+    let Url = `/api/LoadMasterData?MasterType=17`;
+    try {
+      setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        //  console.log('depdata',got.data)
+        let list = got.data;
+        list.forEach((element) => {
+          currData.push({ value: element.code, label: element.name });
+        });
+        //  console.log('ccccccccc%%%',currData)
+        setTypeList(currData);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      alert(err);
+    }
+  };
+  // --------------------modifyHandler----------------------------
 
   const getModifyHandler = async () => {
     if (state) {
@@ -88,14 +164,23 @@ const UserCeation = () => {
     }
     let modifyUrl = `/api/LoadUserMasterDetails?Code=${code}`;
     try {
-      setLoading(true)
+      setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
         // console.log("data", got.data);
         let listData = got.data[0];
         let userCreateMaster = listData.userMasterDetails;
+        let d = convertToIST(userCreateMaster[0].dob);
+        // console.log('datessss:-',d)
         let userDep = listData.userDepartment;
-        // console.log('uuuuuuuuuuuuu',userDep.department)
+        // console.log('uuuuuuuuuuuuu',listData)
+        if (listData.userImgs.length !== 0) {
+          let imageObj = listData.userImgs[0];
+          var finalImg = imageObj.img;
+          // console.log('iiiiiiiiiiiiiiii',finalImg)
+        } else {
+          finalImg = "";
+        }
 
         setInputValue({
           username: userCreateMaster[0].name,
@@ -103,7 +188,16 @@ const UserCeation = () => {
           email: userCreateMaster[0].email,
           confirmpassword: userCreateMaster[0].pwd,
           mobile: userCreateMaster[0].mobNo,
+          address: userCreateMaster[0].address,
+          whtsap: userCreateMaster[0].wNo,
         });
+        // if(userCreateMaster[0].imagePath != null && userCreateMaster[0].imagePath != undefined){
+        // setImage(userCreateMaster[0].imagePath)}
+        setImage(finalImg);
+        setDates({
+          dob: new Date(d) || "",
+        });
+        // console.log('userppa',userCreateMaster[0].imagePath)
         let corrData = [];
         userDep.map((item) => {
           corrData.push({
@@ -128,7 +222,7 @@ const UserCeation = () => {
           label: userCreateMaster[0].activeName,
         });
         setBlockVal(userCreateMaster[0].active);
-        setLoading(false)
+        setLoading(false);
       } else {
         setLoading(false);
         showToastError("Something Went Wrong in List loading");
@@ -139,33 +233,109 @@ const UserCeation = () => {
     }
   };
 
+  const getUserRightModifyHandler = async () => {
+    var currData = [];
+    var uniqueChars;
+    if (state) {
+      if (state && state.code) {
+        var code = state.code;
+        // var path = state.path
+      }
+    }
+    let Url = `/api/LoadUserRightsMenuTree?UCode=${code}`;
+    try {
+      setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        let data = got;
+        // console.log("MenuTreeOriginal Data", data);
+        data.map((grand) => {
+          // console.log('item',grand)
+          if (grand.checked) {
+            currData.push(grand.value);
+          }
+          grand.children.map((parents) => {
+            if (parents.checked) {
+              currData.push(parents.value);
+            }
+            if (parents.children != null && parents.children.length > 0) {
+              parents.children.map((child) => {
+                // console.log("$$$$$$$$$$$$$=>",cc)
+                if (child.checked) {
+                  // console.log("ccc44433", child);
+                  currData.push(child.value);
+                }
+              });
+            }
+          });
+
+          uniqueChars = [...new Set(currData)];
+          console.log("modCurrData$$$", uniqueChars);
+          setChecked(uniqueChars);
+        });
+
+        setLoading(false);
+      } else {
+        setLoading(false);
+        showToastError("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      showToastError(err);
+    }
+  };
+
+  // console.log(checked,"====checkedValue=====")
+
   useEffect(() => {
     if (state) {
       if (state && state.code) {
         getModifyHandler();
+        getUserRightModifyHandler();
       }
     }
-    // setDataCode(code)
+    getUserTypeList();
   }, [state]);
+
+  const imageHandler = (h) => {
+    // console.log('from user image',h[0])
+    setImagePath(h[0]);
+  };
+
+  const uniqByKeepLast = (data, key) => {
+    return [...new Map(data.map((x) => [key(x), x])).values()];
+  };
 
   const saveHandler = async (e) => {
     e.preventDefault();
     if (state) {
       if (state && state.code) {
         var code = state.code;
-        var path = state.path
+        var path = state.path;
       }
     }
     let mainArr = [];
-    if (multiSelectValue.length > 0){
-    multiSelectValue.map((item) => {
-      mainArr.push({ department: item.value , code: code || 0 });
-    })}else{
-      mainArr.push({department: parseInt(departmentCode), code:code||0})
+    if (multiSelectValue.length > 0) {
+      multiSelectValue.map((item) => {
+        mainArr.push({ department: item.value, code: code || 0 });
+      });
+    } else {
+      mainArr.push({ department: parseInt(departmentCode), code: code || 0 });
     }
+    let userRight = [];
+    var uniqueChars;
+    let child = checked.concat(expanded);
+    // console.log('Cc56',checked)
+    child.forEach((item) => {
+      // console.log(item,"======++++++")
+      userRight.push({ Code: code || 0, RCode: parseInt(item) });
+    });
+    uniqueChars = uniqByKeepLast(userRight, (it) => it.RCode);
+    // console.log('userRighr Data for Save',uniqueChars);
+    console.log("HHHHHHIIIIIMMMMMMMM", uniqueChars);
     // console.log("main Arr", mainArr);
     const urlCreateUser = "/api/SaveUserMaster";
-    // console.log('codeUsers', code)
+    // console.log('codeUsers', selectedFiles)
     var body = {
       UserMasterDetails: [
         {
@@ -178,18 +348,31 @@ const UserCeation = () => {
           active: parseInt(blockVal),
           department: parseInt(departmentCode) || 0,
           userName: username,
+          ImagePath: image,
+          Address: address,
+          DOB: dates.dob,
+          WNo: whtsap,
+          Site: 0,
+          ProjType: 1,
         },
       ],
       UserDepartment: [...mainArr],
+      UserImgs: [
+        {
+          Code: code || 0,
+          Img: image,
+        },
+      ],
+      UserRights: [...uniqueChars],
     };
-    // console.log("body", JSON.stringify(body));
+    console.log("body", JSON.stringify(body));
     try {
-      setLoading(true)
+      setLoading(true);
       let { res, got } = await api(urlCreateUser, "POST", body);
       if (res.status == 200) {
         // console.log("maindata", body);
-        // alert(got.msg);        
-        showToastMessage(got.msg)
+        // alert(got.msg);
+        showToastMessage(got.msg);
         setInputValue({
           username: "",
           mobile: "",
@@ -199,19 +382,18 @@ const UserCeation = () => {
         setSelectedOption("");
         setBlockOption("");
         setDepartment("");
-        setMultiSelectValue([])
-        if(code !== 0 && code != undefined){
-          history.push('/list/1')
+        setMultiSelectValue([]);
+        if (code !== 0 && code != undefined) {
+          history.push("/list/1");
           // console.log('hello from user')
         }
-        setLoading(false)
+        setLoading(false);
       } else {
-        setLoading(false)
+        setLoading(false);
         showToastError(got.msg);
-       
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       showToastError(error);
     }
   };
@@ -244,20 +426,81 @@ const UserCeation = () => {
   };
   // ------------show/hide-------
   const togglePasswordVisibility = () => {
-    setVisibility(prevShowPassword => !prevShowPassword);
+    setVisibility((prevShowPassword) => !prevShowPassword);
   };
+
+  const onImageChange = (e) => {
+    // if (event.target.files && event.target.files[0]) {
+    //   setImage(URL.createObjectURL(event.target.files[0]));
+    // }
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result;
+        setImage(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // -------------User-Rigths------------------------------
+  const getUserRights = async () => {
+    let currData = [];
+    let Url = `/api/LoadRightsManuTree?ProjType=1`;
+    console.log("url", Url);
+    try {
+      setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        let data = got;
+        data.forEach((item) => {
+          if (item.children.length > 0) {
+            currData.push({
+              value: item.value,
+              label: item.label,
+              type: item.type,
+              address: item.address,
+              checked: item.checked,
+              children: item.children,
+            });
+          } else {
+            currData.push({
+              value: item.value,
+              label: item.label,
+              type: item.type,
+              address: item.address,
+              checked: item.checked,
+              children: null,
+            });
+          }
+        });
+        console.log("***********", currData);
+
+        setUserRightList(currData);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      alert(err);
+    }
+  };
+
   useEffect(() => {
     getDepartementList();
     // togglePasswordVisibility()
-    
+    getUserRights();
   }, []);
-
 
   return (
     <>
-      <ReactToast/>
+      <ReactToast />
       <UserCreation
-        typelist={user_type_list}
+        typelist={typeList}
         selectHandler={selectHandler}
         selectedOption={selectedOption}
         blockOption={blockOption}
@@ -277,6 +520,17 @@ const UserCeation = () => {
         loading={loading}
         togglePasswordVisibility={togglePasswordVisibility}
         visibility={visibility}
+        imageHandler={imageHandler}
+        handleDateChange={handleDateChange}
+        dates={dates}
+        image={image}
+        onImageChange={onImageChange}
+        setExpanded={setExpanded}
+        expanded={expanded}
+        setChecked={setChecked}
+        checked={checked}
+        nodes={userRightList}
+        // renderCheckbox={renderCheckbox}
       />
     </>
   );

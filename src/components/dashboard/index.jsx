@@ -16,6 +16,11 @@ import "../antdstyle.css";
 import { itemRender, onShowSizeChange } from "../paginationfunction";
 import useFetch from '../Hooks/useFetch';
 import LeadHistoryModal from "./LeadHistoryModal";
+import DoughnutChart from "./piechart/piechart2";
+import DoughnutChart1 from "./piechart/piechart3";
+// import Customer from "../../assets/images/Customer.png";
+import { BiHomeAlt } from 'react-icons/bi'
+import { Customer,Contact,Lead,ConvertedLead } from "../imagepath";
 
 const Dashboard = () => {
   let api = useFetch();
@@ -30,8 +35,10 @@ const Dashboard = () => {
   const [convertedLeadHistory,setConvertedLeadHistory] = React.useState([])
   const [leadHistory,setleadHistory] = React.useState([])
   const [convertedList,setConvertedList] = React.useState([])
-  const [pendingFollowup, setPendingFollowUp] = React.useState(false)
+  const [pendingFollowup, setPendingFollowUp] = React.useState(true)
   const [convertedShowHide, setConvertedShowHide] = React.useState(false)
+  const [length, setLength] = React.useState(0)
+  const [contactLength, setContactLength] = React.useState(0)
   const followupShowHide = ()=>{
     setConvertedShowHide(false)
     setPendingFollowUp(!pendingFollowup)
@@ -202,10 +209,59 @@ const getConvertedLeadHistory = async (vch) => {
       alert(err);
     }
   };
+  const getList = async () => {
+    // setLoading(true);
+    let listUrl = `/api/LoadCustomerMasterList`;
+    try {
+      let { res, got } = await api(listUrl, "GET", "");
+      if (res.status == 200) {
+        // console.log('dataCustomer',got.data)
+        let list = got.data;
+        setLength(list.length)
+
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+
+  // ---------------------Contractor---------------------------------------
+
+  const getContractorList = async () => {
+    let Url = `/api/ArchMasterList`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        //  console.log('listdata',got.data)
+        let list = got.data;
+            setContactLength(list.length)
+        // setListData(DataFormat);
+        //  console.log('tttt', DataFormat)
+        // setRowData(contractor);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
 
   React.useEffect(()=>{
+    if(userDatas != null){
     getFollowupList();
     getConvertedLeadList();
+    getList();
+    getContractorList();
+    }
     
   },[])
 var followup = followupList.length
@@ -234,7 +290,7 @@ var total = followup + converted
   return (
     <div className="page-wrapper">
       <PageHelmet
-        helmetTitle="Deals Dashboard - S&S Enterprises"
+        helmetTitle="CRM Dashboard - S&S Enterprises Jaipur"
         helmetName="Dashboard"
         helmetContent="Dashboard Page"
       />
@@ -242,16 +298,73 @@ var total = followup + converted
       
         <PageHeader
           iclassName="fas fa-table"
-          pageTitle="Home"
-          disableTitle="Home"
+          pageTitle="Dashboard"
+          disableTitle="Dashboard"
         />
        
+       <div className="row g-20">
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20">
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/imges/Customer.png"></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number">{length}+</h3>
+                     <span className="expovent__count-text">Customer</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                    {/* <img className="flaticon-group" src={Customer}/> */}
+                     {/* <i className="flaticon-group"></i> */}
+                     <img className="" src={Customer} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20">
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png"></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number">{contactLength}+</h3>
+                     <span className="expovent__count-text">Contact Master</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-speaker"></i> */}
+                     <img className="" src={Contact} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20">
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number">{total}+</h3>
+                     <span className="expovent__count-text">Leads</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-reminder"></i> */}
+                     <img className="" src={Lead} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20">
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number">{converted}+</h3>
+                     <span className="expovent__count-text">Converted Leads</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-ticket-1"></i> */}
+                     <img className="" src={ConvertedLead} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
         <div className="row graphs">
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
                 <h3 className="card-title">Total Lead: {total}</h3>
-                <PieChart data={state}/>
+                <PieChart pending={followup} leadConverted={converted}/>
               </div>
             </div>
           </div>
@@ -264,6 +377,27 @@ var total = followup + converted
             </div>
           </div>
         </div>
+ {/* ---------------------piechart2----------------- */}
+ <div className="row graphs">
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h3 className="card-title">Converted Leads</h3>
+                <DoughnutChart />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h3 className="card-title">Quotation</h3>
+                <DoughnutChart1 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         <div className="row graphs">
          
           <div className="col-md-6">
@@ -341,6 +475,10 @@ var total = followup + converted
           </div>
         </div>
         ):null}
+
+       
+
+
         {/* <div className="row all-reports m-0">
           <div className="col-md-4 p-0">
             <ul

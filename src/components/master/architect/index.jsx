@@ -13,23 +13,23 @@ import ReactToast from "../../CustomComp/ReactToast";
 const business_type_list = [
   {
     value: 1,
-    label: "Premium",
+    label: "PREMIUM",
   },
   {
     value: 2,
-    label: "Normal",
+    label: "NORMAL",
   },
   {
     value: 3,
-    label: "Special",
+    label: "SPECIAL",
   },
   {
     value: 4,
-    label: "Vip",
+    label: "VIP",
   },
   {
     value: 5,
-    label: "Vvip",
+    label: "VVIP",
   },
 ];
 
@@ -39,11 +39,14 @@ const ArchitectComp = () => {
   const { state } = useLocation();
   const [loading, setLoading] = React.useState(false);
   const [selectType, setSelectType] = React.useState(null);
+  const [location, setlocation] = React.useState(null);
   const [selectTypeCode, setSelectTypeCode] = React.useState(0);
+  const [locationCode, setlocationCode] = React.useState(0);
   const [selectBusinessNature, setselectBusinessNature] = React.useState(null);
   const [selectBusinessNatureCode, setSelectBusinessNatureCode] =
     React.useState(0);
   const [businessList, setBusinessList] = React.useState([]);
+  const [locationList, setlocationList] = React.useState([]);
   const [dates, setDates] = React.useState({
     dob: new Date(),
     doa: new Date(),
@@ -97,7 +100,11 @@ const ArchitectComp = () => {
     setselectBusinessNature(select);
     setSelectBusinessNatureCode(select.value);
   };
-  const { name, mobile, mobile2, email, org, rAdd, oAdd, pincode, location } =
+  const locationHandler = (select) => {
+    setlocation(select);
+    setlocationCode(select.value);
+  };
+  const { name, mobile, mobile2, email, org, rAdd, oAdd, pincode } =
     inputValue;
   var DOB = convertDate(dates.dob);
   var DOA = convertDate(dates.doa);
@@ -127,9 +134,37 @@ const ArchitectComp = () => {
       alert(err);
     }
   };
+  // ==========locationApi======================
+  // let Url = `/api/LoadMasterData?MasterType=15`;
+  const getLocationList = async () => {
+    var locationData = [];
+    // setLoader(true);
+    let Url = `/api/LoadMasterData?MasterType=15`;
+    try {
+      setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        // console.log("datass", got.data);
+        let listData = got.data;
+        listData.forEach((item) => {
+          locationData.push({ value: item.code, label: item.name });
+        });
+        // console.log("modifyData", correctData);
+        setlocationList(locationData);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      alert(err);
+    }
+  };
 
   React.useEffect(() => {
     getBusinessNatureList();
+    getLocationList();
   }, []);
   // ---------savingApi-------------------------
   const saveHandler = async (e) => {
@@ -151,7 +186,7 @@ const ArchitectComp = () => {
       ResAdd: rAdd,
       OfcAdd: oAdd,
       PinCode: pincode,
-      Location: location,
+      Location: locationCode,
       DOB: dates.dob,
       DOA: dates.doa,
       BN: selectBusinessNatureCode,
@@ -228,8 +263,9 @@ const ArchitectComp = () => {
       setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        // console.log("data", got.data);
+        console.log("data", got.data);
         let listData = got.data[0];
+        // console.log('listData', listData)
         let d = convertToIST(listData.dob);
         let f = convertToIST(listData.doa);
 
@@ -256,12 +292,14 @@ const ArchitectComp = () => {
           rAdd: listData.resAdd,
           oAdd: listData.ofcAdd,
           pincode: listData.pinCode,
-          location: listData.location,
+          // location: listData.location,
         });
         setselectBusinessNature({ label: listData.bnName });
         setSelectBusinessNatureCode(listData.bn);
         setSelectType({ label: type });
         setSelectTypeCode(listData.type);
+        setlocation({label: listData.locationName})
+        setlocationCode(listData.location)
 
         setDates({
           dob: new Date(d),
@@ -299,6 +337,10 @@ const ArchitectComp = () => {
         businessList={businessList}
         selectBusinessNature={selectBusinessNature}
         businessNatureHandler={businessNatureHandler}
+        location={location}
+        setlocation={setlocation}
+        locationHandler={locationHandler}
+        locationList={locationList}
       />
     </>
   );

@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Select from 'react-select';
-import TextEditor from '../../common/editor';
+// import TextEditor from '../../common/editor';
 import ReactTagsInput from '../tags.jsx';
 // import { Editor } from "react-draft-wysiwyg";
 // import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -89,7 +89,7 @@ const EditBlog =()=>{
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
                       /> */}
-                      <TextEditor/>
+                      {/* <TextEditor/> */}
                     </div>
                   </div>
                 </div>

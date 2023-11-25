@@ -9,16 +9,22 @@ import InputField from "../CustomComp/InputField";
 const Configuration = () => {
   let api = useFetch();
   const [assignData, setAssignData] = useState(false);
+  const [autoLeadAssign , setAutoLeadAssign ] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState({
-    fyear:'', prefix:'', compCode:'',seriesName:'',seriesPrefix:''
+    fyear:'', prefix:'', compCode:'',seriesName:'',seriesPrefix:'',busyUrl:''
   });
 
   let bool = assignData;
+  let boo1 = autoLeadAssign
   let generateNumber = Number(bool);
+  let generateAutoLeadAssign = Number(boo1)
   // console.log("booollll", generateNumber);
   const checkHandler = (e) => {
     setAssignData(e.target.checked);
+  };
+  const autoLeadAssignHandler = (e) => {
+    setAutoLeadAssign(e.target.checked);
   };
 
   const handleInputField = (e) => {
@@ -29,7 +35,7 @@ const Configuration = () => {
     }));
   };
 
-  const { fyear, prefix, compCode,seriesName,seriesPrefix } = inputValue;
+  const { fyear, prefix, compCode,seriesName,seriesPrefix,busyUrl } = inputValue;
 
   const saveHandler = async (e) => {
     e.preventDefault();
@@ -43,11 +49,13 @@ const Configuration = () => {
     // console.log('codeUsers', code)
     var body = {
       LAA: generateNumber,
+      AutoLeadAssign : generateAutoLeadAssign,
       FY: parseInt(fyear)||0,
       PER: prefix,
       CompCode: compCode,
       SOQSeries: seriesName,
-      SOQSeriesPre : seriesPrefix
+      SOQSeriesPre : seriesPrefix,
+      SQURL: busyUrl
     };
     // console.log("body", body);
     try {
@@ -60,7 +68,8 @@ const Configuration = () => {
           prefix:'',
           compCode:'',
           seriesName:'',
-          seriesPrefix:''
+          seriesPrefix:'',
+          busyUrl:''
         })
         // setAssignData('')
         loadConfigList()
@@ -85,11 +94,13 @@ const Configuration = () => {
           prefix: listData.per,
           compCode: listData.compCode,
           seriesName: listData.soqSeries,
-          seriesPrefix: listData.soqSeriesPre
+          seriesPrefix: listData.soqSeriesPre,
+          busyUrl:listData.squrl
         });
         let compCode = listData.compCode
         sessionStorage.setItem("compCode", JSON.stringify({compCode}));
         setAssignData(listData.laa);
+        setAutoLeadAssign(listData.autoLeadAssign)
 
         // setConfigList(correctData);
         setLoading(false);
@@ -150,6 +161,18 @@ const Configuration = () => {
                         <span className="checkmark" /> Auto Assign
                       </label>
                     </div>
+                    <div className="form-group row">
+                      {/* <div className="selectBox-cont"> */}
+                      <label className="custom_check w-50 m-2">
+                        <input
+                          type="checkbox"
+                          name="leadAssign"
+                          onChange={autoLeadAssignHandler}
+                          checked={autoLeadAssign}
+                        />
+                        <span className="checkmark" />Auto Lead Assign
+                      </label>
+                    </div>
                     <div className="col-xl-6">
                       <InputField
                         type="number"
@@ -193,6 +216,14 @@ const Configuration = () => {
                         name="seriesPrefix"
                         labelName="Series Prefix"
                         value={seriesPrefix}
+                        onChange={handleInputField}
+                        required
+                      />
+                       <InputField
+                        type="text"
+                        name="busyUrl"
+                        labelName="BusyApiUrl"
+                        value={busyUrl}
                         onChange={handleInputField}
                         required
                       />

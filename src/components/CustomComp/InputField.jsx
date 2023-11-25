@@ -12,7 +12,7 @@ const InputField = (props) => {
   return (
     <>
       <div className="form-group row">
-        <label className="col-lg-3 col-form-label">{props.labelName}</label>
+        <label className="col-lg-3 col-form-label">{props.labelName} <span style={{ color: "red",fontSize:'bold' }}>{props.star}</span></label>
         <div className="col-lg-9">
           <input
             type={props.type}
@@ -23,14 +23,18 @@ const InputField = (props) => {
             value={props.value}
             placeholder={props.placeholder}
             // ref={props.ref}
+            minLength={props.minLength}
+            maxLength={props.maxLength}
             min={props.min}
             required={props.required}
             disabled={props.disabled}
-            
+
             // onKeyDown={handleEnter}
             // {...props}
           />
         </div>
+        {/* <div className="invalid-feedback">{props.errormsg}</div> */}
+        <div className={props.errClass}><span className='text-danger'>{props.errormsg}</span></div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import IMG01 from "../../assets/images/logo.png";
@@ -7,169 +7,207 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import ReactLoader from "../CommonFile/ReactLoader";
 import useFetch from "../Hooks/useFetch";
 
-
-
-
-const Login =(props)=> {
+const Login = (props) => {
   const history = useHistory();
-// let comp = props.comp
-// console.log('comp',comp)
-const[baseUrl,setBaseUrl]=useState('')
-const[port, setPort] = useState('')
+  // let comp = props.comp
+  // console.log('comp',comp)
+  const [baseUrl, setBaseUrl] = useState("");
+  const [port, setPort] = useState("");
   const [inputValue, setInputValue] = useState({
-    username:"",
-    password:""
- })
- const [loading, setLoading] = useState(false)
+    username: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
 
-//  ---------compCode Api----------------
+  //  ---------compCode Api----------------
 
-React.useEffect(()=>{
-var url = localStorage.getItem("Url","");
-var port = localStorage.getItem("Port","");
-if (url && port) {
-setBaseUrl(url);
-setPort(port);
-}
-},[])
-// console.log("port&url",port +":" +baseUrl)
-
-
-const handleInputField = (e) => {
-  const { name, value } = e.target;
-  setInputValue((prevState) => ({
-    ...prevState,
-    [name]: value,
-  }));
-};
-
-const {username, password} = inputValue
-// let api = useFetch()
-
-     
-
-const handleSubmit = (e)=>{
-  // console.log('calling')
-  e.preventDefault();
-  const urlStr = `http://${baseUrl}:${port}/api/Authentication?UserName=${username}&Pwd=${password}`;
-  // console.log('url', urlStr)
-  try {
-    setLoading(true);
-    const h = new Headers();
-    h.append('Accept', 'application/json');
-    h.append('CompCode', 'ESCRMDB');
-    h.append('FYear', '0');
-
-    const myRequest = new Request(urlStr, {
-        method: 'GET',
-        headers: h,
-        mode: 'cors',
-        cache: 'default',
-    });
-
-    fetch(myRequest).then((response) => response.json())
-   
-    .then((json) => {
-        const resultData = json
-        // console.log('loginDataaaaa',resultData)
-        const loginData = resultData
-        if(loginData.result == 1){
-         
-          let UserId= loginData.code;
-          let TokenId= loginData.token
-          let UserType=loginData.ut;
-          let Admin= loginData.name;
-          let Type = loginData.utName;
-          let Email = loginData.email;
-          let department = loginData.department
-          let depName = loginData.departmentName
-          // StoreData.push({UserId,UserType,Admin,TokenId,department,depName})
-          sessionStorage.setItem("userData", JSON.stringify({UserId,UserType,Admin,TokenId,Type,Email,department,depName}));
-          setLoading(false);
-      
-    history.push('/')
-  //  window.location.reload()
-
-        }else{
-          alert('invalid username and password')
-        }
-        setLoading(false)
-        // setSerieslist(json.data)
-    });
-  } catch (err) {
-    alert(err) 
-    setLoading(false)
-    //  setLoading(false)
+  React.useEffect(() => {
+    var url = localStorage.getItem("Url", "");
+    var port = localStorage.getItem("Port", "");
+    if (url && port) {
+      setBaseUrl(url);
+      setPort(port);
     }
+  }, []);
+  // console.log("port&url",port +":" +baseUrl)
 
+  const handleInputField = (e) => {
+    const { name, value } = e.target;
 
-}
+    setInputValue((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
+  const { username, password } = inputValue;
+  // let api = useFetch()
+  // const checkInput = (e) => {
+  //   const onlyDigits = e.target.value.replace(/\D/g, "");
+  //   setNumber(onlyDigits);
+  // };
+  let user = username.slice(0, 10);
 
-  return(
-<>
-  {/* Main Wrapper */}
-    <Helmet>
+  const handleSubmit = (e) => {
+    // console.log('calling')
+    e.preventDefault();
+    const urlStr = `http://${baseUrl}:${port}/api/Authentication?UserName=${user}&Pwd=${password}&ProjType=1`;
+     console.log('url', urlStr)
+    try {
+      setLoading(true);
+      const h = new Headers();
+      h.append("Accept", "application/json");
+      h.append("CompCode", "ESCRMDB");
+      h.append("FYear", "0");
+
+      const myRequest = new Request(urlStr, {
+        method: "GET",
+        headers: h,
+        mode: "cors",
+        cache: "default",
+      });
+
+      fetch(myRequest)
+        .then((response) => response.json())
+
+        .then((json) => {
+          const resultData = json;
+          // console.log('loginDataaaaa',resultData)
+          const loginData = resultData;
+          if (loginData.result == 1) {
+            let UserId = loginData.code;
+            let AdminType = loginData.admin;
+            let TokenId = loginData.token;
+            let UserType = loginData.ut;
+            let Admin = loginData.name;
+            let Type = loginData.utName;
+            let Email = loginData.email;
+            let department = loginData.department;
+            let depName = loginData.departmentName;
+            let ProjType = loginData.ProjType;
+            // StoreData.push({UserId,UserType,Admin,TokenId,department,depName})
+            sessionStorage.setItem(
+              "userData",
+              JSON.stringify({
+                UserId,
+                UserType,
+                Admin,
+                TokenId,
+                Type,
+                Email,
+                department,
+                depName,
+                ProjType,
+                AdminType,
+              })
+            );
+            setLoading(false);
+
+            history.push("/");
+            //  window.location.reload()
+          } else {
+            alert(loginData.msg);
+          }
+          setLoading(false);
+          // setSerieslist(json.data)
+        });
+    } catch (err) {
+      alert(err);
+      setLoading(false);
+      //  setLoading(false)
+    }
+  };
+
+  return (
+    <>
+      {/* Main Wrapper */}
+      <Helmet>
         <title>Login - S&S Enterprises</title>
         <meta name="description" content="Reactify Blank Page" />
-    </Helmet>
-    {loading ?<ReactLoader loaderClass="position-relative" loading={loading}  />: null}
-  <div className="main-wrapper">
- 
-    <div className="account-content">
-      <div className="container">
-        {/* Account Logo */}
-        <div className="account-logo">
-          <Link to="/">
-            <img src={LogoSs} alt="Dreamguy's Technologies" />
-          </Link>
-        </div>
-        {/* /Account Logo */}
-        <div className="account-box">
-          <div className="account-wrapper">
-            <h3 className="account-title">Login</h3>
-            <p className="account-subtitle">Access to our dashboard</p>
-            {/* Account Form */}
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Email Address</label>
-                <input name="username" className="form-control" autoComplete="off" type="text" onChange={handleInputField} required/>
-              </div>
-              <div className="form-group">
-                <div className="row">
-                  <div className="col">
-                    <label>Password</label>
+      </Helmet>
+      {loading ? (
+        <ReactLoader loaderClass="position-relative" loading={loading} />
+      ) : null}
+      <div className="main-wrapper">
+        <div className="account-content">
+          <div className="container">
+            {/* Account Logo */}
+            <div className="account-logo">
+              <Link to="/">
+                <img src={LogoSs} alt="Dreamguy's Technologies" />
+              </Link>
+            </div>
+            {/* /Account Logo */}
+            <div className="account-box">
+              <div className="account-wrapper">
+                <h3 className="account-title">Login</h3>
+                <p className="account-subtitle">Access to our dashboard</p>
+                {/* Account Form */}
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label>Mobile No</label>
+                    <input
+                      name="username"
+                      value={user}
+                      className="form-control"
+                      autoComplete="off"
+                      type="number"
+                      min="0"
+                      onChange={handleInputField}
+                      required
+                    />
+                    {user.length < 10 && (
+                      <p style={{ color: "red" }}>
+                        Please enter a valid 10-digit mobile number.
+                      </p>
+                    )}
                   </div>
-                  {/* <div className="col-auto">
-                    <Link className="text-muted" to="/forgot-password">
-                      Forgot password?
-                    </Link>
-                  </div> */}
-                </div>
-                <input className="form-control" autoComplete="off" name="password" type="password" onChange={handleInputField} required/>
-              </div>
-              <div className="form-group text-center">
-                {/* <Link to="/" className="btn btn-primary account-btn">
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col">
+                        <label>Password</label>
+                      </div>
+                      <div className="col-auto">
+                        <Link className="text-muted" to="/forgot-password">
+                          Forgot password?
+                        </Link>
+                      </div>
+                    </div>
+                    <input
+                      className="form-control"
+                      autoComplete="off"
+                      name="password"
+                      type="password"
+                      onChange={handleInputField}
+                      required
+                    />
+                  </div>
+                  <div className="form-group text-center">
+                    {/* <Link to="/" className="btn btn-primary account-btn">
                   Login
                 </Link> */}
-                <button type='submit' className="btn btn-primary account-btn" >Login</button>
-              </div>
-              {/* <div className="account-footer">
+                    <button
+                      type="submit"
+                      className="btn btn-primary account-btn"
+                    >
+                      Login
+                    </button>
+                  </div>
+                  {/* <div className="account-footer">
                 <p>
                   Don't have an account yet?{" "}
                   <Link to="/register">Register</Link>
                 </p>
               </div> */}
-            </form>
-            {/* /Account Form */}
+                </form>
+                {/* /Account Form */}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  {/* /Main Wrapper */}
-</>
-
-)
+      {/* /Main Wrapper */}
+    </>
+  );
 };
 export default Login;

@@ -133,32 +133,7 @@ const FollowUpPage = (props) => {
                   data-bs-dismiss="modal"
                 />
               </div>
-              {/* <div className="card due-dates">
-              <div className="card-body">
-                <div className="row">
-                  <div className="col">
-                    <span>Due Date</span>
-                    <p>03-Jul-2020</p>
-                  </div>
-                  <div className="col">
-                    <span>Priority</span>
-                    <p>Medium</p>
-                  </div>
-                  <div className="col">
-                    <span>Status</span>
-                    <p>Not Started</p>
-                  </div>
-                  <div className="col">
-                    <span>Progress</span>
-                    <p>0</p>
-                  </div>
-                  <div className="col">
-                    <span>Assigned To</span>
-                    <p>John Doe</p>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+             
               <div className="modal-body">
                 <div className="task-infos">
                   <div className="tab-content">

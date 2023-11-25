@@ -10,14 +10,32 @@ const AppRouter = (props) => {
     let url = '103.25.128.155';
     let port = '12015'
 
-    // let url = '210.89.34.139';
-    // let port = '105'
+    let serverUrl = '210.89.34.139';
+    let serverPort = '105'
   
+
+    let localUrl = '192.168.100.8'
+    let localPort ='105';
+
+    let currentPath = window.location.hostname || "";
+    console.log('cr path',currentPath)
     useEffect(()=>{
-      localStorage.setItem('Url',url)
-      localStorage.setItem('Port', port)
+        if(currentPath == 'localhost' || currentPath == '103.25.128.155'){
+            // development
+            localStorage.setItem('Url',url)
+            localStorage.setItem('Port', port)
+
+        }else if(currentPath == '192.168.100.8'){
+            // local server
+            localStorage.setItem('Url',localUrl)
+            localStorage.setItem('Port', localPort)
+        }else{
+            // main external server
+            localStorage.setItem('Url',serverUrl)
+            localStorage.setItem('Port', serverPort)
+        }
     
-    },[])
+    },[currentPath])
     return(
         // <Router basename={`${config.publicPath}`}></Router>
         <Router>

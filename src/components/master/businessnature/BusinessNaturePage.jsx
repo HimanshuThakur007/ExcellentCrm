@@ -28,12 +28,12 @@ const BusinessNaturePage = (props) => {
           {/* Page Header */}
           <PageHeader
             iclassName="fa fa-object-group"
-            pageTitle="BusinessNature"
-            disableTitle="BusinessNature"
+            pageTitle="Trade Type"
+            disableTitle="Trade Type"
           />
           {/* /Page Header */}
 
-          <CardComp cardTitle="BusinessNature Form" cardBodyTitle="">
+          <CardComp cardTitle="Information" cardBodyTitle="">
             <form onSubmit={props.saveHandler}>
               <div className="row">
                 <div className="col-xl-8">

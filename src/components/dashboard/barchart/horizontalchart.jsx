@@ -7,11 +7,11 @@ const state = {
     datasets: [
       {
         backgroundColor: [
-          '#fe7096',
-          '#9a55ff',
-          '#3cba9f',
-          '#e8c3b9',
-          '#9a55ff'
+          '#808000',
+          '#FFA500',
+          '#045F5F',
+          '#387C44',
+          '#41A317'
         ],
         borderWidth: 2,
         label : 'sree',

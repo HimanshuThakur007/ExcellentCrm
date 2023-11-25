@@ -55,11 +55,11 @@ const QuotationComp = () => {
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
         let listData = got.data;
-        // console.log("CustomerM", listData);
+        console.log("CustomerM", listData);
         listData.forEach((item) => {
-          correctData.push({ value: item.code, label: item.name });
+          correctData.push({ value: item.code, label: item.name, mobile: item.mobNo });
         });
-        //  console.log('modifyData', correctData)
+         console.log('correct', correctData)
         setCustomerList(correctData);
         setLoading(false);
       } else {
@@ -87,7 +87,7 @@ const QuotationComp = () => {
       let { res, got } = await api(quotationUrl, "GET", "");
       if (res.status == 200) {
         let listData = got.data;
-        // console.log("quotationList", listData);
+        console.log("quotationList", listData);
 
         setQuotationList(listData);
         setLoading(false);
@@ -168,9 +168,28 @@ const QuotationComp = () => {
     setQuotationShowHide(true);
   };
 
+  const [menuOpen, setMenuOpen] = React.useState(false)
+
+  const customFilter = (option, searchText) => {
+    // console.log(option.data.value,'vvvvv')
+    return (
+      // option.data.value.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.mobile.toLowerCase().includes(searchText.toLowerCase())
+    )
+  }
+
+  const toggleMenu = (isOpen) => {
+    setMenuOpen(isOpen)
+  }
+
   return (
     <>
       <AddQuotation
+      customerCode={customerCode}
+      customFilter={customFilter}
+      menuOpen={menuOpen}
+      toggleMenu={toggleMenu}
         handleDateChange={handleDateChange}
         dates={dates}
         allPending={allPending}

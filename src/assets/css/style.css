@@ -119,6 +119,11 @@ Version      : 1.0
 	src: local('Circular Std Black Italic'), url('../fonts/CircularStd-BlackItalic.woff') format('woff');
 }
 
+/* styles.css */
+/* styles.css */
+/* Hide checkboxes when nodes are collapsed */
+
+  
 
 /*-----------------
   1. General
@@ -210,6 +215,115 @@ i.eye-icon.eye-on-pswd.pe-4 {
 
 
 }
+
+/* --------------dashboard card by me---------------- */
+
+
+.expovent__count-item {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    align-items: center;
+    gap: 21px;
+    justify-content: space-between;
+    background: white;
+    padding: 30px 30px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.03);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.expovent__count-thumb {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+}
+.include__bg {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.expovent__count-number {
+    color: var(--clr-text-secondary);
+    font-weight: var(--bd-fw-sbold);
+    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.captcha{
+    width: 50%;
+    border: none;
+    background-color: transparent;
+    filter: blur(8px);
+    -webkit-filter: blur(1.5px);
+    transform: skewX(-220deg);
+  background-color: silver;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: rgba(255, 255, 255, .4) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px .8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+.expovent__count-icon {
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: -ms-inline-flexbox;
+    height: 60px;
+    width: 60px;
+    background-color: darkblue;
+    border: 1px solid var(--clr-bg-21);
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+
   /* ------------------------------------------------ */
 
 .form-control {
@@ -1893,11 +2007,12 @@ table.dataTable thead>tr>td.sorting {
 	content: "\f105";
 }
 
-.sidebar-menu li a.subdrop .menu-arrow {
+.sidebar-menu li Link.subdrop .menu-arrow {
 	-ms-transform: rotate(90deg);
 	-webkit-transform: rotate(90deg);
 	-o-transform: rotate(90deg);
 	transform: rotate(90deg);
+	
 }
 
 .noti-dot:before {
@@ -8017,7 +8132,7 @@ form .btn-gradient-primary {
 }
 
 .person-circle-a {
-	background: #ef5350;
+	/* background: #ef5350; */
 }
 
 .person-circle-b {

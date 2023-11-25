@@ -7,9 +7,10 @@ import {
 } from "react-router-dom/cjs/react-router-dom.min";
 import ReactToast, { showToastError, showToastMessage } from "../../CustomComp/ReactToast";
 
+
 const Customer = () => {
   const api = useFetch();
-  let { state } = useLocation();
+  const { state } = useLocation();
   const history = useHistory();
   const [inputValue, setInputValue] = useState({
     custname: "",
@@ -26,8 +27,28 @@ const Customer = () => {
   });
   const [loading, setLoading] = useState(false);
   const [masterGrpData, setMasterGrpData] = useState([]);
+  const [businessNatureList, setBusinessNatureList] = useState([]);
+  const [bnCodeList, setBnCodeList] = useState([]);
   const [masterGroupSelect, setMasterGroupSelect] = useState(null);
   const [masterGroupLabel, setMasterGroupLabel] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [mobiledata, setMobileData] = useState([]);
+  
+ 
+  const handleSelectChange = (index , slObj) => {
+ console.log('slObj342',slObj)
+ let prevMobData = [...mobiledata];
+ prevMobData[index] = slObj.mob;
+
+ let prevSelectedOptions = [...selectedOptions, slObj];
+ console.log(prevSelectedOptions)
+ setMobileData(prevMobData);
+ setSelectedOptions(prevSelectedOptions);
+    setMobileData(prevMobData)
+  
+ 
+ 
+  };
 
   const selectHandler = (masterGroupSelect) => {
     setMasterGroupSelect(masterGroupSelect);
@@ -63,8 +84,15 @@ const Customer = () => {
       var code = state.code;
     }
 
-    const urlCustomer = "/api/SaveCustomerMaster";
-    // console.log('codeUsers', code)
+    const urlCustomer = "/api/SaveCustomerMaster1";
+    console.log('selectedOptions', selectedOptions)
+    let currData=[]
+    selectedOptions.forEach((item)=>{
+     console.log('item',item)
+      currData.push({Code : code||0, BNCode:item.BNCode ,ArchName:item.label ,ArchCode:item.value,MobNo :item.mob,BNName :item.bname})
+    },[])
+    console.log('currData---',currData)
+   
     var body = {
       CustomerMasterData: [
         {
@@ -84,8 +112,9 @@ const Customer = () => {
           UserName: custname,
         },
       ],
+      CustContactList:[...currData],
     };
-    // console.log("bodyjson", body);
+    console.log("bodyjson", JSON.stringify(body));
     try {
       setLoading(true);
       let { res, got } = await api(urlCustomer, "POST", body);
@@ -145,35 +174,110 @@ const Customer = () => {
       showToastError(err);
     }
   };
+  // ======================Get businness nature list=====================
+  
+  const getBusinessNatureHandler = async () => {
+   
+
+    let modifyUrl = `/api/LoadCustContactList?Code=0`;
+    try {
+      setLoading(true);
+      let { res, got } = await api(modifyUrl, "GET", "");
+      if (res.status == 200) {
+        let listData = got.data;
+        
+        //  console.log('businessList', listData[0].bnCode)
+         let bnCode =listData[0].bnCode
+        //  setBnCode(bnCode)
+        setBusinessNatureList(listData);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        showToastError("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      showToastError(err);
+    }
+  };
+  // console.log(bnCode,'bnnnnnn')
+  React.useEffect(()=>{getBusinessNatureHandler()},[])
+   // ======================Get businness nature list=====================
+   const getBnCodeListHandler = async (index) => {
+    console.log('running')
+    let corrData=[]
+    var code = businessNatureList[index]['bnCode']
+
+    let modifyUrl = `/api/ArchMasterListAgainstBN?BNCode=${code}`;
+   
+    try {
+      setLoading(true);
+      let { res, got } = await api(modifyUrl, "GET", "");
+      if (res.status == 200) {
+        let listData = got.data;
+        
+        //  console.log('BnCode', listData)
+        // setBusinessNatureList(listData);
+        listData.map((item)=>{
+          // console.log(item)
+          corrData.push({value:item.code,label:item.name,BNCode:item.bn,mob:item.ofcMobNo,bname:item.bnName})
+        })
+        setBnCodeList(corrData);
+   
+        // console.log('list from BnList',corrData)
+        setLoading(false);
+      } else {
+        setLoading(false);
+        showToastError("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      showToastError(err);
+    }
+  };
+
 
   const getModifyHandler = async () => {
     var code = state.code;
-
+   
     // setLoader(true);
     let modifyUrl = `/api/LoadCustomerMasterDetails?Code=${code}&MobNo=""`;
     try {
       setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        // console.log("data", got.data);
+        console.log("data", got.data);
         let listData = got.data[0];
+        let custMaster = listData.customerMasterData[0]
+        let CustContact = listData.custContactList
+        let custDataset=[]
+        console.log("ModifyData",custMaster)
+        console.log("ContactMasterData",CustContact)
         // setModifiedValue(listData);
         setInputValue({
-          custname: listData.name,
-          mobile: listData.mobNo,
-          email: listData.email,
-          reference: listData.ref,
-          add1: listData.add1,
-          add2: listData.add2,
-          add3: listData.add3,
-          add4: listData.add4,
-          archname: listData.archName,
-          custname: listData.name,
-          archmobile: listData.archMobNo,
-          gst: listData.gstNo,
+          custname: custMaster.name,
+          mobile: custMaster.mobNo,
+          email: custMaster.email,
+          reference: custMaster.ref,
+          add1: custMaster.add1,
+          add2: custMaster.add2,
+          add3: custMaster.add3,
+          add4: custMaster.add4,
+          archname: custMaster.archName,
+          custname: custMaster.name,
+          archmobile: custMaster.archMobNo,
+          gst: custMaster.gstNo,
         });
-        setMasterGroupSelect({ label: listData.masterGrp });
-        setMasterGroupLabel(listData.masterGrp);
+        setMasterGroupSelect({ label: custMaster.masterGrp });
+        setMasterGroupLabel(custMaster.masterGrp);
+        CustContact.map((item)=>{
+          // console.log('iiiiiiiiii',item)
+          custDataset.push({Code : item.code, BNCode:item.bnCode ,label:item.archName 
+            ,value:item.archCode,MobNo :item.mobNo,BNName :item.bnName})
+        })
+        console.log('kjsgkteir', custDataset);
+        setSelectedOptions([...custDataset])
+        console.log('custDataset',custDataset)
         setLoading(false);
       } else {
         setLoading(false);
@@ -192,6 +296,8 @@ const Customer = () => {
     }
   }, [state]);
 
+  // console.log(selectedOptions,'uuuuuu')
+
   return (
     <>
     <ReactToast/>
@@ -203,6 +309,14 @@ const Customer = () => {
         masterGrpData={masterGrpData}
         selectHandler={selectHandler}
         masterGroupSelect={masterGroupSelect}
+        getBusinessNatureHandler={getBusinessNatureHandler}
+        businessNatureList={businessNatureList}
+        handleSelectChange={handleSelectChange}
+        selectedOptions={selectedOptions}
+        getBnCodeListHandler={getBnCodeListHandler}
+        bnCodeList={bnCodeList}
+        mobiledata={mobiledata}
+    
       />
     </>
   );

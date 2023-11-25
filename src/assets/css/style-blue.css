@@ -1741,7 +1741,9 @@ table.dataTable thead>tr>td.sorting {
 	transform: translate(0, 0);
 	line-height: 18px;
 	top: 11px;
+	
 }
+
 
 .sidebar-menu .menu-arrow:before {
 	content: "\f105";

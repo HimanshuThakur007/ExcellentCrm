@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import TextEditor from '../../common/editor';
+// import TextEditor from '../../common/editor';
 // import { Editor } from "react-draft-wysiwyg";
 // import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const Texteditor =()=>{
@@ -47,7 +47,7 @@ const Texteditor =()=>{
               wrapperClassName="wrapperClassName"
               editorClassName="editorClassName"
             /> */}
-            <TextEditor/>
+            {/* <TextEditor/> */}
             </div>
           </div>
         </div>

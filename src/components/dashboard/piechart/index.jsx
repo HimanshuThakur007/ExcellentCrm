@@ -2,31 +2,31 @@ import React, { Component } from "react";
 import {Pie} from 'react-chartjs-2';
 
 
-const state = {
-    labels: ['followup', 'LeadConverted'],
-    datasets: [
-      {
-        label: 'Rainfall',
-        backgroundColor: [
-          '#9a55ff',
-          '#ff4d7c'
-        
-        ],
-        // hoverBackgroundColor: [
-        // '#9a55ff',
-        // '#fe7096'
-        // ],
-        data: [2478,5267]
-      }
-    ]
-  }
 
 
 const PieChart =(props)=> {
+  const state = {
+      labels: ['Pending', 'Lead Converted'],
+      datasets: [
+        {
+          label: 'Rainfall',
+          backgroundColor: [
+            '#191970',
+            '#800080'
+          
+          ],
+          // hoverBackgroundColor: [
+          // '#9a55ff',
+          // '#fe7096'
+          // ],
+          data: [props.pending,props.leadConverted]
+        }
+      ]
+    }
       return (
         <div>
           <Pie
-            data={props.data||state}
+            data={state}
             options={{
               title:{
                 display:true,

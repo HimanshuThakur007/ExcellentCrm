@@ -8,152 +8,55 @@ import { Table } from "antd";
 import { itemRender, onShowSizeChange } from "../../paginationfunction"
 import { FiBookOpen, FiBookmark, FiCalendar, FiGrid, FiList, FiPlusCircle, FiSettings, FiUserPlus } from "react-icons/fi";
 import "../../antdstyle.css"
+import InputSelect from '../../CustomComp/InputSelect';
+import DateTimeInput, { convertDate } from '../../CommonFile/DateTimeInput';
+import useFetch from '../../Hooks/useFetch';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 const QuotationList = () => {
-  const [isShown1, setIsShown1] = useState(true);
-  const [isShown2, setIsShown2] = useState(true);
-  const [isShown3, setIsShown3] = useState(true);
-  const [isShown4, setIsShown4] = useState(true);
-  const dropdown1 = (event) => {
-    setIsShown1(current => !current);
-  };
-  const dropdown2 = (event) => {
-    setIsShown2(current => !current);
-  };
-  const dropdown3 = (event) => {
-    setIsShown3(current => !current);
-  };
-  const dropdown4 = (event) => {
-    setIsShown4(current => !current);
-  };
+  let api = useFetch()
+  let history = useHistory()
+  
   let pathname = window.location.pathname
   const [active, setActive] = useState(false);
   const url = pathname.split("/").slice(0, -1).join("/");
 
-  const [selectedDate1, setSelectedDate1] = useState(new Date());
-  const [selectedDate2, setSelectedDate2] = useState(new Date());
-  const handleDateChange1 = (date) => {
-    setSelectedDate1(date);
-  };
-  const handleDateChange2 = (date) => {
-    setSelectedDate2(date);
-  };
+  const [selectedValues, setSelectedValues] = React.useState({
+    select1: null,
+    // select2: null,
+    // select3: null
+  });
+  const [dates, setDates] = React.useState({
+    date1: new Date(),
+    date2: new Date()
+  });
+  const [customerList,setCustomerList]=useState([])
+  const [customerTableData,setCustomerTableData]=useState([])
+  const [customerCode,setCustomerCode]=useState(0)
 
 
-  const data = [
-    {
-      id: 1,
-      Invoice: "IN093439#@09",
-      Category: "Advertising",
-      Created: "16 Mar 2022",
-      to: "Barbara Moore",
-      Amount: "$1,54,220",
-      date: "23 Mar 2022",
-      Status: "Paid",
-      className: "badge bg-success-light",
-      image: IMG06
-    },
-    {
-      id: 2,
-      Invoice: "IN093439#@10",
-      Category: "Food",
-      Created: "14 Mar 2022",
-      to: "Karlene Chaidez",
-      Amount: "$1,222",
-      date: "18 Mar 2022",
-      Status: "Overdue",
-      className: "badge bg-danger-light",
-      image: IMG07
-    },
-    {
-      id: 3,
-      Invoice: "IN093439#@11",
-      Category: "Marketing",
-      Created: "7 Mar 2022",
-      to: "Russell Copeland",
-      Amount: "$3,470",
-      date: "10 Mar 2022",
-      Status: "Cancelled",
-      className: "badge bg-primary-light",
-      image: IMG08
-    },
-    {
-      id: 4,
-      Invoice: "IN093439#@12",
-      Category: "Repairs",
-      Created: "24 Mar 2022",
-      to: "Joseph Collins",
-      Amount: "$8,265",
-      date: "30 Mar 2022",
-      Status: "Paid",
-      className: "badge bg-success-light",
-      image: IMG09
-    },
-    {
-      id: 5,
-      Invoice: "IN093439#@13",
-      Category: "Software",
-      Created: "17 Mar 2022",
-      to: "Jennifer Floyd",
-      Amount: "$5,200",
-      date: "20 Mar 2022",
-      Status: "Overdue",
-      className: "badge bg-danger-light",
-      image: IMG10
-    }
-  ];
+
+  
   const columns = [
 
     {
       title: "Quotation ID",
-      dataIndex: "Invoice",
+      dataIndex: "qtNo",
       render: (text, record) => (
-        <><Link to="/view-invoice" className="invoice-link">{text}</Link></>
+        <><a className="invoice-link">{text}</a></>
       ),
-      sorter: (a, b) => a.Invoice.length - b.Invoice.length,
+      sorter: (a, b) => a.qtNo.length - b.qtNo.length,
     },
 
-    {
-      title: "Category",
-      dataIndex: "Category",
-      render: (text, record) => (
-        <>{text}</>
-      ),
-      sorter: (a, b) => a.Category.length - b.Category.length,
-    },
+    // {
+    //   title: "Category",
+    //   dataIndex: "Category",
+    //   render: (text, record) => (
+    //     <>{text}</>
+    //   ),
+    //   sorter: (a, b) => a.Category.length - b.Category.length,
+    // },
     {
       title: "Created on",
-      dataIndex: "Created",
-      render: (text, record) => (
-        <>{text}</>
-      ),
-      sorter: (a, b) => a.Created.length - b.Created.length,
-    },
-    {
-      title: "Invoice to",
-      dataIndex: "to",
-      render: (text, record) => (
-        <>
-          <Link to="/profile">
-            <img
-              className="avatar avatar-sm me-2 avatar-img rounded-circle"
-              src={record.image}
-              alt="User Image"
-            />{" "}
-            {text}
-          </Link></>
-      ),
-      sorter: (a, b) => a.to.length - b.to.length,
-    },
-    {
-      title: "Amount",
-      dataIndex: "Amount",
-      render: (text, record) => (
-        <><div className="text-primary">{text}</div></>
-      ),
-      sorter: (a, b) => a.Amount.length - b.Amount.length,
-    },
-    {
-      title: "Due date",
       dataIndex: "date",
       render: (text, record) => (
         <>{text}</>
@@ -161,13 +64,44 @@ const QuotationList = () => {
       sorter: (a, b) => a.date.length - b.date.length,
     },
     {
-      title: "Status",
-      dataIndex: "Status",
+      title: "Invoice to",
+      dataIndex: "customerName",
+      render: (text, record) => (
+        <>
+          <a>
+            <span
+             style={{color:"blue"}}
+            >{" "}
+            {text}</span>
+          </a></>
+      ),
+      sorter: (a, b) => a.customerName.length - b.customerName.length,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "totQty",
       render: (text, record) => (
         <span className={record.className}>{text}</span>
       ),
-      sorter: (a, b) => a.Status.length - b.Status.length,
+      sorter: (a, b) => a.totQty.length - b.totQty.length,
     },
+    {
+      title: "Amount",
+      dataIndex: "totVal",
+      render: (text, record) => (
+        <><div className="text-primary">{text}</div></>
+      ),
+      sorter: (a, b) => a.totVal.length - b.totVal.length,
+    },
+    {
+      title: "Lead No",
+      dataIndex: "lSubNo",
+      render: (text, record) => (
+        <>{text}</>
+      ),
+      sorter: (a, b) => a.lSubNo.length - b.lSubNo.length,
+    },
+   
     {
       title: "Action",
       render: (text, record) => (
@@ -182,54 +116,206 @@ const QuotationList = () => {
               <i className="material-icons">more_vert</i>
             </a>
             <div className="dropdown-menu dropdown-menu-end">
-              <a
+              {/* <a
                 className="dropdown-item"
                 href="edit-invoice"
               >
                 <i className="fa fa-edit me-2" />
                 Edit
-              </a>
+              </a> */}
               <a
                 className="dropdown-item"
-                href="view-invoice"
+                
+                onClick={() => onRowClick(record)}
               >
                 <i className="fa fa-eye me-2" />
                 View
               </a>
-              <a
+              {/* <a
                 className="dropdown-item"
                 href="#"
               >
                 <i className="fa fa-trash me-2" />
                 Delete
-              </a>
-              <a
+              </a> */}
+              {/* <a
                 className="dropdown-item"
                 href="#"
               >
                 <i className="fa fa-check-circle me-2" />
                 Mark as sent
-              </a>
-              <a
+              </a> */}
+              {/* <a
                 className="dropdown-item"
                 href="#"
               >
                 <i className="fa fa-paper-plane me-2" />
                 Send Invoice
-              </a>
-              <a
+              </a> */}
+              {/* <a
                 className="dropdown-item"
                 href="#"
               >
                 <i className="fa fa-copy me-2" />
                 Clone Invoice
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
       ),
     }
   ];
+  const handleDateChange = (dateFieldName, dateValue) => {
+    setDates({
+      ...dates,
+      [dateFieldName]: dateValue,
+    });
+    
+};
+const handleSelectChange = (selectedOption, selectName, setSelectedValues) => {
+ 
+  // console.log(`Selected value for ${selectName}:`, selectedOption);
+  
+{
+selectName == "select1" ? setCustomerCode(selectedOption.value):
+null
+}
+
+setSelectedValues((prevSelectedValues) => ({
+  ...prevSelectedValues,
+  [selectName]: selectedOption,
+}));
+}
+let sdate = convertDate(dates.date1)
+  let edate = convertDate(dates.date2);
+
+  const onRowClick = (record) => {
+    history.push({
+      pathname: "/view-invoice",
+      state: { record:record },
+    });
+  }
+
+  const getCustomerList = async () => {
+    var correctData = [];
+    let modifyUrl = `/api/LoadCustomerMasterList`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(modifyUrl, "GET", "");
+      if (res.status == 200) {
+        let listData = got.data;
+        // console.log("CustomerM", listData);
+        listData.forEach((item) => {
+          correctData.push({ value: item.code, label: item.name});
+        });
+         console.log('customerlist', correctData)
+        setCustomerList(correctData);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+
+  // =======================display Table on data==================================
+ 
+  
+  const getTableDataList = async () => {
+ let ser="";
+    let modifyUrl = `/api/LoadSaleQuotationReport?QCode=0&SQCustomer=${customerCode}&FDate=${sdate}&TDate=${edate}`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(modifyUrl, "GET", "");
+      if (res.status == 200) {
+        let listData = got;
+        // console.log("CustomerM", listData);
+       
+         console.log('modifyData', listData)
+         setCustomerTableData(listData)
+        // setCustomerList(correctData);
+        // setLoading(false);
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+
+
+  const loadConfigList = async () => {
+    let Url = `/api/Loadconfiguration`;
+    try {
+      // setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        let listData = got.data[0];
+        // console.log("loadData", listData);
+
+        let compCode = listData.compCode;
+        let pre = listData.soqSeriesPre;
+        let soq = listData.soqSeries;
+        let fyear = listData.fy;
+        // itemListHandler(compCode);
+        // setCompCode(compCode);
+        // setFYear(fyear);
+        // setPrefix(pre);
+        // setSoqSeries(soq);
+        // setBusyBaseUrl(listData.squrl);
+        loadBusySeriesList(listData.squrl,compCode,fyear)
+      } else {
+        // setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      // setLoading(false);
+      alert(err);
+    }
+  };
+  // ======================BusySeriesLoad================================
+  const loadBusySeriesList = async (url,code,fY) => {
+    let Url = `${url}/api/values/GetBusyMaster?VchType=26&CompCode=${code}&FY=${fY}&MasterType=5`;
+    console.log('seriesUrl',Url);
+    try {
+      // setLoading(true)
+      const h = new Headers();
+      h.append("Accept", "application/json");
+      // h.append("Authorization", token);
+      h.append("CompCode", "ESCRMDB");
+      h.append("FYear", "0");
+
+      const myRequest1 = new Request(Url, {
+        method: "GET",
+        headers: h,
+        mode: "cors",
+        cache: "default",
+      });
+
+      fetch(myRequest1)
+        .then((response) => response.json())
+
+        .then((json) => {
+          const TableData = json;
+           console.log('StateData',TableData)
+          // setTemplateList(TableData);
+          // setLoading(false)
+        });
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+
+React.useEffect(()=>{
+  getCustomerList()
+  // loadConfigList()
+},[])
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(
@@ -266,13 +352,13 @@ const QuotationList = () => {
             <div className="col p-0 text-end">
               <ul className="breadcrumb bg-white float-end m-0 ps-0 pe-0">
                 <li className="breadcrumb-item">
-                  <Link to="/index">Dashboard</Link>
+                  <Link to="/">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item active">Quotation List</li>
               </ul>
             </div>
           </div>
-          <div className="row align-items-center">
+          {/* <div className="row align-items-center">
             <div className="col"></div>
             <div className="col-auto py-3">
               <Link to="invoices" className="invoices-links active">
@@ -282,270 +368,60 @@ const QuotationList = () => {
                 <FiGrid />
               </Link>
             </div>
-          </div>
+          </div> */}
           {/* Report Filter */}
           <div className="card report-card">
             <div className="card-body pb-0">
               <div className="row">
-                <div className="col-md-12">
-                  <ul className="app-listing">
-                    <li>
-                      <div className="multipleSelection">
-                        <div className="selectBox" onClick={dropdown1}>
-                          <p className="mb-0">
-                            <FiUserPlus
-                            />{" "}
-                            Select User
-                          </p>
-                          <span className="down-icon">
-                            <i className="fa fa-angle-down" aria-hidden="true" />
-                          </span>
-                        </div>
-                        <div id="checkBoxes" style={{ display: isShown1 ? 'none' : 'block' }}>
-                          <form action="#">
-                            <p className="checkbox-title">Customer Search</p>
-                            <div className="form-custom">
-                              <input
-                                type="text"
-                                className="form-control bg-grey"
-                                placeholder="Enter Customer Name"
-                              />
-                            </div>
-                            <div className="selectBox-cont">
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Brian Johnson
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Russell Copeland
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Greg Lynch
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> John Blair
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Barbara Moore
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Hendry Evan
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="username" />
-                                <span className="checkmark" /> Richard Miles
-                              </label>
-                            </div>
-                            <button type="submit" className="btn w-100 btn-primary">
-                              Apply
-                            </button>
-                            <button type="reset" className="btn w-100 btn-grey">
-                              Reset
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="multipleSelection">
-                        <div className="selectBox" onClick={dropdown2}>
-                          <p className="mb-0">
-                            <FiCalendar
-                            />{" "}
-                            Select Date
-                          </p>
-                          <span className="down-icon">
-                            <i className="fa fa-angle-down" aria-hidden="true" />
-                          </span>
-                        </div>
-                        <div id="checkBoxes" style={{ display: isShown2 ? 'none' : 'block' }}>
-                          <form action="#">
-                            <p className="checkbox-title">Date Filter</p>
-                            <div className="selectBox-cont selectBox-cont-one h-auto">
-                              <div className="date-picker">
-                                <div className="form-custom cal-icon">
-                                   <DatePicker
-                                    className="form-control"
-                                    selected={selectedDate1}
-                                    onChange={handleDateChange1}
-                                    dateFormat="dd/MM/yyyy"
-                                    showDayMonthYearPicker />
-                                </div>
-                              </div>
-                              <div className="date-picker pe-0">
-                                <div className="form-custom cal-icon">
-                                <DatePicker
-                                    className="form-control"
-                                    selected={selectedDate2}
-                                    onChange={handleDateChange2}
-                                    dateFormat="dd/MM/yyyy"
-                                    showDayMonthYearPicker />
-                                </div>
-                              </div>
-                              <div className="date-list">
-                                <ul>
-                                  <li>
-                                    <a href="#" className="btn date-btn">
-                                      Today
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href="#" className="btn date-btn">
-                                      Yesterday
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href="#" className="btn date-btn">
-                                      Last 7 days
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href="#" className="btn date-btn">
-                                      This month
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href="#" className="btn date-btn">
-                                      Last month
-                                    </a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="multipleSelection">
-                        <div className="selectBox" onClick={dropdown3}>
-                          <p className="mb-0">
-                            <FiBookOpen
-                            />{" "}
-                            Select Status
-                          </p>
-                          <span className="down-icon">
-                            <i className="fa fa-angle-down" aria-hidden="true" />
-                          </span>
-                        </div>
-                        <div id="checkBoxes" style={{ display: isShown3 ? 'none' : 'block' }}>
-                          <form action="#">
-                            <p className="checkbox-title">By Status</p>
-                            <div className="selectBox-cont">
-                              <label className="custom_check w-100">
-                                <input
-                                  type="checkbox"
-                                  name="name"
-                                  defaultChecked=""
-                                />
-                                <span className="checkmark" /> All Quotation
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="name" />
-                                <span className="checkmark" /> Paid
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="name" />
-                                <span className="checkmark" /> Overdue
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="name" />
-                                <span className="checkmark" /> Draft
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="name" />
-                                <span className="checkmark" /> Recurring
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="name" />
-                                <span className="checkmark" /> Cancelled
-                              </label>
-                            </div>
-                            <button type="submit" className="btn w-100 btn-primary">
-                              Apply
-                            </button>
-                            <button type="reset" className="btn w-100 btn-grey">
-                              Reset
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="multipleSelection">
-                        <div className="selectBox" onClick={dropdown4}>
-                          <p className="mb-0">
-                            <FiBookmark
-                            />{" "}
-                            By Category
-                          </p>
-                          <span className="down-icon">
-                            <i className="fa fa-angle-down" aria-hidden="true" />
-                          </span>
-                        </div>
-                        <div id="checkBoxes" style={{ display: isShown4 ? 'none' : 'block' }}>
-                          <form action="#">
-                            <p className="checkbox-title">Category</p>
-                            <div className="form-custom">
-                              <input
-                                type="text"
-                                className="form-control bg-grey"
-                                placeholder="Enter Category Name"
-                              />
-                            </div>
-                            <div className="selectBox-cont">
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Advertising
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Food
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Marketing
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Repairs
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Software
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Stationary
-                              </label>
-                              <label className="custom_check w-100">
-                                <input type="checkbox" name="category" />
-                                <span className="checkmark" /> Travel
-                              </label>
-                            </div>
-                            <button type="submit" className="btn w-100 btn-primary">
-                              Apply
-                            </button>
-                            <button type="reset" className="btn w-100 btn-grey">
-                              Reset
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="report-btn">
-                        <a href="#" className="btn">
-                          Generate report
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
+                <div className="col-md-12 d-flex">
+                  <div className="col-xl-3">
+                    <InputSelect
+                      labelClass="col-lg-12"
+                      selectName="Customer"
+                      selectClass="col-lg-12"
+                      name="customer"
+                      placeholder="Customer"
+                      value={selectedValues.select1}
+                      onChange={(selectedOption) =>
+                        handleSelectChange(
+                          selectedOption,
+                          "select1",
+                          setSelectedValues
+                        )
+                      }
+                      options={customerList}
+                      required
+                    />
+                  </div>
+                  <div className="col-xl-3">
+                    <DateTimeInput
+                      datelblClass=""
+                      dateinpClass="col-lg-12"
+                      datelabel="Start Date"
+                      // datestar="*"
+                      dateFormat="dd/MM/yyyy"
+                      selected={dates.date1}
+                      onChange={(date) => handleDateChange("date1", date)}
+                    />
+                  </div>
+                  <div className="col-xl-3">
+                    <DateTimeInput
+                      datelblClass=""
+                      dateinpClass="col-lg-12"
+                      datelabel="Start Date"
+                      // datestar="*"
+                      dateFormat="dd/MM/yyyy"
+                      selected={dates.date2}
+                      onChange={(date) => handleDateChange("date2", date)}
+                    />
+                  </div>
+                  <div className="col-xl-3">
+                    <div className="report-btn" style={{ marginTop: "27px" }}>
+                      <a href="#" className="btn" onClick={getTableDataList}>
+                        Generate report
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -563,33 +439,19 @@ const QuotationList = () => {
                             All Quotation
                           </Link>
                         </li>
-                        <li>
-                          <Link to="/invoices-paid" className={`${pathname.includes("invoices-paid") ? "active" : ""}`}>Paid</Link>
-                        </li>
-                        <li>
-                          <Link to="/invoices-overdue" className={`${pathname.includes("invoices-overdue") ? "active" : ""}`}>Overdue</Link>
-                        </li>
-                        <li>
-                          <Link to="/invoices-draft" className={`${pathname.includes("invoices-draft") ? "active" : ""}`}>Draft</Link>
-                        </li>
-                        <li>
-                          <Link to="/invoices-recurring" className={`${pathname.includes("invoices-recurring") ? "active" : ""}`}>Recurring</Link>
-                        </li>
-                        <li>
-                          <Link to="/invoices-cancelled" className={`${pathname.includes("invoices-cancelled") ? "active" : ""}`}>Cancelled</Link>
-                        </li>
+                       
                       </ul>
                     </div>
                   </div>
                   <div className="col-lg-4 col-md-4">
                     <div className="invoices-settings-btn">
-                      <a
+                      {/* <a
                         href="invoices-settings"
                         className="invoices-settings-icon"
                       >
                         <FiSettings />
-                      </a>
-                      <Link to="/add-invoice" className="btn">
+                      </a> */}
+                      <Link to="/quotation" className="btn">
                         <FiPlusCircle/> New Quotation
                       </Link>
                     </div>
@@ -598,7 +460,7 @@ const QuotationList = () => {
               </div>
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-xl-3 col-sm-6 col-12">
               <div className="card inovices-card">
                 <div className="card-body">
@@ -667,7 +529,7 @@ const QuotationList = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="row">
             <div className="col-sm-12">
               <div className="card card-table">
@@ -676,15 +538,18 @@ const QuotationList = () => {
                     <Table
                       rowSelection={rowSelection}
                       pagination={{
-                        total: data.length,
-                        showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-                        showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                        total: customerTableData.length,
+                        showTotal: (total, range) =>
+                          `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                        showSizeChanger: true,
+                        onShowSizeChange: onShowSizeChange,
+                        itemRender: itemRender,
                       }}
                       className="table table-striped table-nowrap custom-table mb-0 datatable dataTable no-footer"
                       style={{ overflowX: "auto" }}
                       columns={columns}
-                      dataSource={data}
-                      rowKey={(record) => record.id}
+                      dataSource={customerTableData}
+                      rowKey={(record) => record.code}
                     />
                   </div>
                 </div>
@@ -696,7 +561,6 @@ const QuotationList = () => {
       </div>
       {/* /Page Wrapper */}
     </>
-
-  )
+  );
 };
 export default QuotationList;

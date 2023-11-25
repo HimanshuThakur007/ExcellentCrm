@@ -5,7 +5,7 @@ const CardComp = (props) => {
     <>
       <div className="row">
           <div className="col-md-12">
-      <div className="card">
+      <div className="card" style={props.crdStyle}>
               <div className="card-header">
                 <h4 className="card-title mb-0">{props.cardTitle}</h4>
               </div>

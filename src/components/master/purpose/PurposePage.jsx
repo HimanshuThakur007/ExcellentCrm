@@ -3,8 +3,8 @@ import PageHeader from '../../CustomComp/PageHeader';
 import PageHelmet from '../../CustomComp/PageHelmet';
 import InputField from '../../CustomComp/InputField';
 import ReactLoader from '../../CommonFile/ReactLoader';
-import SubmitButton from '../../CustomComp/SubmitButton';
 import CardComp from '../../CustomComp/CardComp';
+import SubmitButton from '../../CustomComp/SubmitButton';
 
 const PurposePage = (props) => {
     const {name} = props.inputValue;

@@ -7,6 +7,11 @@ export {default as Flag_in} from 'Assets/images/flags/in.png';
 export {default as Flag_fr} from 'Assets/images/flags/fr.png';
 export {default as Flag_es} from 'Assets/images/flags/es.png';
 export {default as Flag_de} from 'Assets/images/flags/de.png';
+// export {default as Customer} from 'Assets/images/Customer.png';
+export {default  as Customer} from 'Assets/images/Customer.png';
+export {default  as Contact} from 'Assets/images/ContactMaster.png'
+export {default  as Lead} from 'Assets/images/Leads.png';
+export {default  as ConvertedLead} from 'Assets/images/ConvertedLead.png';
 
 export {default as avatar02} from 'Assets/images/profiles/avatar-02.jpg';
 export {default as avatar03} from 'Assets/images/profiles/avatar-03.jpg';
