@@ -248,32 +248,36 @@ const UserCeation = () => {
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         let data = got;
-        // console.log("MenuTreeOriginal Data", data);
+        let expandedNodes = []; // Initialize an array to track expanded nodes
+  
         data.map((grand) => {
-          // console.log('item',grand)
           if (grand.checked) {
             currData.push(grand.value);
+            expandedNodes.push(grand.value); // Add checked nodes to the expandedNodes array
           }
           grand.children.map((parents) => {
             if (parents.checked) {
               currData.push(parents.value);
+              expandedNodes.push(parents.value);
             }
             if (parents.children != null && parents.children.length > 0) {
               parents.children.map((child) => {
-                // console.log("$$$$$$$$$$$$$=>",cc)
                 if (child.checked) {
-                  // console.log("ccc44433", child);
                   currData.push(child.value);
+                  expandedNodes.push(child.value);
                 }
               });
             }
           });
-
+  
           uniqueChars = [...new Set(currData)];
           console.log("modCurrData$$$", uniqueChars);
           setChecked(uniqueChars);
+  
+          // Now, update the expanded state in your useState array
+          setExpanded(expandedNodes); // Assuming setExpand is your state setter for expanded nodes
         });
-
+  
         setLoading(false);
       } else {
         setLoading(false);
@@ -284,6 +288,7 @@ const UserCeation = () => {
       showToastError(err);
     }
   };
+  
 
   // console.log(checked,"====checkedValue=====")
 
@@ -444,6 +449,7 @@ const UserCeation = () => {
       reader.readAsDataURL(file);
     }
   };
+  console.log('iimmaaggee',image)
 
   // -------------User-Rigths------------------------------
   const getUserRights = async () => {

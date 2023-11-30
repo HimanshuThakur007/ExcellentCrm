@@ -3,10 +3,12 @@ import ListPage from "./ListPage";
 import useFetch from "../Hooks/useFetch";
 import {
   useHistory,
+  useLocation,
   useParams,
 } from "react-router-dom/cjs/react-router-dom.min";
 import { Button } from "antd";
 import { FiEdit, FiPlusCircle, FiTrash2, FiXCircle } from "react-icons/fi";
+import { Base64ImageConverter } from "../CustomComp/Base64ImageConverter";
 // import { FiTrash2 } from 'react-icons/fi'
 
 const ListComp = () => {
@@ -14,9 +16,14 @@ const ListComp = () => {
   const routeParams = useParams();
   // console.log(routeParams,':--------')
   var history = useHistory();
+  var location = useLocation()
   const [listData, setListData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [masterType, setMasterType] = useState(0)
+
+  console.log("MasterType",masterType,typeof masterType)
 
   function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -26,11 +33,18 @@ const ListComp = () => {
     }
     return color;
   }
+  const userData = sessionStorage.getItem("userData");
+  if (userData !== null) {
+    var userId = JSON.parse(userData).UserId
+  }
+
+  // console.log('llll555',location)
 
   // -------------------customerList------------------
   const getList = async () => {
     setLoading(true);
     let listUrl = `/api/LoadCustomerMasterList`;
+    console.log("customerListurl",listUrl)
     try {
       let { res, got } = await api(listUrl, "GET", "");
       if (res.status == 200) {
@@ -40,6 +54,7 @@ const ListComp = () => {
         setListData(list);
         setRowData(columnCustomerList);
         setLoading(false);
+        setMasterType(51003)
       } else {
         setLoading(false);
         alert("Something Went Wrong in List loading");
@@ -51,16 +66,18 @@ const ListComp = () => {
   };
   // -------------------------userCreationList--------------------------------
   const getuserCreationList = async () => {
-    let modifyUrl = `/api/LoadUserMasterList?ProjType=1`;
+    let userCreationUrl = `/api/LoadUserMasterList?ProjType=1`;
+    console.log("customerListurl",userCreationUrl)
     try {
       setLoading(true);
-      let { res, got } = await api(modifyUrl, "GET", "");
+      let { res, got } = await api(userCreationUrl, "GET", "");
       if (res.status == 200) {
         console.log('dataUserCreation',got.data)
         let list = got.data;
 
         setListData(list);
         setRowData(columnss);
+        setMasterType(41003)
         setLoading(false);
       } else {
         setLoading(false);
@@ -75,6 +92,7 @@ const ListComp = () => {
   // -------------------------userDepartementList--------------------------------
   const getDepartmentList = async () => {
     let Url = `/api/LoadDepMasterList`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -84,6 +102,7 @@ const ListComp = () => {
 
         setListData(list);
         setRowData(department);
+        setMasterType(31019)
         setLoading(false);
       } else {
         setLoading(false);
@@ -98,6 +117,7 @@ const ListComp = () => {
   // ---------------------purpose---------------------------------------
   const getPurposeList = async () => {
     let Url = `/api/LoadMasterData?MasterType=6`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -107,6 +127,7 @@ const ListComp = () => {
 
         setListData(list);
         setRowData(Purpose);
+        setMasterType(31010)
         setLoading(false);
       } else {
         setLoading(false);
@@ -120,6 +141,7 @@ const ListComp = () => {
   // ---------------------business nature---------------------------------------
   const getBusinessNatureList = async () => {
     let Url = `/api/LoadMasterData?MasterType=7`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -129,6 +151,7 @@ const ListComp = () => {
 
         setListData(list);
         setRowData(BusinessNature);
+        setMasterType(31013)
         setLoading(false);
       } else {
         setLoading(false);
@@ -144,6 +167,7 @@ const ListComp = () => {
   const getContractorList = async () => {
     let DataFormat = [];
     let Url = `/api/ArchMasterList`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -200,6 +224,7 @@ const ListComp = () => {
   //  ------------bill Sundery List----------
   const getBillSundryList = async () => {
     let Url = `/api/BillSundaryDetails?Code=0`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -224,6 +249,7 @@ const ListComp = () => {
 
   const getLocationList = async () => {
     let Url = `/api/LoadMasterData?MasterType=15`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -248,6 +274,7 @@ const ListComp = () => {
 
   const getSourceMasterList = async () => {
     let Url = `/api/LoadMasterData?MasterType=16`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -271,6 +298,7 @@ const ListComp = () => {
   // -----------------userType---------------------
   const getUserTypeList = async () => {
     let Url = `/api/LoadMasterData?MasterType=17`;
+    console.log('url',Url)
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
@@ -298,7 +326,10 @@ const ListComp = () => {
   //   setListData(updatedData);
   // };
 
+
+
   const onRowClick = (record) => {
+    console.log('code',record.code)
     switch (routeParams.id) {
       case "1":
         history.push({
@@ -338,7 +369,80 @@ const ListComp = () => {
         break;
       default:
     }
+    
   };
+  
+  const onDeleteRow = async(record)=>{
+    // setMasterType()
+    console.log('deleteCode',record.code)
+      // e.preventDefault();
+      let dataCode=record.code
+      const urlfollow = `/api/DeleteMasterTransaction?UCode=${userId}&MT=${masterType}&Code=${dataCode}`;
+      console.log('deleteUrl', urlfollow)
+      var body = {};
+      // console.log("bodyjson", JSON.stringify(body));
+      try {
+        setLoading(true);
+        let { res, got } = await api(urlfollow, "POST", body);
+        if (res.status == 200) {
+          // console.log("maindata", body);
+          alert(got.msg);
+          RecallFunctionHandler()
+         
+          setLoading(false);
+        } else {
+          setLoading(false);
+          alert(got.msg);
+        }
+      } catch (error) {
+        setLoading(false);
+        alert(error);
+      }
+  
+  }
+
+  const RecallFunctionHandler=()=>{
+    switch (routeParams.id) {
+      case "1":
+        // console.log('call')
+        getuserCreationList();
+        break;
+      case "2":
+        getList();
+        break;
+      case "3":
+        getDepartmentList();
+        break;
+      case "4":
+        getPurposeList();
+        break;
+      case "5":
+        getContractorList();
+        break;
+      case "6":
+        getBusinessNatureList();
+        break;
+      case "7":
+        getBillSundryList();
+        break;
+      case "8":
+        getLocationList();
+        break;
+      case "9":
+        getSourceMasterList();
+        break;
+      case "10":
+        getUserTypeList();
+        break;
+      default:
+    }
+  }
+
+  useEffect(() => {
+    RecallFunctionHandler()
+  }, [routeParams.id,searchText,masterType]);
+
+  // =============================================Columns Defined for All Table========================================================================
 
   const columnCustomerList = [
     {
@@ -349,10 +453,24 @@ const ListComp = () => {
     {
       title: "Name",
       dataIndex: "name",
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.userName).toLowerCase().includes(value.toLowerCase())||
+          String(record.mobNo).toLowerCase().includes(value.toLowerCase())||
+          String(record.email).toLowerCase().includes(value.toLowerCase())
+        );
+      },
+      // render: (text, record) => (
+      //   <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
+      //   <a >{text} </a></>
+      //   ),
       render: (text, record) => (
-        <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
-        <a >{text} </a></>
-        ),
+        <span className="badge" style={{ background: getRandomColor() }}>
+          {text}
+        </span>
+      ),
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -408,7 +526,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -437,9 +555,19 @@ const ListComp = () => {
     {
       title: "Name",
       dataIndex: "name",
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.mobNo).toLowerCase().includes(value.toLowerCase())||
+          String(record.email).toLowerCase().includes(value.toLowerCase())
+        );
+      },
       // sorter: (a, b) => a.name.length - b.name.length,
       render: (text, record) => (
-        <><a href="#" className="avatar"><img alt="" src={record.imagePath} /></a>
+        
+        // <><a href="#" className="avatar"><img alt="" src={record.imagePath} /></a>
+        <><a href="#" className="avatar"><Base64ImageConverter base64String={record.imagePath} /></a>
          <a>{text}</a></>
         ),
     },
@@ -512,10 +640,10 @@ const ListComp = () => {
       render: (text, record) => (
 
         <div className="dropdown dropdown-action">
-        <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+        <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" ><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
 
@@ -574,6 +702,14 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.monNo).toLowerCase().includes(value.toLowerCase())||
+            String(record.email).toLowerCase().includes(value.toLowerCase())
+          );
+        },
       // sorter: (a, b) => a.name.length - b.name.length,
     },
 
@@ -625,7 +761,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -654,6 +790,12 @@ const ListComp = () => {
     {
       title: "Name",
       dataIndex: "name",
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.name).toLowerCase().includes(value.toLowerCase())
+        )
+      },
       render: (text, record) => (
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
@@ -669,7 +811,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -703,6 +845,12 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase()) 
+          );
+        },
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -714,7 +862,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -747,6 +895,15 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.perMobNo).toLowerCase().includes(value.toLowerCase())||
+            String(record.email).toLowerCase().includes(value.toLowerCase())||
+            String(record.bnName).toLowerCase().includes(value.toLowerCase())
+          );
+        },
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -823,7 +980,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -856,6 +1013,15 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+            String(record.userName).toLowerCase().includes(value.toLowerCase())||
+            String(record.bsTypeName).toLowerCase().includes(value.toLowerCase())||
+            String(record.bnName).toLowerCase().includes(value.toLowerCase())
+          );
+        },
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -890,7 +1056,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -924,6 +1090,13 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase())
+           
+          );
+        },
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -935,7 +1108,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -968,6 +1141,13 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase())
+           
+          );
+        },
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -979,7 +1159,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -1012,6 +1192,13 @@ const ListComp = () => {
         <><a><span className="person-circle-a person-circle" style={{ background: getRandomColor() }}>{text.charAt(0)}</span></a>
         <a >{text} </a></>
         ),
+        filteredValue: [searchText],
+        onFilter: (value, record) => {
+          return (
+            String(record.name).toLowerCase().includes(value.toLowerCase())
+            
+          );
+        },
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -1023,7 +1210,7 @@ const ListComp = () => {
         <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
         <div className="dropdown-menu dropdown-menu-right">
           <a className="dropdown-item" onClick={() => onRowClick(record)} >Edit</a>
-          <a className="dropdown-item" href="#">Delete</a>
+          <a className="dropdown-item" onClick={()=> onDeleteRow(record)}>Delete</a>
           </div>
           </div>
         // <div className="text-end">
@@ -1043,42 +1230,7 @@ const ListComp = () => {
     },
   ];
 
-  useEffect(() => {
-    switch (routeParams.id) {
-      case "1":
-        // console.log('call')
-        getuserCreationList();
-        break;
-      case "2":
-        getList();
-        break;
-      case "3":
-        getDepartmentList();
-        break;
-      case "4":
-        getPurposeList();
-        break;
-      case "5":
-        getContractorList();
-        break;
-      case "6":
-        getBusinessNatureList();
-        break;
-      case "7":
-        getBillSundryList();
-        break;
-      case "8":
-        getLocationList();
-        break;
-      case "9":
-        getSourceMasterList();
-        break;
-      case "10":
-        getUserTypeList();
-        break;
-      default:
-    }
-  }, [routeParams.id]);
+
   return (
     <div>
       <ListPage
@@ -1104,6 +1256,7 @@ const ListComp = () => {
         rowKey="code"
         onRowClick={onRowClick}
         routeParams={routeParams}
+        setSearchText={setSearchText}
         //   onRow={(record) => ({
         //   onClick: () => onRowClick(record),
         // })}

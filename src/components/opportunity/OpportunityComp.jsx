@@ -513,7 +513,7 @@ const OpportunityComp = () => {
             <a className="dropdown-item" onClick={() => onModifyClick(record)}>
               Edit
             </a>
-            <a className="dropdown-item" href="#">
+            <a className="dropdown-item" onClick={()=>{deleteHandler(record)}}>
               Delete
             </a>
           </div>
@@ -687,7 +687,7 @@ const OpportunityComp = () => {
   // console.log('cc#####3',c)
   const savefollowUpHandler = async (e) => {
     e.preventDefault();
-    const urlfollow = "/api/LeadFollowUp";
+    const urlfollow = "/api/OpportunityFollowUp";
     // console.log('codeUsers', code)
     var body = {
       Lcode: leadCode,
@@ -929,6 +929,35 @@ const OpportunityComp = () => {
       showToastError(err);
     }
   };
+
+  // ===================================Delete-Handler=============================================
+  const deleteHandler=async (record)=>{
+    // e.preventDefault();
+    let dataCode=record.code
+    const urlfollow = `/api/DeleteMasterTransaction?UCode=${userId}&MT=81001&Code=${dataCode}`;
+    console.log('deleteUrl', urlfollow)
+    var body = {};
+    // console.log("bodyjson", JSON.stringify(body));
+    try {
+      setLoading(true);
+      let { res, got } = await api(urlfollow, "POST", body);
+      if (res.status == 200) {
+        // console.log("maindata", body);
+        alert(got.msg);
+        getTableList()
+       
+       
+        setLoading(false);
+      } else {
+        setLoading(false);
+        alert(got.msg);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error);
+    }
+  }
+
 
   return (
     <>

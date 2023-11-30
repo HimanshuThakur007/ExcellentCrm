@@ -30,6 +30,8 @@ import {
 } from "react-icons/bi";
 import { SiMastercomfig } from "react-icons/si";
 import { FiUserPlus } from "react-icons/fi";
+import { GoLightBulb } from "react-icons/go";
+import { IoAdd } from "react-icons/io5";
 
 const SidebarMenu = ({ menuItems }) => {
   const icons = {
@@ -43,6 +45,7 @@ const SidebarMenu = ({ menuItems }) => {
     "<BiData />":<BiData />,
     "<BiCalendarAlt />": <BiCalendarAlt />,
     "<BiBarChartAlt2 />":<BiBarChartAlt2 />,
+    "<GoLightBulb />":<GoLightBulb />
   };
   const renderMenu = (items) => {
     return items.map((item) => (

@@ -8,8 +8,10 @@ import {itemRender,onShowSizeChange} from "../paginationfunction"
  import ReactLoader from '../CommonFile/ReactLoader';
 import zIndex from '@material-ui/core/styles/zIndex';
 import SubmitButton from '../CustomComp/SubmitButton';
+import InputSearch from '../CustomComp/InputSearch';
+import { SiMicrosoftexcel } from 'react-icons/si'
 
-const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,onRow,onClick,loading,onRowClick,routeParams}) => {
+const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,onRow,onClick,loading,onRowClick,routeParams}) => {
   let id =routeParams.id
   return (
     <div className="page-wrapper">
@@ -88,11 +90,18 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
       <div className="row">
         <div className="col-sm-12">
           <div className="card mb-0">
-          <div className="card-header">
-               <h4 className="card-title mb-0">{defaultHead}</h4>
-               {/* <p className="card-text py-3">
-               This is the most basic example of the datatables with zero configuration. Use the <code>.datatable</code> class to initialize datatables.
-               </p> */}
+          <div className="col-xl-12 card-header d-flex justify-content-between">
+               <h4 className="card-title mb-0 d-flex">
+                <span className='mt-1'>
+                {defaultHead}
+                </span>
+                <span className='ml-5'>
+                <InputSearch search1={setSearchText} search2={setSearchText}/>
+                </span>
+                </h4>
+                {/* <span onClick={data.length > 0 ? handleExportClick:null}><SiMicrosoftexcel size={25} style={iconStyles}/></span> */}
+               
+               
            </div>
             <div className="card-body">
               <div className="table-responsive">
@@ -106,7 +115,7 @@ const ListPage = ({disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,
                     columns={columns}                 
                     bordered
                     dataSource={data}
-                    rowKey={record => record.id}
+                    rowKey={record => record.code}
                     onRow={onRow}
                     onClick={onClick}
                    //  onChange={this.handleTableChange}

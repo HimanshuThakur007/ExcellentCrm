@@ -17,6 +17,7 @@ import DateTimeInput, {
 } from "../CommonFile/DateTimeInput";
 import InputSelect from "../CustomComp/InputSelect";
 import useFetch from "../Hooks/useFetch";
+import InputSearch from "../CustomComp/InputSearch";
 const LeadTrailReport = () => {
   let iconStyles = { color: "#10793F", cursor:'pointer'};
   let api = useFetch();
@@ -24,7 +25,7 @@ const LeadTrailReport = () => {
     mnth = ("0" + date.getMonth()).slice(-2),
     day = ("0" + date.getDate()).slice(-2);
   let updatedData = [date.getFullYear(), mnth, day].join("/");
-
+  const [searchText, setSearchText] = React.useState("");
   const [selectedValues, setSelectedValues] = React.useState({
     select1: null,
     select2: null,
@@ -168,6 +169,16 @@ const LeadTrailReport = () => {
       dataIndex: "leadNo",
       render: (text, record) => <span className="text-primary">{text}</span>,
       sorter: (a, b) => a.leadNo.length - b.leadNo.length,
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.leadNo).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.subLead).toLowerCase().includes(value.toLowerCase())||
+          String(record.leadDate).toLowerCase().includes(value.toLowerCase())||
+          String(record.mobNo).toLowerCase().includes(value.toLowerCase())||
+          String(record.customer).toLowerCase().includes(value.toLowerCase())
+        );
+      },
     },
 
     {
@@ -396,7 +407,18 @@ const LeadTrailReport = () => {
             <div className="card mb-0">
             <div className="card-header">
             <div className="col-xl-12 d-flex justify-content-between">
-                <h4 className="card-title mb-0">Lead Trail</h4>
+                <h4 className="card-title d-flex mb-0">
+                  <span className="mt-1">
+                  Lead Trail
+
+                  </span>
+                  <span className="ml-2">
+                  <InputSearch
+                        search1={setSearchText}
+                        search2={setSearchText}
+                      />
+                  </span>
+                  </h4>
                 <span onClick={tableDataList.length > 0 ? handleExportClick:null}><SiMicrosoftexcel size={25} style={iconStyles}/></span>
                 </div>
               </div>

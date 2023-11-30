@@ -9,16 +9,21 @@ import InputField from "../CustomComp/InputField";
 const Configuration = () => {
   let api = useFetch();
   const [assignData, setAssignData] = useState(false);
-  const [autoLeadAssign , setAutoLeadAssign ] = useState(false);
+  const [autoLeadAssign, setAutoLeadAssign] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState({
-    fyear:'', prefix:'', compCode:'',seriesName:'',seriesPrefix:'',busyUrl:''
+    fyear: "",
+    prefix: "",
+    compCode: "",
+    seriesName: "",
+    seriesPrefix: "",
+    busyUrl: "",
   });
 
   let bool = assignData;
-  let boo1 = autoLeadAssign
+  let boo1 = autoLeadAssign;
   let generateNumber = Number(bool);
-  let generateAutoLeadAssign = Number(boo1)
+  let generateAutoLeadAssign = Number(boo1);
   // console.log("booollll", generateNumber);
   const checkHandler = (e) => {
     setAssignData(e.target.checked);
@@ -35,7 +40,8 @@ const Configuration = () => {
     }));
   };
 
-  const { fyear, prefix, compCode,seriesName,seriesPrefix,busyUrl } = inputValue;
+  const { fyear, prefix, compCode, seriesName, seriesPrefix, busyUrl } =
+    inputValue;
 
   const saveHandler = async (e) => {
     e.preventDefault();
@@ -49,13 +55,13 @@ const Configuration = () => {
     // console.log('codeUsers', code)
     var body = {
       LAA: generateNumber,
-      AutoLeadAssign : generateAutoLeadAssign,
-      FY: parseInt(fyear)||0,
+      AutoLeadAssign: generateAutoLeadAssign,
+      FY: parseInt(fyear) || 0,
       PER: prefix,
       CompCode: compCode,
       SOQSeries: seriesName,
-      SOQSeriesPre : seriesPrefix,
-      SQURL: busyUrl
+      SOQSeriesPre: seriesPrefix,
+      SQURL: busyUrl,
     };
     // console.log("body", body);
     try {
@@ -64,15 +70,15 @@ const Configuration = () => {
         // console.log("maindata", body);
         alert(got.msg);
         setInputValue({
-          fyear:'',
-          prefix:'',
-          compCode:'',
-          seriesName:'',
-          seriesPrefix:'',
-          busyUrl:''
-        })
+          fyear: "",
+          prefix: "",
+          compCode: "",
+          seriesName: "",
+          seriesPrefix: "",
+          busyUrl: "",
+        });
         // setAssignData('')
-        loadConfigList()
+        loadConfigList();
       } else {
         alert(got.msg);
       }
@@ -95,12 +101,12 @@ const Configuration = () => {
           compCode: listData.compCode,
           seriesName: listData.soqSeries,
           seriesPrefix: listData.soqSeriesPre,
-          busyUrl:listData.squrl
+          busyUrl: listData.squrl,
         });
-        let compCode = listData.compCode
-        sessionStorage.setItem("compCode", JSON.stringify({compCode}));
+        let compCode = listData.compCode;
+        sessionStorage.setItem("compCode", JSON.stringify({ compCode }));
         setAssignData(listData.laa);
-        setAutoLeadAssign(listData.autoLeadAssign)
+        setAutoLeadAssign(listData.autoLeadAssign);
 
         // setConfigList(correctData);
         setLoading(false);
@@ -170,7 +176,8 @@ const Configuration = () => {
                           onChange={autoLeadAssignHandler}
                           checked={autoLeadAssign}
                         />
-                        <span className="checkmark" />Auto Lead Assign
+                        <span className="checkmark" />
+                        Auto Lead Assign
                       </label>
                     </div>
                     <div className="col-xl-6">
@@ -198,11 +205,9 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
-                     
                     </div>
 
                     <div className="col-xl-6">
-
                       <InputField
                         type="text"
                         name="prefix"
@@ -211,7 +216,7 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
-                       <InputField
+                      <InputField
                         type="text"
                         name="seriesPrefix"
                         labelName="Series Prefix"
@@ -219,7 +224,7 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
-                       <InputField
+                      <InputField
                         type="text"
                         name="busyUrl"
                         labelName="BusyApiUrl"
@@ -227,7 +232,6 @@ const Configuration = () => {
                         onChange={handleInputField}
                         required
                       />
-                       
                     </div>
                   </div>
                   <SubmitButton parentClass="text-end" btnName="Submit" />

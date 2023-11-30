@@ -10,6 +10,7 @@ import ReactToast, {
   showToastError,
 } from "../CustomComp/ReactToast";
 import { convert, convertDate } from "../CommonFile/DateTimeInput";
+import { Excel } from "antd-table-saveas-excel";
 
 // const user_type_list = [
 //   { label: "HOD", value: 1 },
@@ -40,10 +41,12 @@ const ImportData = () => {
   const userData = sessionStorage.getItem("userData");
   const username = JSON.parse(userData).Admin;
   const [checkedItems, setCheckedItems] = useState({});
+  const [searchText, setSearchText] = React.useState("");
 
   if (userData !== null) {
     var dep = JSON.parse(userData).department;
     var depname = JSON.parse(userData).depName;
+    var userId = JSON.parse(userData).UserId
   }
   const { state } = useLocation();
   //  const history = useHistory();
@@ -74,6 +77,7 @@ const ImportData = () => {
     customer: null,
   });
   const [Code, setCode] = React.useState(0);
+  const [rowCode,setRowCode]=useState(0)
   const [RecordCode, setRecordCode] = React.useState(0);
   const history = useHistory();
   const [defaultCheckDept, setDefaultCheckDept] = React.useState("");
@@ -418,7 +422,11 @@ const ImportData = () => {
     return color;
   }
 
-  // const onRowClick = (record) => {
+  // ======================getCode===========================
+
+  console.log('recCode', rowCode)
+  
+  // const onRowClick = (record) => Get
   //   $("#add_task").modal("show");
   //   code = record.code;
   //   // console.log(code);
@@ -433,6 +441,16 @@ const ImportData = () => {
     {
       title: "Lead No.",
       dataIndex: "leadNo",
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.leadNo).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.leadDate).toLowerCase().includes(value.toLowerCase())||
+          String(record.customer).toLowerCase().includes(value.toLowerCase())||
+          String(record.mobNo).toLowerCase().includes(value.toLowerCase())||
+          String(record.email).toLowerCase().includes(value.toLowerCase())
+        );
+      },
       render: (text, record) => (
         <>
           <a href="#" onClick={() => onRowClick(record)}>
@@ -518,7 +536,7 @@ const ImportData = () => {
             <a className="dropdown-item" onClick={() => onModifyClick(record)}>
               Edit
             </a>
-            <a className="dropdown-item" href="#">
+            <a className="dropdown-item" onClick={()=>deleteHandler(record)}>
               Delete
             </a>
           </div>
@@ -935,6 +953,45 @@ const ImportData = () => {
     }
   };
 
+  const handleExportClick = () => {
+    const excel = new Excel();
+    excel
+      .addSheet("test")
+      .addColumns(columns)
+      .addDataSource(tableData, {
+        str2Percent: true
+      })
+      .saveAs("lead.xlsx");
+  };
+
+  // ===================================Delete-Handler=============================================
+  const deleteHandler=async (record)=>{
+    // e.preventDefault();
+    let dataCode=record.code
+    const urlfollow = `/api/DeleteMasterTransaction?UCode=${userId}&MT=71001&Code=${dataCode}`;
+    console.log('deleteUrl', urlfollow)
+    var body = {};
+    // console.log("bodyjson", JSON.stringify(body));
+    try {
+      setLoading(true);
+      let { res, got } = await api(urlfollow, "POST", body);
+      if (res.status == 200) {
+        // console.log("maindata", body);
+        alert(got.msg);
+        getTableList()
+       
+       
+        setLoading(false);
+      } else {
+        setLoading(false);
+        alert(got.msg);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error);
+    }
+  }
+
   return (
     <>
       <ReactToast />
@@ -980,7 +1037,8 @@ const ImportData = () => {
         CallStatus={Call_Status}
         leadStatusCode={leadStatusCode}
         clearHandler={clearHandler}
-        
+        setSearchText={setSearchText}
+        handleExportClick={handleExportClick}
       />
     </>
   );

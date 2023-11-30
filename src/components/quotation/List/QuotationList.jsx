@@ -227,6 +227,7 @@ let sdate = convertDate(dates.date1)
   const getTableDataList = async () => {
  let ser="";
     let modifyUrl = `/api/LoadSaleQuotationReport?QCode=0&SQCustomer=${customerCode}&FDate=${sdate}&TDate=${edate}`;
+    console.log("url",modifyUrl)
     try {
       // setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");

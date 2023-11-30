@@ -11,12 +11,15 @@ import ReactLoader from "../CommonFile/ReactLoader";
 import { BiUser } from "react-icons/bi";
 import InputSelect from "../CustomComp/InputSelect";
 import SubmitButton from "../CustomComp/SubmitButton";
+import { SiMicrosoftexcel } from 'react-icons/si';
 import AddLeadModal from "./AddLeadModal";
 import DateTimeInput from "../CommonFile/DateTimeInput";
 import { Task1 } from '../imagepath';
 import { Collapse } from 'antd';
+import InputSearch from "../CustomComp/InputSearch";
 
 const LeadPage = (props) => {
+  let iconStyles = { color: "#10793F", cursor:'pointer'};
   const customStyles = {
     control: base => ({
       ...base,
@@ -193,8 +196,19 @@ const LeadPage = (props) => {
           <div className="row">
             <div className="col-md-12">
               <div className="card">
-                <div className="card-header">
-                  <h4 className="card-title mb-0">Leads Table</h4>
+                <div className="card-header d-flex justify-content-between">
+                  <h4 className="card-title d-flex mb-0">
+                    <span className="mt-1">
+                    Leads Table
+                    </span>
+                    <span className="ml-2">
+                    <InputSearch
+                        search1={props.setSearchText}
+                        search2={props.setSearchText}
+                      />
+                    </span>
+                    </h4>
+                    {/* <span onClick={props.data.length > 0 ? props.handleExportClick:null}><SiMicrosoftexcel size={25} style={iconStyles}/></span> */}
                 </div>
                 <div className="card-body">
                   <div className="table-responsive">
@@ -252,7 +266,7 @@ const LeadPage = (props) => {
               </div>
             </div>
           ) : null} */}
-          {/* -----------------Lead-Modal-------------------- */}
+          {/* -----------------Leadfollowup-Modal-------------------- */}
            {/* Modal */}
         <div
           className="modal right fade"
