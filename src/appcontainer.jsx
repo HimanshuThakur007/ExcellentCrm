@@ -70,7 +70,7 @@ import Dragdrop from './components/elements/dragdrop/dragdrop'
 import Rangeslider from './components/elements/rangeslider/index'
 import Rating from './components/elements/rating/index'
 import Toastr from './components/elements/toastr/index'
-import Texteditor from './components/elements/texteditor/index'
+// import Texteditor from './components/elements/texteditor/index'
 import Counter from './components/elements/counter/index'
 import Scrollbar from './components/elements/scrollbar/index'
 import Spinner from './components/elements/spinner/index'
@@ -174,6 +174,9 @@ import WhatsAppConfigPage from "./components/WhatsAppConfig/WhatsAppConfigPage";
 import LeadSummaryReport from "./components/report/LeadSummaryReport.jsx";
 import LeadTrailReport from "./components/report/LeadTrailReport.jsx";
 import OpportunityComp from "./components/opportunity/OpportunityComp.jsx";
+import OpportunitySummaryReport from "./components/report/OpportunitySummaryReport.jsx";
+import OpportunityTrailReport from "./components/report/OpportunityTrailReport.jsx";
+import ForgotPassword from "./components/forgotpassword/index.jsx";
 // import UserRight from "./components/UserRightTree/UserRight";
 
 
@@ -293,6 +296,8 @@ const AppUniversal = (props) => {
           <Route path='/lead_summary' exact component = {LeadSummaryReport}/>
           <Route path='/lead_trail' exact component = {LeadTrailReport}/>
           <Route path='/opportunity' exact component = {OpportunityComp}/>
+          <Route path='/opp_summary' exact component = {OpportunitySummaryReport}/>
+          <Route path='/opp_trail' exact component = {OpportunityTrailReport}/>
 
 
 
@@ -390,6 +395,7 @@ const AppUniversal = (props) => {
           <Route path="/settings" exact component={Settings} />
           {/* <Route path="/login" exact component={() => <Login comp={compCode}/>} /> */}
           <Route path="/login" exact component={Login} />
+          <Route path="/forgot-password" exact component={ForgotPassword} />
           <Route path="/register" exact component={Register} />
 
         </Switch>

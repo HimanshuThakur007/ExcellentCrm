@@ -87,7 +87,20 @@ const UserCeation = () => {
   const blockHandler = (blockOption) => {
     setBlockOption(blockOption);
     setBlockVal(blockOption.value);
+    console.log("value",blockOption.value);
   };
+
+  // const blockHandler = (blockOption) => {
+  //   if (blockOption && blockOption.value) {
+  //     setBlockOption(blockOption);
+  //     setBlockVal(blockOption.value);
+  //     console.log("value", blockOption.value);
+  //   } else {
+  //     setBlockOption(null);
+  //     setBlockVal(null);
+  //     console.log("value is null");
+  //   }
+  // };
 
   // var departmentCode = department.value;
 
@@ -167,7 +180,7 @@ const UserCeation = () => {
       setLoading(true);
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
-        // console.log("data", got.data);
+        console.log("data", got.data);
         let listData = got.data[0];
         let userCreateMaster = listData.userMasterDetails;
         let d = convertToIST(userCreateMaster[0].dob);
@@ -235,7 +248,9 @@ const UserCeation = () => {
 
   const getUserRightModifyHandler = async () => {
     var currData = [];
+    var expand=[]
     var uniqueChars;
+    var uniqueExpand;
     if (state) {
       if (state && state.code) {
         var code = state.code;
@@ -243,41 +258,47 @@ const UserCeation = () => {
       }
     }
     let Url = `/api/LoadUserRightsMenuTree?UCode=${code}`;
+    console.log('url', Url)
+    
     try {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         let data = got;
-        let expandedNodes = []; // Initialize an array to track expanded nodes
-  
+        // console.log("MenuTreeOriginal Data", data);
         data.map((grand) => {
+          // console.log('itemgrand',grand)
           if (grand.checked) {
             currData.push(grand.value);
-            expandedNodes.push(grand.value); // Add checked nodes to the expandedNodes array
+            if(grand.checked && grand.children.length > 0){
+              console.log("kkk", grand)
+              expand.push(grand.value);
+            }
           }
           grand.children.map((parents) => {
+            console.log('item',parents)
             if (parents.checked) {
               currData.push(parents.value);
-              expandedNodes.push(parents.value);
             }
             if (parents.children != null && parents.children.length > 0) {
               parents.children.map((child) => {
+                // console.log("$$$$$$$$$$$$$=>",cc)
                 if (child.checked) {
+                  // console.log("ccc44433", child);
                   currData.push(child.value);
-                  expandedNodes.push(child.value);
                 }
               });
             }
           });
-  
+
           uniqueChars = [...new Set(currData)];
+          uniqueExpand = [...new Set(expand)];
           console.log("modCurrData$$$", uniqueChars);
+          console.log("modExpand##==>", uniqueExpand);
           setChecked(uniqueChars);
-  
-          // Now, update the expanded state in your useState array
-          setExpanded(expandedNodes); // Assuming setExpand is your state setter for expanded nodes
+          setExpanded(uniqueExpand)
         });
-  
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -328,19 +349,25 @@ const UserCeation = () => {
       mainArr.push({ department: parseInt(departmentCode), code: code || 0 });
     }
     let userRight = [];
-    var uniqueChars;
+    // var uniqueChars;
     let child = checked.concat(expanded);
     // console.log('Cc56',checked)
     child.forEach((item) => {
       // console.log(item,"======++++++")
       userRight.push({ Code: code || 0, RCode: parseInt(item) });
     });
-    uniqueChars = uniqByKeepLast(userRight, (it) => it.RCode);
+    let uniqueChars = uniqByKeepLast(userRight, (it) => it.RCode);
     // console.log('userRighr Data for Save',uniqueChars);
     console.log("HHHHHHIIIIIMMMMMMMM", uniqueChars);
     // console.log("main Arr", mainArr);
     const urlCreateUser = "/api/SaveUserMaster";
     // console.log('codeUsers', selectedFiles)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+
+    if (!emailPattern.test(email)) {
+      showToastError("Please enter a valid email address");
+      return; 
+    }
     var body = {
       UserMasterDetails: [
         {
@@ -355,7 +382,7 @@ const UserCeation = () => {
           userName: username,
           ImagePath: image,
           Address: address,
-          DOB: dates.dob,
+          DOB: dates.dob||"",
           WNo: whtsap,
           Site: 0,
           ProjType: 1,
@@ -390,7 +417,6 @@ const UserCeation = () => {
         setMultiSelectValue([]);
         if (code !== 0 && code != undefined) {
           history.push("/list/1");
-          // console.log('hello from user')
         }
         setLoading(false);
       } else {

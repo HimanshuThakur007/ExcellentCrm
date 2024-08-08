@@ -217,7 +217,15 @@ i.eye-icon.eye-on-pswd.pe-4 {
 }
 
 /* --------------dashboard card by me---------------- */
-
+/* ----------------------rect-sidebar-pro-------------------------- */
+/* CSS file */
+.react-pro-sidebar-sidebar .sidebar-menu .menu .menu-item.active {
+	background-color: "blue";
+	color: "white";
+	/* Other styling properties */
+  }
+  
+/* ----------------------------pro-end---------------------------- */
 
 .expovent__count-item {
     display: -webkit-box;
@@ -227,7 +235,8 @@ i.eye-icon.eye-on-pswd.pe-4 {
     align-items: center;
     gap: 21px;
     justify-content: space-between;
-    background: white;
+    background: whitesmoke;
+    /* background: white; */
     padding: 30px 30px;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -1588,7 +1597,9 @@ table.dataTable thead>tr>td.sorting {
 -----------------------*/
 
 .header {
-	background: #fff;
+	/* background: #fff; */
+	/* background-color:linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; */
+	background:#1dc9b7;
 	height: 60px;
 	left: 0;
 	position: fixed;
@@ -1803,7 +1814,9 @@ table.dataTable thead>tr>td.sorting {
 -----------------------*/
 
 .sidebar {
-	background-color: #fff;
+	/* background-color: #fff; */
+	/* background-color:linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; */
+	background:#574476;
 	box-shadow: 0px 0px 20px 2px #eaeaea;
 	bottom: 0;
 	left: 0;
@@ -10362,7 +10375,8 @@ td.add-remove {
     color: #fff;
     padding: 12px 0;
     min-width: 167px;
-    background: linear-gradient(to right, #da8cff, #9a55ff);
+    background: rgb(184,134,11);
+    /* background: linear-gradient(to right, #da8cff, #9a55ff); */
     border: 1px solid #da8cff;
     border-radius: 6px;
     display: -webkit-box;

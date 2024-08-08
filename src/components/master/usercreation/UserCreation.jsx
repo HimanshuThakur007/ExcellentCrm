@@ -23,9 +23,9 @@ const UserCreation = (props) => {
     address,
     whtsap,
   } = props.inputValue;
-  const userData = sessionStorage.getItem('userData')
-  let Admintype = JSON.parse(userData).AdminType
-  console.log('aaaddd',Admintype)
+  const userData = sessionStorage.getItem("userData");
+  // let Admintype = JSON.parse(userData).AdminType
+  // console.log('aaaddd',Admintype)
 
   let iconStyles = { color: "grey" };
 
@@ -58,6 +58,7 @@ const UserCreation = (props) => {
               <div className="row">
                 <div className="col-xl-6">
                   <InputField
+                    star="*"
                     type="text"
                     name="username"
                     labelName="Name"
@@ -66,6 +67,7 @@ const UserCreation = (props) => {
                     required
                   />
                   <InputField
+                    star="*"
                     type="email"
                     name="email"
                     labelName="Email"
@@ -84,6 +86,7 @@ const UserCreation = (props) => {
                   />
 
                   <InputSelect
+                    star="*"
                     labelClass="col-lg-3"
                     selectName="Block"
                     selectClass="col-lg-9"
@@ -92,10 +95,12 @@ const UserCreation = (props) => {
                     value={props.blockOption}
                     onChange={props.blockHandler}
                     options={props.blockList}
+                    // isClearable
                     required
                   />
 
                   <InputField
+                    star="*"
                     type={props.visibility ? "text" : "password"}
                     name="password"
                     labelName="Password"
@@ -161,6 +166,7 @@ const UserCreation = (props) => {
                 </div>
                 <div className="col-xl-6">
                   <InputField
+                    star="*"
                     type="number"
                     min="0"
                     name="mobile"
@@ -180,6 +186,7 @@ const UserCreation = (props) => {
                   />
 
                   <InputSelect
+                    star="*"
                     labelClass="col-lg-3"
                     selectName="Type"
                     selectClass="col-lg-9"
@@ -192,6 +199,7 @@ const UserCreation = (props) => {
                   />
                   {/* {props.typeVal != 4 ? ( */}
                   <InputSelect
+                    star="*"
                     labelClass="col-lg-3"
                     selectName="Department"
                     selectClass="col-lg-9"

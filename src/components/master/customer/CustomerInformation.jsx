@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 
 const CustomerInformation = (props) => {
   const { Panel } = Collapse;
+  const gstPattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}$/;
   const {
     custname,
     archname,
@@ -60,6 +61,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
             <div className="row">
               <div className="col-xl-6">
                 <InputField
+                star="*"
                   type="text"
                   name="custname"
                   labelName="Name"
@@ -73,15 +75,16 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   labelName="Email"
                   onChange={props.handleInputField}
                   value={email}
-                  required
+                  
                 />
 
                 <InputSelect
+                star="*"
                   labelClass="col-lg-3"
-                  selectName="Master Group"
+                  selectName="Customer Group"
                   selectClass="col-lg-9"
                   name="masterGrp"
-                  placeholder="Master Group"
+                  placeholder="Customer Group"
                   value={props.masterGroupSelect}
                   onChange={props.selectHandler}
                   options={props.masterGrpData}
@@ -97,12 +100,12 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   value={gst}
                   errClass={gst?.length != 0 && gst?.length > 14 ? "invalid-feedback" : ''}
                   errormsg={gst?.length != 0 && gst?.length < 15 ?`Minimum 15 Characters Required :${gst.length}`:null}
-                  required
+                 
                 />
                 <InputField
                   type="text"
                   name="reference"
-                  labelName="Reference"
+                  labelName="Referred By"
                   onChange={props.handleInputField}
                   value={reference}
                 />
@@ -113,6 +116,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
               {/* --------other side Input------ */}
               <div className="col-xl-6">
                 <InputField
+                star="*"
                   type="number"
                   name="mobile"
                   labelName="Mobile No."
@@ -121,6 +125,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   required
                 />
                 <InputField
+                star="*"
                   type="text"
                   name="add1"
                   labelName="Address"
@@ -134,7 +139,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   labelName=""
                   onChange={props.handleInputField}
                   value={add2}
-                  required
+             
                 />
                 <InputField
                   type="text"
@@ -142,7 +147,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   labelName=""
                   onChange={props.handleInputField}
                   value={add3}
-                  required
+               
                 />
                 <InputField
                   type="text"
@@ -150,7 +155,7 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                   labelName=""
                   onChange={props.handleInputField}
                   value={add4}
-                  required
+                  
                 />
                
               </div>
@@ -217,9 +222,8 @@ React.useEffect(()=>{console.log('kjdgf', props.selectedOptions)},[])
                                   <td className="border-0">Name</td>
                                   <td className="border-0">
                                     <Select
-                                     
                                       style={{ width: "20%" }}
-                                      defaultValue={props.selectedOptions.find(opn => opn.BNCode == item.bnCode )}
+                                      Value={props.selectedOptions.find(opn => opn.BNCode == item.bnCode )}
                                       onChange={selectedOption => props.handleSelectChange(index, selectedOption)
                                       }
                                       options={props.bnCodeList}

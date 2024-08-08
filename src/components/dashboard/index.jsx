@@ -3,12 +3,6 @@ import PageHelmet from "../CustomComp/PageHelmet";
 import PageHeader from "../CustomComp/PageHeader";
 import PieChart from "./piechart";
 import HorizontalBarChart from "./barchart/horizontalchart";
-import BarChart from "./barchart";
-import LineChart from "./linechart";
-import SingleChart from "./linechart/singlelinechart";
-import TotalRevenuechart from "./barchart/totalreveue";
-import Salesstatictschart from "./barchart/salesstatistics";
-import Completedtaskchart from "./barchart/completedtaks";
 import { BiUser,BiDetail } from "react-icons/bi";
 import { Table } from 'antd';
 import 'antd/dist/antd.css';
@@ -21,7 +15,16 @@ import DoughnutChart1 from "./piechart/piechart3";
 // import Customer from "../../assets/images/Customer.png";
 import { BiHomeAlt } from 'react-icons/bi'
 import { Customer,Contact,Lead,ConvertedLead } from "../imagepath";
+import { convertDate } from "../CommonFile/DateTimeInput";
+import ReactLoader from "../CommonFile/ReactLoader";
 
+var opportunityData;
+var quotationData;
+var ActiveLead;
+var ActiveOpportunity;
+var customerLength;
+var contactLength;
+var leadCount;
 const Dashboard = () => {
   let api = useFetch();
   const userDatas = JSON.parse(sessionStorage.getItem('userData'))
@@ -37,8 +40,8 @@ const Dashboard = () => {
   const [convertedList,setConvertedList] = React.useState([])
   const [pendingFollowup, setPendingFollowUp] = React.useState(true)
   const [convertedShowHide, setConvertedShowHide] = React.useState(false)
-  const [length, setLength] = React.useState(0)
-  const [contactLength, setContactLength] = React.useState(0)
+  const [loading, setLoading] = React.useState(false)
+
   const followupShowHide = ()=>{
     setConvertedShowHide(false)
     setPendingFollowUp(!pendingFollowup)
@@ -113,27 +116,63 @@ const Dashboard = () => {
     
    
   ];
+
+  // =====================api for all========================
+  const getDashBoardCount = async () => {
+    // console.log('calling from getfollowup list')
+    let Url = `/api/AdminDashboard`;
+    console.log('dashboard', Url)
+    try {
+      setLoading(true);
+      let { res, got } = await api(Url, "GET", "");
+      if (res.status == 200) {
+        // console.log("data", got.data);
+        let listData = got.data[0];
+        customerLength = listData.totalCustomer
+        contactLength = listData.totalContacts
+        leadCount = listData.totalLeads
+         opportunityData = listData.totalOpportunity;
+         quotationData = listData.totalQuotation;
+         ActiveLead = listData.activeLeads;
+         ActiveOpportunity = listData.activeOpportunity;
+        // setContactLength(contact)
+        // setLeadCount(leads)
+        // opportunityData=opportunity
+        // quotationData=quotation
+       
+      } else {
+        setLoading(false);
+        alert("Something Went Wrong in List loading");
+      }
+    } catch (err) {
+      setLoading(false);
+      alert(err);
+    }
+  };
+
+  // ===========================================================
   // ----------------getFollow-up List-----------
 
   const getFollowupList = async () => {
     // console.log('calling from getfollowup list')
     let Url = `/api/LoadFollowUpList?UCode=${userCode}&LStatus=0`;
+    console.log('followupUrl', Url)
     try {
-      // setLoading(true);
+      setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         // console.log("data", got.data);
         let listData = got.data;
          
-        // console.log("modifyData", listData);
+        console.log("foadfollowUp", listData);
         setfollowupList(listData);
-        // setLoading(false);
+        setLoading(false);
       } else {
-        // setLoading(false);
+        setLoading(false);
         alert("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoading(false);
+      setLoading(false);
       alert(err);
     }
   };
@@ -142,7 +181,7 @@ const Dashboard = () => {
     // console.log('calling from getfollowup list')
     let Url = `/api/LoadFollowUpList?UCode=${userCode}&LStatus=1`;
     try {
-      // setLoading(true);
+      setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         // console.log("data", got.data);
@@ -150,13 +189,13 @@ const Dashboard = () => {
          
         // console.log("modifyData", listData);
         setConvertedList(listData);
-        // setLoading(false);
+        setLoading(false);
       } else {
-        // setLoading(false);
+        setLoading(false);
         alert("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoading(false);
+      setLoading(false);
       alert(err);
     }
   };
@@ -167,7 +206,7 @@ const getLeadHistory = async (vch) => {
     let Url = `/api/LeadFollowUpHistory?VchNo=${vch}&lStatus=0`;
     // console.log('uuurrr', Url)
     try {
-      // setLoading(true);
+      setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         console.log("leaddata", got.data);
@@ -175,13 +214,13 @@ const getLeadHistory = async (vch) => {
          
         //  console.log("leadHistory", listData);
         setleadHistory(listData);
-        // setLoading(false);
+        setLoading(false);
       } else {
-        // setLoading(false);
+        setLoading(false);
         alert("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoading(false);
+      setLoading(false);
       alert(err);
     }
   };
@@ -189,78 +228,37 @@ const getConvertedLeadHistory = async (vch) => {
     
     
     let Url = `/api/LeadFollowUpHistory?VchNo=${vch}&lStatus=1`;
-    // console.log('uuurrr', Url)
+    console.log('uuurrr', Url)
     try {
-      // setLoading(true);
+      setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
         // console.log("leaddata", got.data);
         let listData = got.data;
          
-        //  console.log("modifyData", listData);
+         console.log("modifyData", listData);
         setConvertedLeadHistory(listData);
-        // setLoading(false);
+        setLoading(false);
       } else {
-        // setLoading(false);
+        setLoading(false);
         alert("Something Went Wrong in List loading");
       }
     } catch (err) {
-      // setLoading(false);
+      setLoading(false);
       alert(err);
     }
   };
-  const getList = async () => {
-    // setLoading(true);
-    let listUrl = `/api/LoadCustomerMasterList`;
-    try {
-      let { res, got } = await api(listUrl, "GET", "");
-      if (res.status == 200) {
-        // console.log('dataCustomer',got.data)
-        let list = got.data;
-        setLength(list.length)
+ 
 
-        // setLoading(false);
-      } else {
-        // setLoading(false);
-        alert("Something Went Wrong in List loading");
-      }
-    } catch (err) {
-      // setLoading(false);
-      alert(err);
-    }
-  };
+  let tdate = new Date ()
+  var todayDate=convertDate(tdate)
 
-  // ---------------------Contractor---------------------------------------
-
-  const getContractorList = async () => {
-    let Url = `/api/ArchMasterList`;
-    try {
-      // setLoading(true);
-      let { res, got } = await api(Url, "GET", "");
-      if (res.status == 200) {
-        //  console.log('listdata',got.data)
-        let list = got.data;
-            setContactLength(list.length)
-        // setListData(DataFormat);
-        //  console.log('tttt', DataFormat)
-        // setRowData(contractor);
-        // setLoading(false);
-      } else {
-        // setLoading(false);
-        alert("Something Went Wrong in List loading");
-      }
-    } catch (err) {
-      // setLoading(false);
-      alert(err);
-    }
-  };
 
   React.useEffect(()=>{
     if(userDatas != null){
+      getDashBoardCount()
     getFollowupList();
     getConvertedLeadList();
-    getList();
-    getContractorList();
     }
     
   },[])
@@ -295,19 +293,25 @@ var total = followup + converted
         helmetContent="Dashboard Page"
       />
       <div className="content container-fluid">
-      
+{/*       
         <PageHeader
           iclassName="fas fa-table"
           pageTitle="Dashboard"
           disableTitle="Dashboard"
-        />
+        /> */}
+         {loading ? (
+          <ReactLoader
+            loaderClass="position-absolute"
+            loading={loading}
+          />
+        ) : null}
        
        <div className="row g-20">
             <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
                <div className="expovent__count-item mb-20">
                   <div className="expovent__count-thumb include__bg transition-3" data-background="assets/imges/Customer.png"></div>
                   <div className="expovent__count-content">
-                     <h3 className="expovent__count-number">{length}+</h3>
+                     <h3 className="expovent__count-number">{customerLength}+</h3>
                      <span className="expovent__count-text">Customer</span>
                   </div>
                   <div className="expovent__count-icon">
@@ -322,7 +326,7 @@ var total = followup + converted
                   <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png"></div>
                   <div className="expovent__count-content">
                      <h3 className="expovent__count-number">{contactLength}+</h3>
-                     <span className="expovent__count-text">Contact Master</span>
+                     <span className="expovent__count-text">Contact</span>
                   </div>
                   <div className="expovent__count-icon">
                      {/* <i className="flaticon-speaker"></i> */}
@@ -334,7 +338,7 @@ var total = followup + converted
                <div className="expovent__count-item mb-20">
                   <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
                   <div className="expovent__count-content">
-                     <h3 className="expovent__count-number">{total}+</h3>
+                     <h3 className="expovent__count-number">{leadCount}+</h3>
                      <span className="expovent__count-text">Leads</span>
                   </div>
                   <div className="expovent__count-icon">
@@ -347,8 +351,63 @@ var total = followup + converted
                <div className="expovent__count-item mb-20">
                   <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
                   <div className="expovent__count-content">
-                     <h3 className="expovent__count-number">{converted}+</h3>
-                     <span className="expovent__count-text">Converted Leads</span>
+                     <h3 className="expovent__count-number">{opportunityData}+</h3>
+                     <span className="expovent__count-text">Opportunity</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-ticket-1"></i> */}
+                     <img className="" src={ConvertedLead} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+         </div>
+       <div className="row g-20">
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20" style={{backgroundColor:"#ff9f43"}}>
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/imges/Customer.png"></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number" style={{color:'#fff'}}>{length}+</h3>
+                     <span className="expovent__count-text" style={{color:'#fff'}}>Engage Percentage</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                    {/* <img className="flaticon-group" src={Customer}/> */}
+                     {/* <i className="flaticon-group"></i> */}
+                     <img className="" src={Customer} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20" style={{backgroundColor:"#00cfe8"}}>
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png"></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number" style={{color:'#fff'}}>{ActiveLead}+</h3>
+                     <span className="expovent__count-text" style={{color:'#fff'}}>Active Leads</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-speaker"></i> */}
+                     <img className="" src={Contact} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6">
+               <div className="expovent__count-item mb-20" style={{backgroundColor:"#1b2850"}}>
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number" style={{color:'#fff'}}>{ActiveOpportunity}+</h3>
+                     <span className="expovent__count-text" style={{color:'#fff'}}>Active Opportunity</span>
+                  </div>
+                  <div className="expovent__count-icon">
+                     {/* <i className="flaticon-reminder"></i> */}
+                     <img className="" src={Lead} style={{height:"6vh"}}/>
+                  </div>
+               </div>
+            </div>
+            <div className="col-xxl-3 col-xl-6 col-lg-6 col-md-6" >
+               <div className="expovent__count-item mb-20" style={{backgroundColor:"#28c76f"}}>
+                  <div className="expovent__count-thumb include__bg transition-3" data-background="assets/img/bg/count-bg.png" ></div>
+                  <div className="expovent__count-content">
+                     <h3 className="expovent__count-number" style={{color:'#fff'}}>{quotationData}+</h3>
+                     <span className="expovent__count-text" style={{color:'#fff'}}>Quotation</span>
                   </div>
                   <div className="expovent__count-icon">
                      {/* <i className="flaticon-ticket-1"></i> */}
@@ -363,18 +422,25 @@ var total = followup + converted
           <div className="col-md-6">
             <div className="card h-100">
               <div className="card-body">
-                <h3 className="card-title">Total Lead: {total}</h3>
+                <h3 className="card-title">Leads</h3>
                 <PieChart pending={followup} leadConverted={converted}/>
               </div>
             </div>
           </div>
           <div className="col-md-6">
-            <div className="card h-100">
+          <div className="card h-100">
+              <div className="card-body">
+                <h3 className="card-title">Opportunity</h3>
+                <PieChart pending={20} leadConverted={40}/>
+                {/* <PieChart pending={followup} leadConverted={converted}/> */}
+              </div>
+            </div>
+            {/* <div className="card h-100">
               <div className="card-body">
                 <h3 className="card-title">Products Yearly Sales</h3>
                 <HorizontalBarChart />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
  {/* ---------------------piechart2----------------- */}
@@ -398,18 +464,35 @@ var total = followup + converted
         </div>
 
 
-        <div className="row graphs">
+ <div className="row graphs">
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h3 className="card-title">Converted Opportunity</h3>
+                <DoughnutChart />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card h-100">
+              <div className="card-body">
+                <h3 className="card-title">Yearly Sales</h3>
+                <DoughnutChart1 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {/* <div className="row graphs">
          
           <div className="col-md-6">
             <div className="card h-100" onClick={followupShowHide} style={{cursor:'pointer'}}>
               <div className="card-body">
                 <h3 className="card-title">Pending Leads (Followup)</h3>
-                {/* <HorizontalBarChart /> */}
+               
                 <div className="row">
-                  {/* <div className="col-xl-6">
-                    <label className="col-form-label"><BiDetail/> Department: <span className="text-danger">depname</span></label>
-					
-                  </div> */}
+                 
                   <div className="col-xl-6">
                     <label className="col-form-label"><BiUser /> Leads: <span className="text-danger">{followupList.length}</span></label>
                    
@@ -428,12 +511,12 @@ var total = followup + converted
                     <label className="col-form-label"><BiUser /> Leads: <span className="text-danger">{convertedList.length}</span></label>
                   </div>
                 </div>
-                {/* <PieChart /> */}
+             
               </div>
             </div>
           </div>
-        </div>
-        {pendingFollowup == true && followupList.length > 0?(
+        </div> */}
+        {/* {pendingFollowup == true && followupList.length > 0?(
             <div className="table-responsive">
             <div className="card">
               <div className="card-body">
@@ -453,8 +536,8 @@ var total = followup + converted
               </div>
             </div>
           </div>
-        ):null}
-        {convertedShowHide == true && convertedList.length > 0? (
+        ):null} */}
+        {convertedList.length > 0? (
           <div className="table-responsive">
           <div className="card">
             <div className="card-body">
@@ -581,62 +664,7 @@ var total = followup + converted
             </div>
           </div>
         </div> */}
-        {/* <div className="row graphs">
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Sales Overview</h3>
-                <LineChart />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Total Sales</h3>
-                <SingleChart />
-              </div>
-            </div>
-          </div>
-        </div> */}
-        {/* <div className="row graphs">
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Yearly Projects</h3>
-                <BarChart />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Total Revenue</h3>
-                <TotalRevenuechart />
-              </div>
-            </div>
-          </div>
-        </div> */}
-        {/* <div className="row graphs">
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Sales Statistics</h3>
-                <Salesstatictschart />
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="card h-100">
-              <div className="card-body">
-                <h3 className="card-title">Completed Tasks</h3>
-                <Completedtaskchart />
-              </div>
-            </div>
-          </div>
-        </div> */}
+     
         <LeadHistoryModal leadHistory={leadHistory} convertedLeadHistory={convertedLeadHistory}/>
       </div>
     </div>

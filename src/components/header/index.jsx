@@ -36,7 +36,7 @@ const Header =(props)=> {
         {/* Logo */}
         <div className="header-left">
           <Link to="/" className="logo">
-            <img src={LogoSs} alt="Logo" className="sidebar-logo" />
+            <img src={LogoSs} alt="Logo" className="sidebar-logo" style={{marginTop:'-7px'}}/>
             <img src={LogoSs} alt="Logo" className="mini-sidebar-logo" />
           </Link>
         </div>

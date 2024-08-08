@@ -4,14 +4,63 @@ import { Link } from "react-router-dom";
 import {avatar02,avatar16} from "../imagepath"
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Base64ImageConverter } from "../CustomComp/Base64ImageConverter";
+import useFetch from "../Hooks/useFetch";
+import { showToastError } from "../CustomComp/ReactToast";
+import './style.css'
+import ReactLoader from "../CommonFile/ReactLoader";
 
+var userCreateMaster;
 const Profile =()=> {
+  const [image64, setImage64] = React.useState('')
+  const [profileData, setProfileData] = React.useState({})
+  const [loading, setLoading] = React.useState(false);
   const userData = sessionStorage.getItem('userData')
   if(userData !== null){
   var username = JSON.parse(userData).Admin;
+  var userId = JSON.parse(userData).UserId;
   }
+let api = useFetch();
+const getModifyHandler = async () => {
+ 
+  let modifyUrl = `/api/LoadUserMasterDetails?Code=${userId}`;
+  console.log("ur;l",modifyUrl)
+  try {
+    setLoading(true);
+    let { res, got } = await api(modifyUrl, "GET", "");
+    if (res.status == 200) {
+      console.log("data", got.data);
+      let listData = got.data[0];
+      let userCreateMaster = listData.userMasterDetails[0];
+      setProfileData(userCreateMaster)
+      // let d = convertToIST(userCreateMaster[0].dob);
+    
+      let userDep = listData.userDepartment;
+      if(listData.userImgs.length!==0){
+        let imageObj = listData.userImgs[0]
+        var finalImg = imageObj.img
+        // console.log('iiiiiiiiiiiiiiii',finalImg)
+        }else{
+          finalImg=''
+        }
 
-  const [phone, setPhone] = React.useState()
+        setImage64(finalImg)
+      
+     
+      setLoading(false);
+    } else {
+      showToastError("Something Went Wrong in List loading");
+      setLoading(false);
+    }
+  } catch (err) {
+    showToastError(err);
+    setLoading(false);
+  }
+};
+console.log('uuuuu33uuuuuuuu',profileData)
+React.useEffect(()=>{
+  getModifyHandler()
+},[])
 
     return (
       <div className="page-wrapper">
@@ -20,475 +69,514 @@ const Profile =()=> {
             <meta name="description" content="Reactify Blank Page" />
         </Helmet>
         {/* Page Content */}
+        {loading ? (
+          <ReactLoader loaderClass="position-absolute" loading={loading} />
+        ) : null}
         <div className="content container-fluid">
-          <div className="crms-title row bg-white">
-            <div className="col  p-0">
-              <h3 className="page-title m-0">
-                <span className="page-title-icon bg-gradient-primary text-white me-2">
-                  <i className="feather-user" />
-                </span> Employee Profile </h3>
-            </div>
-            <div className="col p-0 text-end">
-              <ul className="breadcrumb bg-white float-end m-0 pl-0 pr-0">
-                <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-                <li className="breadcrumb-item active">Employee Profile</li>
-              </ul>
-            </div>
+        <div className="crms-title row bg-white">
+          <div className="col  p-0">
+            <h3 className="page-title m-0">
+              <span className="page-title-icon bg-gradient-primary text-white me-2">
+                <i className="feather-user" />
+              </span>{" "}
+              Employee Profile{" "}
+            </h3>
           </div>
-          {/* Page Header */}
-          <div className="page-header pt-3 mb-0">
-            <div className="card ">
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="profile-view">
-                      <div className="profile-img-wrap">
-                        <div className="profile-img">
-                          <a href="#"><img alt="" src={avatar02} /></a>
-                        </div>
-                      </div>
-                      <div className="profile-basic">
-                        <div className="row">
-                          <div className="col-md-5">
-                            <div className="profile-info-left">
-                              <h3 className="user-name m-t-0 mb-0">{username}</h3>
-                              {/* <h6 className="text-muted">UI/UX Design Team</h6> */}
-                              <small className="text-muted">CEO</small>
-                              {/* <div className="staff-id">Employee ID : FT-0001</div>
-                              <div className="small doj text-muted">Date of Join : 1st Jan 2013</div> */}
-                              {/* <div className="staff-msg"><a className="btn btn-custom" href="#">Send Message</a></div> */}
-                            </div>
-                          </div>
-                          <div className="col-md-7">
-                            <ul className="personal-info">
-                              <li>
-                                <div className="title">Phone:</div>
-                                <div className="text"><a>9876543210</a></div>
-                              </li>
-                              <li>
-                                <div className="title">Email:</div>
-                                <div className="text"><a>johndoe@example.com</a></div>
-                              </li>
-                              <li>
-                                <div className="title">Birthday:</div>
-                                <div className="text">24th July</div>
-                              </li>
-                              <li>
-                                <div className="title">Address:</div>
-                                <div className="text">1861 Bayonne Ave, Manchester Township, NJ, 08759</div>
-                              </li>
-                              <li>
-                                <div className="title">Gender:</div>
-                                <div className="text">Male</div>
-                              </li>
-                              {/* <li>
-                                <div className="title">Reports to:</div>
-                                <div className="text">
-                                  <div className="avatar-box">
-                                    <div className="avatar avatar-xs">
-                                      <img src={avatar16} alt="" />
-                                    </div>
-                                  </div>
-                                  <Link to="profile">
-                                    Jeffery Lalor
-                                  </Link>
-                                </div>
-                              </li> */}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal" className="edit-icon" href="#"><i className="fa fa-pencil" /></a></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-                {/*modal section starts here*/}
-                <div className="modal right fade" id="profile_info" tabIndex={-1} role="dialog" aria-modal="true">
-        <div className="modal-dialog" role="document">
-          <button type="button" className="close md-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title text-center">Profile</h4>
-              <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div className="modal-body">
-              <div className="row">
-                <div className="col-md-12">
-                  <form>
-                    <h4>Profile Details</h4>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                        <label className="col-form-label">Phone <span className="text-danger">*</span></label>
-                        <input className="form-control" type="text" name="phone" id="task-name" placeholder="Phone" />
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Email<span className="text-danger">*</span></label>
-                        <input className="form-control" type="email" name="email" id="task-name" placeholder="Email" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                     
-                      <div className="col-sm-6">
-                        <label className="col-form-label">BirthDay <span className="text-danger">*</span></label>
-                        <div className="cal-icon" style={{ width: "100%" }}>
-                          {/* <input className="form-control" type="text" placeholder="MM/DD/YY" /> */}
-                          <DatePicker
-                            className="form-control"
-                            // selected={[()]}
-                            onChange={()=>{}}
-                            dateFormat="dd/MM/yyyy"
-                            showDayMonthYearPicker />
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Address<span className="text-danger">*</span></label>
-                        <input className="form-control" type="text" name="add" id="task-name" placeholder="Address" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                     
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Gender<span className="text-danger">*</span></label>
-                        <input className="form-control" type="text" name="gender" id="task-name" placeholder="Gender" />
-                      </div>
-                    </div>
-                    <h4>Personal Information</h4>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Passport No.<span className="text-danger">*</span></label>
-                        <input className="form-control" type="text" name="passport" id="task-name" placeholder="Passport No." />
-                      </div>
-                      <div className="col-sm-6">
-                        <label className="col-form-label">Passport Exp Date.<span className="text-danger">*</span></label>
-                        <div className="cal-icon"> 
-                        <DatePicker
-                            className="form-control"
-                            // selected={selectedDate3}
-                            // onChange={handleDateChange3}
-                            dateFormat="dd/MM/yyyy"
-                            showDayMonthYearPicker />
-                            </div>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                        <label className="col-form-label">Tel</label>
-                        <input className="form-control" type="number" name="tel" placeholder="Tel" />
-                      </div>
-                      <div className="col-sm-6">
-                        <label className="col-form-label">Nationality</label>
-                        <input className="form-control" type="text" name="nationality" placeholder="Nationality" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Religion</label>
-                        <input className="form-control" type="text" name="religion" placeholder="Religion" />
-                       
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Marital status</label>
-                        <input className="form-control" type="text" name="maritalstatus" placeholder="Marital status" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Employment of spouse</label>
-                        <input className="form-control" type="text" name="employment" placeholder="Employment of spouse" />
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">No. of children</label>
-                        <input className="form-control" type="text" name="children" placeholder="No. of children" />
-                      </div>
-                    </div>
-                    <h4>Emergency Contact</h4>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Primary</label>
-                        <input className="form-control" type="number" name="primary" placeholder="Primary" />
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Name</label>
-                        <input className="form-control" type="text" name="name" placeholder="Name" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Relationship</label>
-                        <input className="form-control" type="text" name="relation" placeholder="Relationship" />
-                      </div>
-                      <div className="col-sm-6">
-                      <label className="col-form-label">Phone</label>
-                        <input className="form-control" type="number" name="phone" placeholder="Phone" />
-                      </div>
-                    </div>
-                    {/* <h4>Description Information</h4>
-                    <div className="form-group row">
-                      <div className="col-sm-12">
-                        <label className="col-form-label">Description </label>
-                        <textarea className="form-control" rows={3} id="description" placeholder="Description" defaultValue={""} />
-                      </div>
-                    </div>
-                    <h4>Permissions</h4>
-                    <div className="form-group row">
-                      <div className="col-sm-6">
-                        <label className="col-form-label">Permission</label>
-                        <select className="form-control">
-                          <option>Task Visibility</option>
-                          <option>Private Task</option>
-                        </select>
-                      </div>
-                    </div> */}
-                    <div className="text-center py-3">
-                      <button type="button" className="border-0 btn btn-primary btn-gradient-primary btn-rounded">Save</button>&nbsp;&nbsp;
-                      <button type="button" className="btn btn-secondary btn-rounded">Cancel</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>{/* modal-content */}
-        </div>{/* modal-dialog */}
-      </div>
-        {/* Modal-end */}
-            <div className="tab-content p-0">
-              {/* Profile Info Tab */}
-              <div id="emp_profile" className="pro-overview tab-pane fade show active">
-                <div className="row">
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill">
-                      <div className="card-body">
-                        <h3 className="card-title">Personal Informations <a href="#" className="edit-icon" data-bs-toggle="modal" data-bs-target="#personal_info_modal"><i className="fa fa-pencil" /></a></h3>
-                        <ul className="personal-info">
-                          <li>
-                            <div className="title">Passport No.</div>
-                            <div className="text">9876543210</div>
-                          </li>
-                          <li>
-                            <div className="title">Passport Exp Date.</div>
-                            <div className="text">9876543210</div>
-                          </li>
-                          <li>
-                            <div className="title">Tel</div>
-                            <div className="text"><a>9876543210</a></div>
-                          </li>
-                          <li>
-                            <div className="title">Nationality</div>
-                            <div className="text">Indian</div>
-                          </li>
-                          <li>
-                            <div className="title">Religion</div>
-                            <div className="text">Christian</div>
-                          </li>
-                          <li>
-                            <div className="title">Marital status</div>
-                            <div className="text">Married</div>
-                          </li>
-                          <li>
-                            <div className="title">Employment of spouse</div>
-                            <div className="text">No</div>
-                          </li>
-                          <li>
-                            <div className="title">No. of children</div>
-                            <div className="text">2</div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill">
-                      <div className="card-body">
-                        <h3 className="card-title">Emergency Contact <a href="#" className="edit-icon" data-bs-toggle="modal" data-bs-target="#emergency_contact_modal"><i className="fa fa-pencil" /></a></h3>
-                        <h5 className="section-title">Primary</h5>
-                        <ul className="personal-info">
-                          <li>
-                            <div className="title">Name</div>
-                            <div className="text">John Doe</div>
-                          </li>
-                          <li>
-                            <div className="title">Relationship</div>
-                            <div className="text">Father</div>
-                          </li>
-                          <li>
-                            <div className="title">Phone </div>
-                            <div className="text">9876543210, 9876543210</div>
-                          </li>
-                        </ul>
-                        <hr />
-                        <h5 className="section-title">Secondary</h5>
-                        <ul className="personal-info">
-                          <li>
-                            <div className="title">Name</div>
-                            <div className="text">Karen Wills</div>
-                          </li>
-                          <li>
-                            <div className="title">Relationship</div>
-                            <div className="text">Brother</div>
-                          </li>
-                          <li>
-                            <div className="title">Phone </div>
-                            <div className="text">9876543210, 9876543210</div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* <div className="row">
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill">
-                      <div className="card-body">
-                        <h3 className="card-title">Bank information</h3>
-                        <ul className="personal-info">
-                          <li>
-                            <div className="title">Bank name</div>
-                            <div className="text">ICICI Bank</div>
-                          </li>
-                          <li>
-                            <div className="title">Bank account No.</div>
-                            <div className="text">159843014641</div>
-                          </li>
-                          <li>
-                            <div className="title">IFSC Code</div>
-                            <div className="text">ICI24504</div>
-                          </li>
-                          <li>
-                            <div className="title">PAN No</div>
-                            <div className="text">TC000Y56</div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill">
-                      <div className="card-body">
-                        <h3 className="card-title">Family Informations <a href="#" className="edit-icon" data-bs-toggle="modal" data-bs-target="#family_info_modal"><i className="fa fa-pencil" /></a></h3>
-                        <div className="table-responsive">
-                          <table className="table table-nowrap">
-                            <thead>
-                              <tr>
-                                <th>Name</th>
-                                <th>Relationship</th>
-                                <th>Date of Birth</th>
-                                <th>Phone</th>
-                                <th />
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>Leo</td>
-                                <td>Brother</td>
-                                <td>Feb 16th, 2019</td>
-                                <td>9876543210</td>
-                                <td className="text-end">
-                                  <div className="dropdown dropdown-action">
-                                    <a aria-expanded="false" data-bs-toggle="dropdown" className="action-icon dropdown-toggle" href="#"><i className="material-icons">more_vert</i></a>
-                                    <div className="dropdown-menu dropdown-menu-right">
-                                      <a href="#" className="dropdown-item"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                      <a href="#" className="dropdown-item"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-                {/* <div className="row">
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill mb-0">
-                      <div className="card-body">
-                        <h3 className="card-title">Education Informations <a href="#" className="edit-icon" data-bs-toggle="modal" data-bs-target="#education_info"><i className="fa fa-pencil" /></a></h3>
-                        <div className="experience-box">
-                          <ul className="experience-list">
-                            <li>
-                              <div className="experience-user">
-                                <div className="before-circle" />
-                              </div>
-                              <div className="experience-content">
-                                <div className="timeline-content">
-                                  <a href="#/" className="name">International College of Arts and Science (UG)</a>
-                                  <div>Bsc Computer Science</div>
-                                  <span className="time">2000 - 2003</span>
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="experience-user">
-                                <div className="before-circle" />
-                              </div>
-                              <div className="experience-content">
-                                <div className="timeline-content">
-                                  <a href="#/" className="name">International College of Arts and Science (PG)</a>
-                                  <div>Msc Computer Science</div>
-                                  <span className="time">2000 - 2003</span>
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6 d-flex">
-                    <div className="card profile-box flex-fill mb-0">
-                      <div className="card-body">
-                        <h3 className="card-title">Experience <a href="#" className="edit-icon" data-bs-toggle="modal" data-bs-target="#experience_info"><i className="fa fa-pencil" /></a></h3>
-                        <div className="experience-box">
-                          <ul className="experience-list">
-                            <li>
-                              <div className="experience-user">
-                                <div className="before-circle" />
-                              </div>
-                              <div className="experience-content">
-                                <div className="timeline-content">
-                                  <a href="#/" className="name">Web Designer at Zen Corporation</a>
-                                  <span className="time">Jan 2013 - Present (5 years 2 months)</span>
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="experience-user">
-                                <div className="before-circle" />
-                              </div>
-                              <div className="experience-content">
-                                <div className="timeline-content">
-                                  <a href="#/" className="name">Web Designer at Ron-tech</a>
-                                  <span className="time">Jan 2013 - Present (5 years 2 months)</span>
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="experience-user">
-                                <div className="before-circle" />
-                              </div>
-                              <div className="experience-content">
-                                <div className="timeline-content">
-                                  <a href="#/" className="name">Web Designer at Dalt Technology</a>
-                                  <span className="time">Jan 2013 - Present (5 years 2 months)</span>
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-              </div>
-              {/* /Profile Info Tab */}
-            </div>
+          <div className="col p-0 text-end">
+            <ul className="breadcrumb bg-white float-end m-0 pl-0 pr-0">
+              <li className="breadcrumb-item">
+                <Link to="/">Dashboard</Link>
+              </li>
+              <li className="breadcrumb-item active">Employee Profile</li>
+            </ul>
           </div>
-          {/* /Page Header */}
         </div>
-        {/* /Page Content */}
+        <div className="page-header pt-3 mb-0">
+          <div className="card profile__main" style={{height:"auto",minHeight:'65vh'}}>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-lg-12 d-flex">
+                  <div className="col-4 profile__card d-flex justify-content-center">
+                    <div className="card_profile mt-2">
+                      <div className="card__img">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%">
+                          <rect fill="#ffffff" width="540" height="450"></rect>
+                          <defs>
+                            <linearGradient
+                              id="a"
+                              gradientUnits="userSpaceOnUse"
+                              x1="0"
+                              x2="0"
+                              y1="0"
+                              y2="100%"
+                              gradientTransform="rotate(222,648,379)"
+                            >
+                              <stop offset="0" stop-color="#ffffff"></stop>
+                              <stop offset="1" stop-color="#FC726E"></stop>
+                            </linearGradient>
+                            <pattern
+                              patternUnits="userSpaceOnUse"
+                              id="b"
+                              width="300"
+                              height="250"
+                              x="0"
+                              y="0"
+                              viewBox="0 0 1080 900"
+                            >
+                              <g fill-opacity="0.5">
+                                <polygon
+                                  fill="#444"
+                                  points="90 150 0 300 180 300"
+                                ></polygon>
+                                <polygon points="90 150 180 0 0 0"></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="270 150 360 0 180 0"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="450 150 360 300 540 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="450 150 540 0 360 0"
+                                ></polygon>
+                                <polygon points="630 150 540 300 720 300"></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="630 150 720 0 540 0"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="810 150 720 300 900 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="810 150 900 0 720 0"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="990 150 900 300 1080 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="990 150 1080 0 900 0"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="90 450 0 600 180 600"
+                                ></polygon>
+                                <polygon points="90 450 180 300 0 300"></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="270 450 180 600 360 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="270 450 360 300 180 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="450 450 360 600 540 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="450 450 540 300 360 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="630 450 540 600 720 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="630 450 720 300 540 300"
+                                ></polygon>
+                                <polygon points="810 450 720 600 900 600"></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="810 450 900 300 720 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="990 450 900 600 1080 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="990 450 1080 300 900 300"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="90 750 0 900 180 900"
+                                ></polygon>
+                                <polygon points="270 750 180 900 360 900"></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="270 750 360 600 180 600"
+                                ></polygon>
+                                <polygon points="450 750 540 600 360 600"></polygon>
+                                <polygon points="630 750 540 900 720 900"></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="630 750 720 600 540 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="810 750 720 900 900 900"
+                                ></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="810 750 900 600 720 600"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="990 750 900 900 1080 900"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="180 0 90 150 270 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="360 0 270 150 450 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="540 0 450 150 630 150"
+                                ></polygon>
+                                <polygon points="900 0 810 150 990 150"></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="0 300 -90 450 90 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="0 300 90 150 -90 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="180 300 90 450 270 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="180 300 270 150 90 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="360 300 270 450 450 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="360 300 450 150 270 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="540 300 450 450 630 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="540 300 630 150 450 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="720 300 630 450 810 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="720 300 810 150 630 150"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="900 300 810 450 990 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="900 300 990 150 810 150"
+                                ></polygon>
+                                <polygon points="0 600 -90 750 90 750"></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="0 600 90 450 -90 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="180 600 90 750 270 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="180 600 270 450 90 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="360 600 270 750 450 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#999"
+                                  points="360 600 450 450 270 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="540 600 630 450 450 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="720 600 630 750 810 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="900 600 810 750 990 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="900 600 990 450 810 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="0 900 90 750 -90 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#444"
+                                  points="180 900 270 750 90 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="360 900 450 750 270 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#AAA"
+                                  points="540 900 630 750 450 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="720 900 810 750 630 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="900 900 990 750 810 750"
+                                ></polygon>
+                                <polygon
+                                  fill="#222"
+                                  points="1080 300 990 450 1170 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#FFF"
+                                  points="1080 300 1170 150 990 150"
+                                ></polygon>
+                                <polygon points="1080 600 990 750 1170 750"></polygon>
+                                <polygon
+                                  fill="#666"
+                                  points="1080 600 1170 450 990 450"
+                                ></polygon>
+                                <polygon
+                                  fill="#DDD"
+                                  points="1080 900 1170 750 990 750"
+                                ></polygon>
+                              </g>
+                            </pattern>
+                          </defs>
+                          <rect
+                            x="0"
+                            y="0"
+                            fill="url(#a)"
+                            width="100%"
+                            height="100%"
+                          ></rect>
+                          <rect
+                            x="0"
+                            y="0"
+                            fill="url(#b)"
+                            width="100%"
+                            height="100%"
+                          ></rect>
+                        </svg>
+                      </div>
+                      <div className="card__avatar">
+                        <Base64ImageConverter
+                          style={{
+                            objectFit: "contain",
+                            height: "100px",
+                            width: "100px",
+                            borderRadius: "50%",
+                          }}
+                          base64String={image64}
+                        />
+                        {/* <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" fill="#ff8475" r="60"></circle><circle cx="64" cy="64" fill="#f85565" opacity=".4" r="48"></circle><path d="m64 14a32 32 0 0 1 32 32v41a6 6 0 0 1 -6 6h-52a6 6 0 0 1 -6-6v-41a32 32 0 0 1 32-32z" fill="#7f3838"></path><path d="m62.73 22h2.54a23.73 23.73 0 0 1 23.73 23.73v42.82a4.45 4.45 0 0 1 -4.45 4.45h-41.1a4.45 4.45 0 0 1 -4.45-4.45v-42.82a23.73 23.73 0 0 1 23.73-23.73z" fill="#393c54" opacity=".4"></path><circle cx="89" cy="65" fill="#fbc0aa" r="7"></circle><path d="m64 124a59.67 59.67 0 0 0 34.69-11.06l-3.32-9.3a10 10 0 0 0 -9.37-6.64h-43.95a10 10 0 0 0 -9.42 6.64l-3.32 9.3a59.67 59.67 0 0 0 34.69 11.06z" fill="#4bc190"></path><path d="m45 110 5.55 2.92-2.55 8.92a60.14 60.14 0 0 0 9 1.74v-27.08l-12.38 10.25a2 2 0 0 0 .38 3.25z" fill="#356cb6" opacity=".3"></path><path d="m71 96.5v27.09a60.14 60.14 0 0 0 9-1.74l-2.54-8.93 5.54-2.92a2 2 0 0 0 .41-3.25z" fill="#356cb6" opacity=".3"></path><path d="m57 123.68a58.54 58.54 0 0 0 14 0v-25.68h-14z" fill="#fff"></path><path d="m64 88.75v9.75" fill="none" stroke="#fbc0aa" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"></path><circle cx="39" cy="65" fill="#fbc0aa" r="7"></circle><path d="m64 91a25 25 0 0 1 -25-25v-16.48a25 25 0 1 1 50 0v16.48a25 25 0 0 1 -25 25z" fill="#ffd8c9"></path><path d="m91.49 51.12v-4.72c0-14.95-11.71-27.61-26.66-28a27.51 27.51 0 0 0 -28.32 27.42v5.33a2 2 0 0 0 2 2h6.81a8 8 0 0 0 6.5-3.33l4.94-6.88a18.45 18.45 0 0 1 1.37 1.63 22.84 22.84 0 0 0 17.87 8.58h13.45a2 2 0 0 0 2.04-2.03z" fill="#bc5b57"></path><path d="m62.76 36.94c4.24 8.74 10.71 10.21 16.09 10.21h5" style="fill:none;stroke-linecap:round;stroke:#fff;stroke-miterlimit:10;stroke-width:2;opacity:.1"></path><path d="m71 35c2.52 5.22 6.39 6.09 9.6 6.09h3" style="fill:none;stroke-linecap:round;stroke:#fff;stroke-miterlimit:10;stroke-width:2;opacity:.1"></path><circle cx="76" cy="62.28" fill="#515570" r="3"></circle><circle cx="52" cy="62.28" fill="#515570" r="3"></circle><ellipse cx="50.42" cy="69.67" fill="#f85565" opacity=".1" rx="4.58" ry="2.98"></ellipse><ellipse cx="77.58" cy="69.67" fill="#f85565" opacity=".1" rx="4.58" ry="2.98"></ellipse><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="m64 67v4" stroke="#fbc0aa" stroke-width="4"></path><path d="m55 56h-9.25" opacity=".2" stroke="#515570" stroke-width="2"></path><path d="m82 56h-9.25" opacity=".2" stroke="#515570" stroke-width="2"></path></g><path d="m64 84c5 0 7-3 7-3h-14s2 3 7 3z" fill="#f85565" opacity=".4"></path><path d="m65.07 78.93-.55.55a.73.73 0 0 1 -1 0l-.55-.55c-1.14-1.14-2.93-.93-4.27.47l-1.7 1.6h14l-1.66-1.6c-1.34-1.4-3.13-1.61-4.27-.47z" fill="#f85565"></path></svg> */}
+                      </div>
+                      <div className="card__title">
+                        {profileData.name
+                          }
+                      </div>
+                      <div className="card__subtitle">
+                        {profileData.mobNo
+                          }
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-8">
+                    <div className="row">
+                      <div className="col-12 d-flex">
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Name
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.name
+                                  
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Mobile No
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.mobNo
+                                   
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12 d-flex">
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Email
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.email
+                                   
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              DOB
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.dob
+                                    
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12 d-flex">
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Site
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.siteName
+                                   
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xl-6">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Department
+                            </label>
+                            <div className="col-lg-12">
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                  profileData.departmentName
+                                    
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <div className="col-xl-12">
+                          <div className="form-group row">
+                            <label className="col-lg-12 col-form-label">
+                              Address
+                            </label>
+                            <div className="col-lg-12">
+                              <textarea
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                // onChange={props.onChange}
+                                value={
+                                 profileData.address
+                                    
+                                }
+                                style={{background:"fixed"}}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
       </div>
     );
   }

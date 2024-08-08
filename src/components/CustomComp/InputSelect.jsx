@@ -15,7 +15,7 @@ const InputSelect = (props) => {
       {/* col-form-label */}
       <div className="form-group row">
         <label className={`${props.labelClass} col-form-label`}>
-          {props.selectName}
+          {props.selectName} <span style={{ color: "red",fontSize:'bold' }}>{props.star}</span>
         </label>
         <div className={props.selectClass}>
           <Select
@@ -37,6 +37,8 @@ const InputSelect = (props) => {
             options={props.options}
             required={props.required}
             isMulti={props.isMulti}
+            isClearable ={props.isClearable}
+            // isClearable={true}
             styles={props.styles||customStyles}
           />
         </div>

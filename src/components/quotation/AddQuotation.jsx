@@ -67,7 +67,9 @@ const AddQuotation = (props) => {
                     {props.quotationShowHide === false? props.setRecord({ }):''}
                     }}
                   >{props.quotationShowHide === false ?<FiPlusCircle/> :''} 
-                    {props.quotationShowHide === false ? "New Quotation":"Go Back"}
+                  <span className="ml-2">
+                     {props.quotationShowHide === false ? "New Quotation":"Go Back"}
+                     </span>
                   </button>
                       {/* <button to="/add-invoice" className="btn">
                         <FiPlusCircle/> New Quotation

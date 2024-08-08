@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
+import * as FiIcons from "react-icons/fi";
 import { Link } from "react-router-dom";
 import IMG01 from "../../assets/images/logo.png";
 import { LogoSs } from "../imagepath";
@@ -13,6 +14,7 @@ const Login = (props) => {
   // console.log('comp',comp)
   const [baseUrl, setBaseUrl] = useState("");
   const [port, setPort] = useState("");
+  const [visibility, setVisibility] = useState(false);
   const [inputValue, setInputValue] = useState({
     username: "",
     password: "",
@@ -24,6 +26,7 @@ const Login = (props) => {
   React.useEffect(() => {
     var url = localStorage.getItem("Url", "");
     var port = localStorage.getItem("Port", "");
+    console.log(url,'ppurl####')
     if (url && port) {
       setBaseUrl(url);
       setPort(port);
@@ -118,6 +121,12 @@ const Login = (props) => {
     }
   };
 
+  let iconStyles = { color: "grey" ,marginTop:"19px"};
+
+  const togglePasswordVisibility = () => {
+    setVisibility((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <>
       {/* Main Wrapper */}
@@ -177,10 +186,32 @@ const Login = (props) => {
                       className="form-control"
                       autoComplete="off"
                       name="password"
-                      type="password"
+                      type={visibility ? "text" : "password"}
+                      value={password}
                       onChange={handleInputField}
                       required
                     />
+
+                    {visibility === true ? (
+                      <span
+                        onClick={togglePasswordVisibility}
+                        className="d-flex justify-content-end"
+                        
+                      >
+                        <i className="eye-icon eye-on-pswd pe-4">
+                          <FiIcons.FiEye style={iconStyles} />
+                        </i>
+                      </span>
+                    ) : (
+                      <span
+                        onClick={togglePasswordVisibility}
+                        className="d-flex justify-content-end"
+                      >
+                        <i className="eye-icon eye-on-pswd pe-4">
+                          <FiIcons.FiEyeOff style={iconStyles} />
+                        </i>
+                      </span>
+                    )}
                   </div>
                   <div className="form-group text-center">
                     {/* <Link to="/" className="btn btn-primary account-btn">

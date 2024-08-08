@@ -12,15 +12,14 @@ const AddOpportunityModal = (props) => {
   ) {
     var AllData = props.displayCustomerData;
   }
-let f = props.checkedItems
-let valuesToFilter =Object.keys(f)
-const value = f[valuesToFilter];
-console.log('keys',value)
-const filteredItems = props.departmentList.filter(item => valuesToFilter.includes(item.label));
+  // let f = props.checkedItems
+  // let valuesToFilter =Object.keys(f)
+  // const value = f[valuesToFilter];
+  // console.log('keys',value)
+  // const filteredItems = props.departmentList.filter(item => valuesToFilter.includes(item.label));
 
-
-console.log(filteredItems,'ffffffffff')
-  console.log(props.departmentList,"ppppppppp")
+  // console.log(filteredItems,'ffffffffff')
+  //   console.log(props.departmentList,"ppppppppp")
   const { BathNo, cArea, Remark } = props.inputValue;
 
   return (
@@ -74,16 +73,28 @@ console.log(filteredItems,'ffffffffff')
                             name="name"
                             placeholder="Customer-Name"
                             value={props.selectedValues.customer}
-                          onChange={(selectedOption) =>
-                            props.handleSelectChange(
-                              selectedOption,
-                              "customer",
-                              props.setSelectedValues
-                            )
-                          }
+                            onChange={(selectedOption) =>
+                              props.handleSelectChange(
+                                selectedOption,
+                                "customer",
+                                props.setSelectedValues
+                              )
+                            }
                             // value={props.customerSelect}
                             // onChange={props.customerSelectHandler}
                             options={props.customerList}
+                            getOptionLabel={(option) => `${option.label}`}
+                            getOptionValue={(option) => `${option}`}
+                            isOptionSelected={(option) =>
+                              props.customerCode === option.value
+                            }
+                            isSearchable={true}
+                            filterOption={props.customFilter}
+                            onMenuOpen={() => props.toggleMenu(true)}
+                            onMenuClose={() => props.toggleMenu(false)}
+                            noOptionsMessage={() => null}
+                            autoFocus={true}
+                            menuIsOpen={props.menuOpen}
                           />
                         </div>
                         <div className="col-xl-4 text-center">
@@ -184,24 +195,25 @@ console.log(filteredItems,'ffffffffff')
                     </h4>
                     <div className="row">
                       <div className="col-12 d-flex flex-wrap ">
-                        {props.departmentList.map((item) => (
-                          <div className="col-4">
-                            <label className="custom_check w-50 m-2 ">
-                              <input
-                                type="checkbox"
-                                name={item.label}
-                                value={item.value}
-                                checked={props.checkedItems[item.label]}
-                                defaultChecked={
-                                  item.value == props.chk ? true : false 
-                                }
-                                onChange={props.handleCheckboxChange}
-                              />
-                              <span className="checkmark" />
-                              {item.label}
-                            </label>
-                          </div>
-                        ))}
+                        {props.departmentList !== undefined &&
+                          props.departmentList.map((item) => (
+                            <div className="col-4">
+                              <label className="custom_check w-50 m-2 ">
+                                <input
+                                  type="checkbox"
+                                  name={item.label}
+                                  value={item.value}
+                                  checked={props.checkedItems[item.label]}
+                                  defaultChecked={
+                                    item.value == props.chk ? true : false
+                                  }
+                                  onChange={props.handleCheckboxChange}
+                                />
+                                <span className="checkmark" />
+                                {item.label}
+                              </label>
+                            </div>
+                          ))}
                       </div>
                     </div>
                     <div className="form-group row">

@@ -33,11 +33,12 @@ const BusinessNaturePage = (props) => {
           />
           {/* /Page Header */}
 
-          <CardComp cardTitle="Information" cardBodyTitle="">
+          <CardComp cardTitle="Type Of Trade" cardBodyTitle="">
             <form onSubmit={props.saveHandler}>
               <div className="row">
                 <div className="col-xl-8">
                   <InputField
+                  star="*"
                     type="text"
                     name="name"
                     labelName="Name"

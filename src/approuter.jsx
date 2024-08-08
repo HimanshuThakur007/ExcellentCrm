@@ -7,8 +7,8 @@ const AppRouter = (props) => {
     // let url = window.location.hostname;
     // let port = window.location.port;
   
-    let url = '103.25.128.155';
-    let port = '12015'
+    let url = '103.194.9.31';
+    let port = '12019'
 
     let serverUrl = '210.89.34.139';
     let serverPort = '105'
@@ -20,7 +20,7 @@ const AppRouter = (props) => {
     let currentPath = window.location.hostname || "";
     console.log('cr path',currentPath)
     useEffect(()=>{
-        if(currentPath == 'localhost' || currentPath == '103.25.128.155'){
+        if(currentPath == 'localhost' || currentPath == '103.194.9.31'){
             // development
             localStorage.setItem('Url',url)
             localStorage.setItem('Port', port)

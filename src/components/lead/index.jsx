@@ -11,6 +11,7 @@ import ReactToast, {
 } from "../CustomComp/ReactToast";
 import { convert, convertDate } from "../CommonFile/DateTimeInput";
 import { Excel } from "antd-table-saveas-excel";
+import LostReasonModal from "./LostReasonModal";
 
 // const user_type_list = [
 //   { label: "HOD", value: 1 },
@@ -19,13 +20,17 @@ import { Excel } from "antd-table-saveas-excel";
 //   { label: "FollowUp", value: 4 },
 // ];
 const Call_Status = [
-  { value: 1, label: "Done" },
   { value: 0, label: "Not Done" },
+  { value: 1, label: "Done" },
+  { value: 2, label: "ToDo" },
+  { value: 3, label: "Call" },
+  { value: 4, label: "Email" },
+  { value: 5, label: "Reminder" },
 ];
 const Lead_status = [
   {
     value: 1,
-    label: "Converted",
+    label: "Won",
   },
   {
     value: 2,
@@ -34,6 +39,10 @@ const Lead_status = [
   {
     value: 3,
     label: "Close",
+  },
+  {
+    value: 4,
+    label: "Lost",
   },
 ];
 
@@ -46,7 +55,7 @@ const ImportData = () => {
   if (userData !== null) {
     var dep = JSON.parse(userData).department;
     var depname = JSON.parse(userData).depName;
-    var userId = JSON.parse(userData).UserId
+    var userId = JSON.parse(userData).UserId;
   }
   const { state } = useLocation();
   //  const history = useHistory();
@@ -72,12 +81,13 @@ const ImportData = () => {
   const [selectedValues, setSelectedValues] = useState({
     select1: null,
     select2: null,
+    select4:null,
     purpose: null,
     source: null,
     customer: null,
   });
   const [Code, setCode] = React.useState(0);
-  const [rowCode,setRowCode]=useState(0)
+  const [rowCode, setRowCode] = useState(0);
   const [RecordCode, setRecordCode] = React.useState(0);
   const history = useHistory();
   const [defaultCheckDept, setDefaultCheckDept] = React.useState("");
@@ -87,6 +97,7 @@ const ImportData = () => {
     Remark: "",
   });
   const [feedbackInput, setFeedBackInput] = useState("");
+  const [lostReason, setLostReason] = useState("");
   const [leadStatusCode, setLeadStatusCode] = useState(0);
   const [leadStatus, setLeadStatus] = useState(0);
   const [callStatusCode, setCallStatusCode] = useState(0);
@@ -124,9 +135,14 @@ const ImportData = () => {
       setDefaultCheckDept(temp);
     }
   }, [userData]);
+
   const feedBackHandler = (e) => {
     let fback = e.target.value;
     setFeedBackInput(fback);
+  };
+  const lostReasonHandler = (e) => {
+    let fback = e.target.value;
+    setLostReason(fback);
   };
 
   const handleInputField = (e) => {
@@ -189,7 +205,7 @@ const ImportData = () => {
       setLoading(true);
       let { res, got } = await api(Url, "GET", "");
       if (res.status == 200) {
-        // console.log('table-data',got.data)
+        console.log('table-data',got.data)
         let tableData = got.data;
 
         setTableData(tableData);
@@ -228,7 +244,7 @@ const ImportData = () => {
             // checked: false,
           });
         });
-         console.log('dapartmentData', JSON.stringify(correctData))
+        console.log("dapartmentData", JSON.stringify(correctData));
         if (userData !== null) {
           var temp = JSON.parse(userData).department;
           // console.log('defaultCheckDept 8888888888888888888',temp)
@@ -348,10 +364,9 @@ const ImportData = () => {
         : selectName == "customer"
         ? (setSelectedCustomer(selectedOption.value),
           setMobileNo(selectedOption.mobile),
-          getCustomerDetails(selectedOption.mobile)
-          // console.log(selectedOption.mobile, "mmmmmmmmm")
-          )
-        : selectName == "source"
+          getCustomerDetails(selectedOption.mobile))
+        : // console.log(selectedOption.mobile, "mmmmmmmmm")
+        selectName == "source"
         ? setSourceCode(selectedOption.value)
         : null;
     }
@@ -424,8 +439,8 @@ const ImportData = () => {
 
   // ======================getCode===========================
 
-  console.log('recCode', rowCode)
-  
+  // console.log("recCode", rowCode);
+
   // const onRowClick = (record) => Get
   //   $("#add_task").modal("show");
   //   code = record.code;
@@ -445,9 +460,9 @@ const ImportData = () => {
       onFilter: (value, record) => {
         return (
           String(record.leadNo).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.leadDate).toLowerCase().includes(value.toLowerCase())||
-          String(record.customer).toLowerCase().includes(value.toLowerCase())||
-          String(record.mobNo).toLowerCase().includes(value.toLowerCase())||
+          String(record.leadDate).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.customer).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.mobNo).toLowerCase().includes(value.toLowerCase()) ||
           String(record.email).toLowerCase().includes(value.toLowerCase())
         );
       },
@@ -536,7 +551,7 @@ const ImportData = () => {
             <a className="dropdown-item" onClick={() => onModifyClick(record)}>
               Edit
             </a>
-            <a className="dropdown-item" onClick={()=>deleteHandler(record)}>
+            <a className="dropdown-item" onClick={() => deleteHandler(record)}>
               Delete
             </a>
           </div>
@@ -717,37 +732,37 @@ const ImportData = () => {
       CallStatus: callStatusCode,
       Feedback: feedbackInput,
       FDate: convertDate(dates.startDate),
-      // Reschedule : rescheduleCode,
+      lostReason : lostReason,
       RecheduleDT: convertDate(dates.dateandtime),
       LStatus: leadStatusCode,
     };
-    // console.log("bodyjson", JSON.stringify(body));
-    try {
-      setLoading(true);
-      let { res, got } = await api(urlfollow, "POST", body);
-      if (res.status == 200) {
-        // console.log("maindata", body);
-        alert(got.msg);
-        setFeedBackInput("");
-        setSelectedValues({
-          select4: null,
-          select3: null,
-        });
-        setDates({
-          startDate: new Date(),
-          dateandtime: new Date(),
-        });
-        $("#followup-modal").modal("hide");
-        // getFollowupList();
-        setLoading(false);
-      } else {
-        setLoading(false);
-        alert(got.msg);
-      }
-    } catch (error) {
-      setLoading(false);
-      alert(error);
-    }
+    console.log("bodyjson", JSON.stringify(body));
+    // try {
+    //   setLoading(true);
+    //   let { res, got } = await api(urlfollow, "POST", body);
+    //   if (res.status == 200) {
+    //     // console.log("maindata", body);
+    //     alert(got.msg);
+    //     setFeedBackInput("");
+    //     setSelectedValues({
+    //       select4: null,
+    //       select3: null,
+    //     });
+    //     setDates({
+    //       startDate: new Date(),
+    //       dateandtime: new Date(),
+    //     });
+    //     $("#followup-modal").modal("hide");
+    //     // getFollowupList();
+    //     setLoading(false);
+    //   } else {
+    //     setLoading(false);
+    //     alert(got.msg);
+    //   }
+    // } catch (error) {
+    //   setLoading(false);
+    //   alert(error);
+    // }
   };
 
   // console.log("mob", mobileNo);
@@ -874,7 +889,6 @@ const ImportData = () => {
     });
 
     setSelectedCustomer(0);
-
     setSelectedValues({
       purpose: null,
       source: null,
@@ -883,9 +897,7 @@ const ImportData = () => {
     setPurposeCode(0);
     setSourceCode(0);
     setSelectedCustomer(0);
-
     getCustomerDetails(0);
-
     setMultiSelectValue([]);
     // var code = state.code;
     let assign = [];
@@ -954,22 +966,24 @@ const ImportData = () => {
   };
 
   const handleExportClick = () => {
+    setLoading(true);
     const excel = new Excel();
     excel
       .addSheet("test")
       .addColumns(columns)
       .addDataSource(tableData, {
-        str2Percent: true
+        str2Percent: true,
       })
       .saveAs("lead.xlsx");
+    setLoading(false);
   };
 
   // ===================================Delete-Handler=============================================
-  const deleteHandler=async (record)=>{
+  const deleteHandler = async (record) => {
     // e.preventDefault();
-    let dataCode=record.code
+    let dataCode = record.code;
     const urlfollow = `/api/DeleteMasterTransaction?UCode=${userId}&MT=71001&Code=${dataCode}`;
-    console.log('deleteUrl', urlfollow)
+    console.log("deleteUrl", urlfollow);
     var body = {};
     // console.log("bodyjson", JSON.stringify(body));
     try {
@@ -978,9 +992,8 @@ const ImportData = () => {
       if (res.status == 200) {
         // console.log("maindata", body);
         alert(got.msg);
-        getTableList()
-       
-       
+        getTableList();
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -990,12 +1003,42 @@ const ImportData = () => {
       setLoading(false);
       alert(error);
     }
+  };
+
+  const [menuOpen, setMenuOpen] = React.useState(false)
+
+  const customFilter = (option, searchText) => {
+    // console.log(option.data.value,'vvvvv')
+    return (
+      // option.data.value.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.mobile.toLowerCase().includes(searchText.toLowerCase())
+    )
   }
 
+  const toggleMenu = (isOpen) => {
+    setMenuOpen(isOpen)
+  }
+
+  const showLostReason = ()=>{
+    if(leadStatusCode == 4){
+    $("#lost_reason").modal("show")
+    $("#followup-modal").modal("hide");
+    }else{
+      $("#lost_reason").modal("hide")
+      $("#followup-modal").modal("show");
+    }
+  }
+console.log('checkcode', leadStatusCode)
   return (
     <>
       <ReactToast />
+      {leadStatusCode == 4 ?(showLostReason()):''}
+      <LostReasonModal lostReasonHandler={lostReasonHandler} lostReason={lostReason}/>
       <LeadPage
+      toggleMenu={toggleMenu}
+      customFilter={customFilter}
+      menuOpen={menuOpen}
         // customerSelect={customerSelect}
         selectedTableData={selectedTableData}
         feedBackHandler={feedBackHandler}

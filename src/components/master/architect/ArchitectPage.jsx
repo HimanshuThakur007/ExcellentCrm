@@ -32,10 +32,7 @@ const ArchitectPage = (props) => {
         />
         {/* /Page Header */}
 
-        <CardComp
-          cardTitle="Contact Master Form"
-          cardBodyTitle="Information"
-        >
+        <CardComp cardTitle="Contact Master Form" cardBodyTitle="Information">
           <form onSubmit={props.saveHandler}>
             <div className="row">
               <div className="col-xl-6">
@@ -150,7 +147,7 @@ const ArchitectPage = (props) => {
                   onChange={props.handleInputField}
                   required
                 /> */}
-                 <InputSelect
+                <InputSelect
                   labelClass="col-lg-3"
                   selectName="Location"
                   selectClass="col-lg-9"

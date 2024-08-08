@@ -9,6 +9,7 @@ import {itemRender,onShowSizeChange} from "../paginationfunction"
 import zIndex from '@material-ui/core/styles/zIndex';
 import SubmitButton from '../CustomComp/SubmitButton';
 import InputSearch from '../CustomComp/InputSearch';
+import {FiPlusCircle} from "react-icons/fi";
 import { SiMicrosoftexcel } from 'react-icons/si'
 
 const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,data,defaultHead,onRow,onClick,loading,onRowClick,routeParams}) => {
@@ -19,7 +20,7 @@ const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,dat
           <title>{HelmetTitle}</title>
           <meta name="description" content="Data Tables"/>					
     </Helmet>
-    {loading ?<ReactLoader loaderClass="position-absolute" loading={loading}  />: null}
+    {loading ? <ReactLoader loaderClass="position-absolute" loading={loading}  />: null}
     <div className="content container-fluid">
       {/* Page Header */}
       <div className="crms-title row bg-white mb-4">
@@ -36,37 +37,32 @@ const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,dat
            </ul>
            </div>
        </div>
-       <div className="page-header pt-3 mb-0 ">
+       <div className="page-header mb-0 ">
               <div className="row">
-                {/* <div className="col">
-                  <div className="dropdown">
-                    <a className="dropdown-toggle recently-viewed" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Recently Viewed</a>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="#">Recently Viewed</a>
-                      <a className="dropdown-item" href="#">Items I'm following</a>
-                      <a className="dropdown-item" href="#">All Companies</a>
-                      <a className="dropdown-item" href="#">Companies added in the last 24 hours</a>
-                      <a className="dropdown-item" href="#">Companies added in the last 7 days</a>
-                      <a className="dropdown-item" href="#">Companies with no notes in the last month</a>
-                      <a className="dropdown-item" href="#">Companies with no notes in the last 7 days</a>
-                    </div>
-                  </div>
-                </div> */}
+                
                 <div className="col text-end">
                   <ul className="list-inline-item pl-0">
-                    {/* <li className="nav-item dropdown list-inline-item add-lists">
-                      <a className="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div className="nav-profile-text">
-                          <i className="fa fa-th" aria-hidden="true" />
-                        </div>
-                      </a>
-                      <div className="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a className="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add-new-list">Add New List View</a>
-                      </div>
-                    </li> */}
+                    
                     <li className="list-inline-item">
-                      {/* <button className="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded" id="add-task" data-bs-toggle="modal" data-bs-target="#add_company">New Company</button> */}
-                      <SubmitButton 
+                    <div className="invoices-settings-btn">
+                      <button className="add btn" onClick={onRowClick}>
+                      <FiPlusCircle/>
+                      <span className='ml-2'>
+                        {
+                      id == 1 ?'New User': 
+                      id == 2 ?'New Customer':
+                      id == 3 ?"New Department":
+                      id == 4 ?"New Purpose":
+                      id == 6 ? "New Trade Type":
+                      id == 5 ? "New Contact":
+                      id == 7 ? "New BillSundry":
+                      id == 8 ? "New Location":
+                      id == 9 ? "New Source":
+                      id == 10 ? "New User Type":"Add"
+                    } 
+                    </span>
+                      </button>
+                      {/* <SubmitButton 
                       btnName={
                       id == 1 ?'Add User': 
                       id == 2 ?'Add Customer':
@@ -80,7 +76,8 @@ const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,dat
                       id == 10 ? "Add User Type":"Add"
                     } 
                       onClick={onRowClick}
-                      />
+                      /> */}
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -99,9 +96,7 @@ const ListPage = ({setSearchText,disableHeader,HelmetTitle,subHeader,columns,dat
                 <InputSearch search1={setSearchText} search2={setSearchText}/>
                 </span>
                 </h4>
-                {/* <span onClick={data.length > 0 ? handleExportClick:null}><SiMicrosoftexcel size={25} style={iconStyles}/></span> */}
-               
-               
+              
            </div>
             <div className="card-body">
               <div className="table-responsive">

@@ -10,6 +10,7 @@ const Department = () => {
   const api = useFetch()
   const { state } = useLocation();
   const history = useHistory()
+  const [loading, setLoading] = useState(false)
   const [inputValue, setInputValue] = useState({
     name:'',
     address:'',
@@ -17,7 +18,7 @@ const Department = () => {
     compcode:'',
     mobile:''
   });
-  const [loading, setLoading] = useState(false)
+ 
 
   const handleInputField = (e) => {
     const { name, value } = e.target;
@@ -33,6 +34,12 @@ const Department = () => {
     if (state && state.code) {
       var code = state.code;}
     const urlSaveDep = "/api/SaveDepMaster";
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+
+  if (!emailPattern.test(email)) {
+    showToastError("Please enter a valid email address");
+    return; 
+  }
     // console.log('codeUsers', code)
     var body = {
       Code: code||0,

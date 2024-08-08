@@ -52,6 +52,7 @@ const ItemPage = (props) => {
                           value={props.department}
                           onChange={props.DepartementHandler}
                           options={props.departmentList}
+                         
                           required
                         />
                       </div>

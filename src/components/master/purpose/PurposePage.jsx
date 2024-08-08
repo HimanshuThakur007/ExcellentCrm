@@ -29,7 +29,7 @@ const PurposePage = (props) => {
           <PageHeader
             iclassName="fa fa-object-group"
             pageTitle="Purpose"
-            disableTitle="Purpose"
+            disableTitle="Purpose Form"
           />
           {/* /Page Header */}
 
@@ -38,6 +38,7 @@ const PurposePage = (props) => {
               <div className="row">
                 <div className="col-xl-8">
                   <InputField
+                  star="*"
                     type="text"
                     name="name"
                     labelName="Name"

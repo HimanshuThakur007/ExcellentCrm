@@ -21,15 +21,40 @@ const ItemList = () => {
   const [departmentCode, setDepartmentCode] = useState(0);
   const [itemGroupCode, setItemGroupCode] = useState(0);
 
+  // const DepartementHandler = (department) => {
+  //   setDepartment(department);
+  //   setDepartmentCode(department.value);
+  //   // console.log("depValue", department.value);
+  // };
   const DepartementHandler = (department) => {
-    setDepartment(department);
-    setDepartmentCode(department.value);
-    // console.log("depValue", department.value);
+    if (department && department.value) {
+      setDepartment(department);
+      setDepartmentCode(department.value);
+      console.log("value", department.value);
+    } else {
+      setDepartment(null);
+      setDepartmentCode(0);
+      console.log("value is null");
+    }
   };
-  const groupHandler = (itemListGroup) => {
-    setItemListGroup(itemListGroup);
-    setItemGroupCode(itemListGroup.value);
+  const groupHandler = (department) => {
+    if (department && department.value) {
+      setItemListGroup(department);
+      setItemGroupCode(department.value);
+      console.log("value", department.value);
+    } else {
+      setItemListGroup(null);
+      setItemGroupCode(0);
+      console.log("value is null");
+    }
   };
+
+
+
+  // const groupHandler = (itemListGroup) => {
+  //   setItemListGroup(itemListGroup);
+  //   setItemGroupCode(itemListGroup.value);
+  // };
 
 // -------departmentList Api-------------------
   const getDepartementList = async () => {
@@ -91,7 +116,7 @@ const ItemList = () => {
   // ---------load Table api-------------
 
   const tableDataHandler = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     let Url = `/api/LoadItemMasterList?CompCode=${departmentCode}&ItemGrp=${itemGroupCode}`;
     // console.log("urlData", Url);
@@ -119,6 +144,7 @@ const ItemList = () => {
   useEffect(() => {
     getDepartementList();
     itemGroupHandler();
+    tableDataHandler()
   }, []);
 
   const columns = [
@@ -188,7 +214,7 @@ const ItemList = () => {
                 </div>
                 <div className="card-body">
                   <h4 className="card-title">Item List Data</h4>
-                  <form onSubmit={tableDataHandler}>
+                  {/* <form onSubmit={tableDataHandler}> */}
                     <div className="row">
                       <div className="col-xl-5">
                         <InputSelect
@@ -200,7 +226,7 @@ const ItemList = () => {
                           value={department}
                           onChange={DepartementHandler}
                           options={departmentList}
-                          required
+                          isClearable
                         />
                       </div>
                       <div className="col-xl-5">
@@ -213,18 +239,18 @@ const ItemList = () => {
                           value={itemListGroup}
                           onChange={groupHandler}
                           options={groupList}
-                          required
+                          isClearable
                         />
                       </div>
                       <div className="col-xl-2">
                         <div className="text-center">
-                          <button type="submit" className="btn btn-primary">
+                          <button type="submit" className="btn btn-primary" onClick={tableDataHandler}>
                             Load Data
                           </button>
                         </div>
                       </div>
                     </div>
-                  </form>
+                  {/* </form> */}
                 </div>
                 {tableData.length !== 0 ? (
                   <div className="card-body">

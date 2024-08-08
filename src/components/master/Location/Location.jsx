@@ -39,6 +39,7 @@ const Location = (props) => {
                 <div className="col-xl-8">
                   <InputField
                     type="text"
+                    star="*"
                     name="name"
                     labelName="Location"
                     value={name}

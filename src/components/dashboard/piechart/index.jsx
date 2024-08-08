@@ -16,7 +16,7 @@ const PieChart =(props)=> {
           
           ],
           // hoverBackgroundColor: [
-          // '#9a55ff',
+          // '#9a55ff',1
           // '#fe7096'
           // ],
           data: [props.pending,props.leadConverted]

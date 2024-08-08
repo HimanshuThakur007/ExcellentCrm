@@ -211,7 +211,7 @@ $(function() {
 
 var headerColors1 = `theme-default black-mode header-solid-pink header-solid-orange header-solid-purple header-solid-blue header-solid-green 
 header-gradient-color1  header-gradient-color2 header-gradient-color3 header-gradient-color4 header-gradient-color5 header-gradient-color6
-header-gradient-color7 header-solid-black  `;
+header-gradient-color7 header-solid-black  #1dc9b7`;
 
 
 
@@ -309,7 +309,7 @@ $(function() {
 
 var sidebarColors2 = `theme-default black-mode sidebar-solid-pink sidebar-solid-orange sidebar-solid-purple sidebar-solid-blue sidebar-solid-green 
 sidebar-gradient-color1  sidebar-gradient-color2 sidebar-gradient-color3 sidebar-gradient-color4 sidebar-gradient-color5 sidebar-gradient-color6
-sidebar-gradient-color7  sidebar-solid-black`;
+sidebar-gradient-color7  sidebar-solid-black #574476`;
 
 
 

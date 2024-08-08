@@ -453,7 +453,10 @@ React.useEffect(()=>{
                         <FiSettings />
                       </a> */}
                       <Link to="/quotation" className="btn">
-                        <FiPlusCircle/> New Quotation
+                        <FiPlusCircle/> 
+                        <span className="ml-2">
+                        New Quotation
+                        </span>
                       </Link>
                     </div>
                   </div>

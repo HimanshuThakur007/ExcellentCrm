@@ -12,15 +12,14 @@ const AddLeadModal = (props) => {
   ) {
     var AllData = props.displayCustomerData;
   }
-let f = props.checkedItems
-let valuesToFilter =Object.keys(f)
-const value = f[valuesToFilter];
-console.log('keys',value)
-const filteredItems = props.departmentList.filter(item => valuesToFilter.includes(item.label));
+// let f = props.checkedItems
+// let valuesToFilter =Object.keys(f)
+// const value = f[valuesToFilter];
+// console.log('keys',value)
+// const filteredItems = props.departmentList !== undefined ? props.departmentList.filter(item => valuesToFilter.includes(item.label)):'';
 
-
-console.log(filteredItems,'ffffffffff')
-  console.log(props.departmentList,"ppppppppp")
+// console.log(filteredItems,'ffffffffff')
+//   console.log(props.departmentList,"ppppppppp")
   const { BathNo, cArea, Remark } = props.inputValue;
 
   return (
@@ -80,10 +79,22 @@ console.log(filteredItems,'ffffffffff')
                               "customer",
                               props.setSelectedValues
                             )
+                            
                           }
-                            // value={props.customerSelect}
-                            // onChange={props.customerSelectHandler}
-                            options={props.customerList}
+                          options={props.customerList}
+                          getOptionLabel={(option) =>
+                            `${option.label}`
+                          }
+                          getOptionValue={(option) => `${option}`}
+                          isOptionSelected={(option) => props.customerCode === option.value}
+                          isSearchable={true}
+                              filterOption={props.customFilter}
+                              onMenuOpen={() => props.toggleMenu(true)}
+                              onMenuClose={() => props.toggleMenu(false)}
+                              noOptionsMessage={() => null}
+                              autoFocus={true}
+                              menuIsOpen={props.menuOpen}
+                          
                           />
                         </div>
                         <div className="col-xl-4 text-center">
@@ -100,9 +111,77 @@ console.log(filteredItems,'ffffffffff')
                         >
                           <div className="crms-tasks">
                             <div className="tasks__item crms-task-item active">
-                              {/* <Collapse accordion expandIconPosition='right'>
-                          <Panel header="Lead Information" key="1"> */}
-                              <table className="table">
+                            <div className="form-group row">
+                      <div className="col-sm-6 d-flex">
+                        <label className="col-4 col-form-label">
+                          Name
+                        </label>
+                        <input
+                        style={{background:'#fff',border:"0px", borderBottom:"1px solid grey"}}
+                          type="text"
+                          className="col-8 form-control"
+                          name="BathNo"
+                          value={AllData &&
+                            AllData.length > 0 &&
+                            AllData[0].name
+                              ? AllData[0].name
+                              : ""}
+                          disabled
+                        />
+                      </div>
+                      <div className="col-sm-6 d-flex">
+                        <label className="col-4 col-form-label">
+                          Mobile No
+                        </label>
+                        <input
+                        style={{background:'#fff',border:"0px", borderBottom:"1px solid grey"}}
+                          type="text"
+                          className="col-8 form-control"
+                         
+                          value={AllData &&
+                            AllData.length > 0 &&
+                            AllData[0].mobNo
+                              ? AllData[0].mobNo
+                              : ""}
+                              disabled
+                        />
+                      </div>
+                      <div className="col-sm-6 d-flex">
+                        <label className="col-4 col-form-label">
+                          Email
+                        </label>
+                        <input
+                        style={{background:'#fff',border:"0px", borderBottom:"1px solid grey"}}
+                          type="text"
+                          className="col-8 form-control"
+                          name="cArea"
+                          value={AllData &&
+                            AllData.length > 0 &&
+                            AllData[0].email
+                              ? AllData[0].email
+                              : ""}
+                              disabled
+                        />
+                      </div>
+                      <div className="col-sm-6 d-flex">
+                        <label className="col-4 col-form-label">
+                          Reffered By
+                        </label>
+                        <input
+                        style={{background:'#fff',border:"0px", borderBottom:"1px solid grey"}}
+                          type="text"
+                          className="col-8 form-control"
+                          name="cArea"
+                          value={AllData &&
+                            AllData.length > 0 &&
+                            AllData[0].ref
+                              ? AllData[0].ref
+                              : ""}
+                              disabled
+                        />
+                      </div>
+                    </div>
+                              {/* <table className="table">
                                 <tbody>
                                   <tr>
                                     <td className="">Name</td>
@@ -134,28 +213,9 @@ console.log(filteredItems,'ffffffffff')
                                         : ""}
                                     </td>
                                   </tr>
+                                
                                   <tr>
-                                    <td>Master Group</td>
-                                    <td className="text-primary">
-                                      {AllData &&
-                                      AllData.length > 0 &&
-                                      AllData[0].masterGrp
-                                        ? AllData[0].masterGrp
-                                        : ""}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>GST NO.</td>
-                                    <td className="text-primary">
-                                      {AllData &&
-                                      AllData.length > 0 &&
-                                      AllData[0].gstNo
-                                        ? AllData[0].gstNo
-                                        : ""}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>Reference</td>
+                                    <td>Referred By</td>
                                     <td className="text-primary">
                                       {AllData &&
                                       AllData.length > 0 &&
@@ -165,9 +225,8 @@ console.log(filteredItems,'ffffffffff')
                                     </td>
                                   </tr>
                                 </tbody>
-                              </table>
-                              {/* </Panel>
-                        </Collapse> */}
+                              </table> */}
+                             
                             </div>
                           </div>
                         </div>
@@ -184,7 +243,7 @@ console.log(filteredItems,'ffffffffff')
                     </h4>
                     <div className="row">
                       <div className="col-12 d-flex flex-wrap ">
-                        {props.departmentList.map((item) => (
+                        {props.departmentList !== undefined && props.departmentList.map((item) => (
                           <div className="col-4">
                             <label className="custom_check w-50 m-2 ">
                               <input
@@ -204,6 +263,15 @@ console.log(filteredItems,'ffffffffff')
                         ))}
                       </div>
                     </div>
+                    <h4
+                      style={{
+                        marginTop:'2px',
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                      }}
+                    >
+                      Extra Information
+                    </h4>
                     <div className="form-group row">
                       <div className="col-sm-6">
                         <label className="col-form-label">
@@ -286,7 +354,7 @@ console.log(filteredItems,'ffffffffff')
                           labelClass=""
                           selectName="Assign to"
                           selectClass="col-lg-12"
-                          placeholder="Multiselect"
+                          placeholder=""
                           value={props.multiSelectValue}
                           onChange={props.handleMultiSelectChange}
                           options={props.assignUserList}

@@ -37,6 +37,7 @@ const UserTypePage = (props) => {
               <div className="row">
                 <div className="col-xl-8">
                   <InputField
+                  star="*"
                     type="text"
                     name="name"
                     labelName="Name"

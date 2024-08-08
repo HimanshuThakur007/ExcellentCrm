@@ -11,7 +11,6 @@ import ReactToast, {
 import { convert, convertDate } from "../CommonFile/DateTimeInput";
 import OpportunityPage from "./OpportunityPage";
 
-
 const Call_Status = [
   { value: 1, label: "Done" },
   { value: 0, label: "Not Done" },
@@ -219,7 +218,7 @@ const OpportunityComp = () => {
             // checked: false,
           });
         });
-         console.log('dapartmentData', JSON.stringify(correctData))
+        console.log("dapartmentData", JSON.stringify(correctData));
         if (userData !== null) {
           var temp = JSON.parse(userData).department;
           // console.log('defaultCheckDept 8888888888888888888',temp)
@@ -339,10 +338,9 @@ const OpportunityComp = () => {
         : selectName == "customer"
         ? (setSelectedCustomer(selectedOption.value),
           setMobileNo(selectedOption.mobile),
-          getCustomerDetails(selectedOption.mobile)
-          // console.log(selectedOption.mobile, "mmmmmmmmm")
-          )
-        : selectName == "source"
+          getCustomerDetails(selectedOption.mobile))
+        : // console.log(selectedOption.mobile, "mmmmmmmmm")
+        selectName == "source"
         ? setSourceCode(selectedOption.value)
         : null;
     }
@@ -513,7 +511,12 @@ const OpportunityComp = () => {
             <a className="dropdown-item" onClick={() => onModifyClick(record)}>
               Edit
             </a>
-            <a className="dropdown-item" onClick={()=>{deleteHandler(record)}}>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                deleteHandler(record);
+              }}
+            >
               Delete
             </a>
           </div>
@@ -931,11 +934,11 @@ const OpportunityComp = () => {
   };
 
   // ===================================Delete-Handler=============================================
-  const deleteHandler=async (record)=>{
+  const deleteHandler = async (record) => {
     // e.preventDefault();
-    let dataCode=record.code
+    let dataCode = record.code;
     const urlfollow = `/api/DeleteMasterTransaction?UCode=${userId}&MT=81001&Code=${dataCode}`;
-    console.log('deleteUrl', urlfollow)
+    console.log("deleteUrl", urlfollow);
     var body = {};
     // console.log("bodyjson", JSON.stringify(body));
     try {
@@ -944,9 +947,8 @@ const OpportunityComp = () => {
       if (res.status == 200) {
         // console.log("maindata", body);
         alert(got.msg);
-        getTableList()
-       
-       
+        getTableList();
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -956,55 +958,71 @@ const OpportunityComp = () => {
       setLoading(false);
       alert(error);
     }
-  }
+  };
 
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  const customFilter = (option, searchText) => {
+    // console.log(option.data.value,'vvvvv')
+    return (
+      // option.data.value.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+      option.data.mobile.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
+
+  const toggleMenu = (isOpen) => {
+    setMenuOpen(isOpen);
+  };
 
   return (
     <>
       <ReactToast />
       <OpportunityPage
-       // customerSelect={customerSelect}
-       selectedTableData={selectedTableData}
-       feedBackHandler={feedBackHandler}
-       feedbackInput={feedbackInput}
-       columns={columns}
-       data={tableData}
-       DepartementHandler={DepartementHandler}
-       loading={loading}
-       department={department}
-       departmentList={departmentList}
-       assignHandler={assignHandler}
-       getTableList={getTableList}
-       assignList={assignToList}
-       selectHandler={selectHandler}
-       selectedOption={selectedOption}
-       selectedValues={selectedValues}
-       setSelectedValues={setSelectedValues}
-       handleSelectChange={handleSelectChange}
-       customerList={customerList}
-       // selectedCustomer={selectedCustomer}
-       // customerSelectHandler={customerSelectHandler}
-       displayCustomerData={displayCustomerData}
-       navigteHandler={navigteHandler}
-       handleCheckboxChange={handleCheckboxChange}
-       checkedItems={checkedItems}
-       defaultCheckDept={defaultCheckDept}
-       purposeData={purposeData}
-       sourceData={sourceData}
-       multiSelectValue={multiSelectValue}
-       handleMultiSelectChange={handleMultiSelectChange}
-       assignUserList={assignUserList}
-       inputValue={inputValue}
-       handleInputField={handleInputField}
-       saveHandler={saveHandler}
-       handleDateChange={handleDateChange}
-       dates={dates}
-       savefollowUpHandler={savefollowUpHandler}
-       leadStatus={Lead_status}
-       CallStatus={Call_Status}
-       leadStatusCode={leadStatusCode}
-       clearHandler={clearHandler}
-        
+        toggleMenu={toggleMenu}
+        customFilter={customFilter}
+        menuOpen={menuOpen}
+        // customerSelect={customerSelect}
+        selectedTableData={selectedTableData}
+        feedBackHandler={feedBackHandler}
+        feedbackInput={feedbackInput}
+        columns={columns}
+        data={tableData}
+        DepartementHandler={DepartementHandler}
+        loading={loading}
+        department={department}
+        departmentList={departmentList}
+        assignHandler={assignHandler}
+        getTableList={getTableList}
+        assignList={assignToList}
+        selectHandler={selectHandler}
+        selectedOption={selectedOption}
+        selectedValues={selectedValues}
+        setSelectedValues={setSelectedValues}
+        handleSelectChange={handleSelectChange}
+        customerList={customerList}
+        // selectedCustomer={selectedCustomer}
+        // customerSelectHandler={customerSelectHandler}
+        displayCustomerData={displayCustomerData}
+        navigteHandler={navigteHandler}
+        handleCheckboxChange={handleCheckboxChange}
+        checkedItems={checkedItems}
+        defaultCheckDept={defaultCheckDept}
+        purposeData={purposeData}
+        sourceData={sourceData}
+        multiSelectValue={multiSelectValue}
+        handleMultiSelectChange={handleMultiSelectChange}
+        assignUserList={assignUserList}
+        inputValue={inputValue}
+        handleInputField={handleInputField}
+        saveHandler={saveHandler}
+        handleDateChange={handleDateChange}
+        dates={dates}
+        savefollowUpHandler={savefollowUpHandler}
+        leadStatus={Lead_status}
+        CallStatus={Call_Status}
+        leadStatusCode={leadStatusCode}
+        clearHandler={clearHandler}
       />
     </>
   );

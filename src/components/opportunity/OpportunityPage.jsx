@@ -15,6 +15,7 @@ import DateTimeInput from "../CommonFile/DateTimeInput";
 import { Task1 } from "../imagepath";
 import { Collapse } from "antd";
 import AddOpportunityModal from "./AddOpportunityModal";
+import {FiPlusCircle} from "react-icons/fi";
 
 const OpportunityPage = (props) => {
   const customStyles = {
@@ -76,22 +77,25 @@ const OpportunityPage = (props) => {
               <div className="col text-end">
                 <ul className="list-inline-item pl-0">
                   <li className="list-inline-item">
+                  <div className="invoices-settings-btn">
                     <button
-                      className="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded"
+                      className="btn"
                       id="add-task"
                       data-bs-toggle="modal"
                       data-bs-target="#add_lead"
                       onClick={props.clearHandler}
                     >
-                      Add Opportunity
+                      <FiPlusCircle/> 
+                      <span className="ml-1">Add Opportunity</span> 
                     </button>
+                    </div>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
           {/* /Page Header----------2 */}
-          <div className="page-header pt-0 mb-0 ">
+          {/* <div className="page-header pt-0 mb-0 ">
             <div className="row">
               <div className="col">
                 <h4 className="advanced-report">Total Opportunity</h4>
@@ -100,7 +104,7 @@ const OpportunityPage = (props) => {
                 <ul className="list-inline-item pl-0"></ul>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* /-------------Page Header with inputField-----*/}
           <div className="row">
@@ -166,134 +170,154 @@ const OpportunityPage = (props) => {
             </div>
           </div>
           <div
-          className="modal right fade"
-          id="followup-modal"
-          tabIndex={-1}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <div className="row w-100">
-                  <div className="col-md-7 account d-flex">
-                    <div className="company_img">
-                      <img src={Task1} alt="User" className="user-image" />
-                    </div>
-                    <div>
-                      <p className="mb-0">Lead Followup</p>
-                      <span className="modal-title">
-                        Personalize your Followup
-                      </span>
-                      {/* <span className="rating-star">
+            className="modal right fade"
+            id="followup-modal"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <div className="row w-100">
+                    <div className="col-md-7 account d-flex">
+                      <div className="company_img">
+                        <img src={Task1} alt="User" className="user-image" />
+                      </div>
+                      <div>
+                        <p className="mb-0">Lead Followup</p>
+                        <span className="modal-title">
+                          Personalize your Followup
+                        </span>
+                        {/* <span className="rating-star">
                         <i className="fa fa-star" aria-hidden="true" />
                       </span>
                       <span className="lock">
                         <i className="fa fa-lock" aria-hidden="true" />
                       </span> */}
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="btn-close xs-close"
-                  data-bs-dismiss="modal"
-                />
-              </div>
-             
-              <div className="modal-body">
-                <div className="task-infos">
-                  <div className="tab-content">
-                    <div className="tab-pane show active" id="tasks-details">
-                      <div className="crms-tasks">
-                        <div className="tasks__item crms-task-item active">
-                          <Collapse accordion expandIconPosition="right" defaultActiveKey={['1']} style={{backgroundColor:'chocolate', color:"white",fontWeight:'bold'}}>
-                            {/* <Panel header=" Name &amp; Occupation" key="1"> */}
-                            <Panel header="Information" key="1">
-                              <table className="table">
-                                <tbody>
-                                  <tr>
-                                    <td className="border-0">Name</td>
-                                    <td className="border-0">{d.customer}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Mobile No.</td>
-                                    <td>{d.mobNo}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Email</td>
-                                    <td>{d.email}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Lead No.</td>
-                                    <td>{d.leadNo}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Lead Created</td>
-                                    <td>{d.leadDate}</td>
-                                  </tr>
-                                  {/* <tr>
-                                    <td>Department</td>
-                                    <td>{d.departemnt}</td>
-                                  </tr> */}
-                                 
-                                </tbody>
-                              </table>
-                            </Panel>
-                          </Collapse>
-                        </div>
                       </div>
                     </div>
                   </div>
-                  {/* ----------modal---form */}
-                  <div className="row mt-2">
-                    <div className="col-md-12">
-                      <form onSubmit={props.savefollowUpHandler}>
-                        <h4 style={{backgroundColor:'darkolivegreen', color:"white"}}>Interaction</h4>
-                        <div className="form-group row">
-                          <div className="col-sm-6">
-                          <InputSelect
-                              labelClass=""
-                              selectName="Interaction"
-                              selectClass=""
-                              name="callstatus"
-                              placeholder="Interaction"
-                              value={props.selectedValues.select3}
-                              onChange={(selectedOption) =>
-                                props.handleSelectChange(selectedOption, 'select3', props.setSelectedValues)}
-                                options={props.CallStatus}
-                                required
-                            />
-                          </div>
-                          <div className="col-sm-6">
-                            <DateTimeInput
-                              datelabel="Date"
-                              selected={props.dates.startDate}
-                              timeInputLabel='Time'
-                              dateFormat='dd/MM/yyyy'
-                              onChange={(date) =>
-                                props.handleDateChange("startDate", date)
-                              }
-                            />
+                  <button
+                    type="button"
+                    className="btn-close xs-close"
+                    data-bs-dismiss="modal"
+                  />
+                </div>
+
+                <div className="modal-body">
+                  <div className="task-infos">
+                    <div className="tab-content">
+                      <div className="tab-pane show active" id="tasks-details">
+                        <div className="crms-tasks">
+                          <div className="tasks__item crms-task-item active">
+                            <Collapse
+                              accordion
+                              expandIconPosition="right"
+                              defaultActiveKey={["1"]}
+                              style={{
+                                backgroundColor: "chocolate",
+                                color: "white",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {/* <Panel header=" Name &amp; Occupation" key="1"> */}
+                              <Panel header="Information" key="1">
+                                <table className="table">
+                                  <tbody>
+                                    <tr>
+                                      <td className="border-0">Name</td>
+                                      <td className="border-0">{d.customer}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Mobile No.</td>
+                                      <td>{d.mobNo}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Email</td>
+                                      <td>{d.email}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Lead No.</td>
+                                      <td>{d.leadNo}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Lead Created</td>
+                                      <td>{d.leadDate}</td>
+                                    </tr>
+                                    {/* <tr>
+                                    <td>Department</td>
+                                    <td>{d.departemnt}</td>
+                                  </tr> */}
+                                  </tbody>
+                                </table>
+                              </Panel>
+                            </Collapse>
                           </div>
                         </div>
-                        <div className="form-group row">
-                          <div className="col-sm-6">
-                            <label className="col-form-label">Feedback</label>
-                            <input
-                              className="form-control"
-                              type="text"
-                              name="feedback"
-                              id="task-name"
-                              autoComplete="off"
-                              placeholder="feedback"
-                              value={props.feedbackInput}
-                              onChange={props.feedBackHandler}
-                              required
-                            />
+                      </div>
+                    </div>
+                    {/* ----------modal---form */}
+                    <div className="row mt-2">
+                      <div className="col-md-12">
+                        <form onSubmit={props.savefollowUpHandler}>
+                          <h4
+                            style={{
+                              backgroundColor: "darkolivegreen",
+                              color: "white",
+                            }}
+                          >
+                            Interaction
+                          </h4>
+                          <div className="form-group row">
+                            <div className="col-sm-6">
+                              <InputSelect
+                                labelClass=""
+                                selectName="Interaction"
+                                selectClass=""
+                                name="callstatus"
+                                placeholder="Interaction"
+                                value={props.selectedValues.select3}
+                                onChange={(selectedOption) =>
+                                  props.handleSelectChange(
+                                    selectedOption,
+                                    "select3",
+                                    props.setSelectedValues
+                                  )
+                                }
+                                options={props.CallStatus}
+                                required
+                              />
+                            </div>
+                            <div className="col-sm-6">
+                              <DateTimeInput
+                                datelabel="Date"
+                                selected={props.dates.startDate}
+                                timeInputLabel="Time"
+                                dateFormat="dd/MM/yyyy"
+                                onChange={(date) =>
+                                  props.handleDateChange("startDate", date)
+                                }
+                              />
+                            </div>
                           </div>
-                         
-                          {/* <div className="col-sm-6">
+                          <div className="form-group row">
+                            <div className="col-sm-6">
+                              <label className="col-form-label">Feedback</label>
+                              <input
+                                className="form-control"
+                                type="text"
+                                name="feedback"
+                                id="task-name"
+                                autoComplete="off"
+                                placeholder="feedback"
+                                value={props.feedbackInput}
+                                onChange={props.feedBackHandler}
+                                required
+                              />
+                            </div>
+
+                            {/* <div className="col-sm-6">
                           <InputSelect
                               labelClass=""
                               selectName="Reschedule"
@@ -307,52 +331,58 @@ const OpportunityPage = (props) => {
                                 
                             />
                             </div> */}
-                          <div className="col-sm-6">
-                            <InputSelect
-                              labelClass=""
-                              selectName="Lead Status"
-                              selectClass=""
-                              name="leadstatus"
-                              placeholder="Lead Status"
-                              value={props.selectedValues.select4}
-                              onChange={(selectedOption) =>
-                                props.handleSelectChange(selectedOption, 'select4', props.setSelectedValues)}
+                            <div className="col-sm-6">
+                              <InputSelect
+                                labelClass=""
+                                selectName="Lead Status"
+                                selectClass=""
+                                name="leadstatus"
+                                placeholder="Lead Status"
+                                value={props.selectedValues.select4}
+                                onChange={(selectedOption) =>
+                                  props.handleSelectChange(
+                                    selectedOption,
+                                    "select4",
+                                    props.setSelectedValues
+                                  )
+                                }
                                 options={props.leadStatus}
                                 required
-                            />
+                              />
+                            </div>
+                            <div className="col-sm-6">
+                              {props.leadStatusCode === 2 ? (
+                                <DateTimeInput
+                                  datelabel="Reschedule Date"
+                                  timeInputLabel="Time"
+                                  dateFormat="dd/MM/yyyy"
+                                  selected={props.dates.dateandtime}
+                                  onChange={(date) =>
+                                    props.handleDateChange("dateandtime", date)
+                                  }
+                                />
+                              ) : null}
+                            </div>
                           </div>
-                           <div className="col-sm-6">
-                            {props.leadStatusCode === 2?(
-                            <DateTimeInput
-                              datelabel="Reschedule Date"
-                              timeInputLabel='Time'
-                              dateFormat='dd/MM/yyyy'
-                              selected={props.dates.dateandtime}
-                              onChange={(date) =>
-                                props.handleDateChange("dateandtime", date)
-                              }
-                            />
-                            ):null}
-                          </div>
-                        </div>
 
-                        <div className="text-center py-3">
-                          <button
-                            type="submit"
-                            className="border-0 btn btn-primary btn-gradient-primary btn-rounded"
-                          >
-                            Save
-                          </button>
-                          &nbsp;&nbsp;
-                          <button
-                            type="button"
-                            className="btn btn-secondary btn-rounded"
-                            data-bs-dismiss="modal"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
+                          <div className="text-center py-3">
+                            <button
+                              type="submit"
+                              className="border-0 btn btn-primary btn-gradient-primary btn-rounded"
+                            >
+                              Save
+                            </button>
+                            &nbsp;&nbsp;
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-rounded"
+                              data-bs-dismiss="modal"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -360,8 +390,10 @@ const OpportunityPage = (props) => {
             </div>
           </div>
         </div>
-        </div>
         <AddOpportunityModal
+          toggleMenu={props.toggleMenu}
+          customFilter={props.customFilter}
+          menuOpen={props.menuOpen}
           setSelectedValues={props.setSelectedValues}
           chk={props.defaultCheckDept}
           checkedItems={props.checkedItems}

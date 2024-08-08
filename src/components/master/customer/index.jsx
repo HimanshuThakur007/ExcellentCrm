@@ -85,7 +85,19 @@ const Customer = () => {
     }
 
     const urlCustomer = "/api/SaveCustomerMaster1";
-    console.log('selectedOptions', selectedOptions)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const gstPattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}$/;
+  
+    if (!emailPattern.test(email)) {
+      showToastError("Please enter a valid email address");
+      return;
+    }
+  
+    // if (!gstPattern.test(gst)) {
+    //   showToastError("Please enter a valid GST number");
+    //   return;
+    // }
+    // console.log('selectedOptions', selectedOptions)
     let currData=[]
     selectedOptions.forEach((item)=>{
      console.log('item',item)
@@ -158,7 +170,7 @@ const Customer = () => {
       let { res, got } = await api(modifyUrl, "GET", "");
       if (res.status == 200) {
         let listData = got.data;
-        // console.log("CustomerModify", listData);
+        console.log("CustomerModify", listData);
         listData.forEach((item) => {
           correctData.push({ value: item.code, label: item.name });
         });

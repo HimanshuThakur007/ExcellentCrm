@@ -101,7 +101,7 @@ const BillsundryTable = (props) => {
         list.forEach((element) => {
           corrData.push({ value: element.code, label: element.name ,feed:element.feedAs, cvalue:element.value,bsType : element.bsType});
         });
-        // console.log('billsundry',list)
+        console.log('billsundry',list)
         setBillSunListData(corrData);
         //    setLoading(false);
       } else {
@@ -272,7 +272,7 @@ console.log('bbddd',busyBillData)
   return (
     <>
       <div className="invoice-add-table">
-        <h4>Bill Sundry</h4>
+        <h4 style={{color:"#800080"}}>Bill Sundry</h4>
         <div
           className="table-responsive"
           style={{ height: "40vh", minHeight: "40vh" }}
@@ -311,12 +311,12 @@ console.log('bbddd',busyBillData)
                 return (
                   <tr key={index} id={"r" + index}>
                     <td className="srno">{index + 1}</td>
-                    <td className="item">
-                      <div style={{ width: "150px" }}>
+                    <td className="item" style={{width:'0'}}>
+                      <div style={{ width: "350px" }}>
                         <Select
                           //  ref={selectRef}
                           name="desc"
-                          style={{ width: "20%" }}
+                          style={{ width: "30%" }}
                           value={desc}
                           onChange={(event) => {
                             selectHandler(event, index);

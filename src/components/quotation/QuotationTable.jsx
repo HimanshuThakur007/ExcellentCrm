@@ -349,6 +349,8 @@ const QuotationTable = (props) => {
     }
   };
 
+  
+
   // =========================busy Api save======================
   const quotationSaveHandler = async (e) => {
     e.preventDefault();
@@ -526,6 +528,8 @@ const QuotationTable = (props) => {
     setMenuOpenStates(updatedMenu);
   };
 
+  console.log('record',props.record !=null ?"hello":"hi")
+
   return (
     <div>
       {/* Page Header */}
@@ -631,6 +635,7 @@ const QuotationTable = (props) => {
                               </div>
                             </div>
                             <div className="col-lg-6 col-md-6">
+                              {props.record.vchNo ?(
                               <div className="invoice-inner-date invoice-inner-datepic">
                                 <span>
                                   Lead No :
@@ -638,7 +643,8 @@ const QuotationTable = (props) => {
                                     {props.record.vchNo}
                                   </span>
                                 </span>
-                              </div>
+                              </div>):""
+}
                             </div>
                           </div>
                         </div>
@@ -713,7 +719,7 @@ const QuotationTable = (props) => {
                                     menuIsOpen={menuOpenStates[index]}
                                     options={itemListData}
                                     styles={customStyles}
-                                    maxMenuHeight={170}
+                                    maxMenuHeight={190}
                                   />
                                 </div>
                               </td>
@@ -834,10 +840,27 @@ const QuotationTable = (props) => {
                     </table>
                   </div>
                 </div>
+                <div className="col-12 mb-2 d-flex justify-content-end">
+                    {/* <div className="invoice-total-card"> */}
+                      {/* <div className="invoice-total-box"> */}
+                        <div className="col d-flex justify-content-between invoice-total-inner">
+                          <p>
+                            <span className="text-primary" style={{fontWeight:'600'}}>Total Quantity :-</span> <span id="quintity"> {totalQty}</span>
+                          </p>
+                          <p>
+                          <span style={{fontWeight:'600'}} className="text-primary">
+                            Total Value{" "} :-
+                            </span>
+                            <span id="totalvalue"> {totalValue}</span>
+                          </p>
+                        </div>
+                      {/* </div> */}
+                    {/* </div> */}
+                  
+                </div>
                 <div className="row">
-                  <div className="col-lg-4 col-md-6">
+                  {/* <div className="col-lg-12 col-md-6">
                     <div className="invoice-total-card">
-                      {/* <h4 className="invoice-total-title">Summary</h4> */}
                       <div className="invoice-total-box">
                         <div className="invoice-total-inner">
                           <p>
@@ -850,8 +873,8 @@ const QuotationTable = (props) => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-8 col-md-6">
+                  </div> */}
+                  <div className="col-lg-12 col-md-12">
                     <div className="invoice-total-card">
                       {/* <h4 className="invoice-total-title">Summary</h4> */}
                       <div className="invoice-total-box">

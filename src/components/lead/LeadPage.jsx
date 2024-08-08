@@ -17,6 +17,7 @@ import DateTimeInput from "../CommonFile/DateTimeInput";
 import { Task1 } from '../imagepath';
 import { Collapse } from 'antd';
 import InputSearch from "../CustomComp/InputSearch";
+import {FiPlusCircle} from "react-icons/fi";
 
 const LeadPage = (props) => {
   let iconStyles = { color: "#10793F", cursor:'pointer'};
@@ -79,22 +80,25 @@ const LeadPage = (props) => {
               <div className="col text-end">
                 <ul className="list-inline-item pl-0">
                   <li className="list-inline-item">
+                  <div className="invoices-settings-btn">
                     <button
-                      className="add btn btn-gradient-primary font-weight-bold text-white todo-list-add-btn btn-rounded"
+                      className="btn"
                       id="add-task"
                       data-bs-toggle="modal"
                       data-bs-target="#add_lead"
                       onClick={props.clearHandler}
                     >
-                      Add Lead
+                      <FiPlusCircle/> 
+                     <span className="ml-2">New Lead</span>
                     </button>
+                    </div>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
           {/* /Page Header----------2 */}
-          <div className="page-header pt-0 mb-0 ">
+          {/* <div className="page-header pt-0 mb-0 ">
             <div className="row">
               <div className="col">
                 <h4 className="advanced-report">Total Lead</h4>
@@ -103,7 +107,7 @@ const LeadPage = (props) => {
                 <ul className="list-inline-item pl-0"></ul>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* /-------------Page Header with inputField-----*/}
           <div className="row">
@@ -370,7 +374,7 @@ const LeadPage = (props) => {
                           </div>
                           <div className="col-sm-6">
                             <DateTimeInput
-                              datelabel="Date"
+                              datelabel="Due Date"
                               selected={props.dates.startDate}
                               timeInputLabel='Time'
                               dateFormat='dd/MM/yyyy'
@@ -382,14 +386,14 @@ const LeadPage = (props) => {
                         </div>
                         <div className="form-group row">
                           <div className="col-sm-6">
-                            <label className="col-form-label">Feedback</label>
+                            <label className="col-form-label">Log a note</label>
                             <input
                               className="form-control"
                               type="text"
                               name="feedback"
                               id="task-name"
                               autoComplete="off"
-                              placeholder="feedback"
+                              placeholder=""
                               value={props.feedbackInput}
                               onChange={props.feedBackHandler}
                               required
@@ -465,6 +469,9 @@ const LeadPage = (props) => {
         </div>
         </div>
         <AddLeadModal
+        toggleMenu={props.toggleMenu}
+        customFilter={props.customFilter}
+        menuOpen={props.menuOpen}
         setSelectedValues={props.setSelectedValues}
           chk={props.defaultCheckDept}
           checkedItems={props.checkedItems}
